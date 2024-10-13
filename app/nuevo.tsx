@@ -1,15 +1,15 @@
 import { Text, View } from "react-native";
+import{estilos,colores} from "@/components/global_styles"
+import Boton from "@/components/Boton";
 
 export default function Index() {
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      style={[{flex: 1},estilos.centrado]}
     >
-      <Text>Tab para añadir gastos</Text>
+      <Boton texto="Agregar Gasto"></Boton>
+      <Boton texto="Agregar Ahorro"></Boton>
+      
     </View>
   );
 }
