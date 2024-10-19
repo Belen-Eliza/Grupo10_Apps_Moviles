@@ -6,10 +6,8 @@ function Boton(props: { texto: string}){
     const estilos_priv = StyleSheet.create({
         tarjeta: {
             flex: 1,
-            //backgroundColor: "#9fc7c5",
             minWidth: "80%",
             maxHeight: 100,
-            //borderColor: "#004000",
             borderRadius: 5,
             borderWidth: 2,
             margin: 10

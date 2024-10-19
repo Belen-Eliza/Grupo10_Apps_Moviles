@@ -19,7 +19,15 @@ export const estilos = StyleSheet.create({
     subtitulo: {
         fontSize: 25,
         fontWeight: "semibold"
-    }
+    },
+    tarjeta: {
+        flex: 1,
+        minWidth: "80%",
+        maxHeight: 100,
+        borderRadius: 5,
+        borderWidth: 2,
+        margin: 10
+       },
 });
 
 export const colores = StyleSheet.create({
