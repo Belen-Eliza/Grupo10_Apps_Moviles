@@ -11,11 +11,6 @@ export const estilos = StyleSheet.create({
         alignItems: "center",
         alignSelf: "center"
     },
-    titulo:{
-        fontSize: 30,
-        fontWeight: "bold",
-        
-    },
     subtitulo: {
         fontSize: 25,
         fontWeight: "semibold"
@@ -28,6 +23,24 @@ export const estilos = StyleSheet.create({
         borderWidth: 2,
         margin: 10
        },
+    titulo: {
+        padding: 15,
+        fontSize: 30,
+        fontWeight: "bold",
+        color:  "black",
+    },
+    textInput:{
+        padding:8,
+        backgroundColor: "white",
+        fontSize:18,
+        margin: "10%",
+        minWidth: "60%",
+        maxHeight: 60,
+        borderColor: "#0538cf",
+        borderRadius: 5,
+        borderWidth: 2,
+        flex: 1,
+    }
 });
 
 export const colores = StyleSheet.create({
