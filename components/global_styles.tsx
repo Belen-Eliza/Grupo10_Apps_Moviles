@@ -40,7 +40,11 @@ export const estilos = StyleSheet.create({
         borderRadius: 5,
         borderWidth: 2,
         flex: 1,
+    },
+    margen: {
+        margin: 30
     }
+
 });
 
 export const colores = StyleSheet.create({
