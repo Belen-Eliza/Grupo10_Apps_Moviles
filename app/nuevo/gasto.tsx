@@ -1,4 +1,4 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import {Modal, Pressable, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useState } from "react";
 import {Picker} from '@react-native-picker/picker';
@@ -9,11 +9,12 @@ type Categoria= {
 type Gasto ={
   monto: Number, descripcion: String, categoria_id: number, cant_cuotas: number
 }
-
+const todasCategorias: Categoria[] = [{cod: 1,descripcion:"Comida"},{cod: 2,descripcion:"Entretenimiento"}] /*Conectar despues con DB */
 export default function Gasto() {
   const inicial: Gasto = {monto: 0,descripcion:"",categoria_id:0,cant_cuotas:1};
   const [gasto,setGasto]=useState(inicial);
-  const todasCategorias: Categoria[] = [{cod: 1,descripcion:"Comida"},{cod: 2,descripcion:"Entretenimiento"}] /*Conectar despues con DB */
+  
+  const pickCat=false;
   const handler_Amount=(input:string)=>{
     let aux=Number(input);
     if( Number.isNaN(aux)){
@@ -42,6 +43,12 @@ export default function Gasto() {
       return pre
     })
   }
+  const confirmar= ()=>{} /*completar*/
+   
+function nombre_categoria() {
+  let categoria=todasCategorias.find((element) => element.cod == gasto.categoria_id) ;
+  return categoria == undefined ? "Otros" : categoria.descripcion
+}
     
   return (
     <View style={[{flex: 1},estilos.centrado]} >
@@ -50,15 +57,19 @@ export default function Gasto() {
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput style={estilos.textInput} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       <Text style={estilos.subtitulo}>Categoría</Text>
-      <Picker style={{ height: 100, width: 150 }} itemStyle={{color: "black"}}  onValueChange={handler_Categoria}> 
+      <View style={estilos.textInput}><Text>{nombre_categoria()}</Text></View>
+      <Modal animationType="slide" visible={pickCat}>
+        <Picker style={{ height: 100, width: 150 }} itemStyle={{color: "black"}}  onValueChange={handler_Categoria}> 
         {todasCategorias.map(cat =>{  /*corregir*/
           return (<Picker.Item label={cat.descripcion} value={cat.cod} />)
         })}
-      </Picker>
+      </Picker></Modal>
+      
       <Text style={estilos.subtitulo}>Aclaración/Comentario</Text>
       <TextInput style={estilos.textInput} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
-      <Pressable style={[estilos.tarjeta, estilos.centrado, estilos.margen,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
+      <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado, estilos.margen,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>
   );
+ 
 }
  
