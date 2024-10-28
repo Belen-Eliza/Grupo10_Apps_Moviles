@@ -6,26 +6,43 @@ import {Picker} from '@react-native-picker/picker';
 type Categoria= {
   cod: number, descripcion: string
 }
+type Gasto ={
+  monto: Number, descripcion: String, categoria_id: number, cant_cuotas: number
+}
 
 export default function Gasto() {
-  const [amount,changeAmount]=useState(0);
-  const [cuotas,cambiarCuotas]=useState(1);
-  const [categoria, setCategoria] = useState(0);
+  const inicial: Gasto = {monto: 0,descripcion:"",categoria_id:0,cant_cuotas:1};
+  const [gasto,setGasto]=useState(inicial);
   const todasCategorias: Categoria[] = [{cod: 1,descripcion:"Comida"},{cod: 2,descripcion:"Entretenimiento"}] /*Conectar despues con DB */
   const handler_Amount=(input:string)=>{
     let aux=Number(input);
-    if( aux=NaN){
+    if( Number.isNaN(aux)){
       alert("El valor ingresado debe ser un número");
-    } else {changeAmount(aux)}
+    } else {
+      setGasto(pre=>{
+        pre.monto=aux;
+        return pre
+      })
+    }
   }
   const handler_Cuotas=(input:string)=>{
     let aux=Number(input);
-    if( aux=NaN){
-      alert("El valor ingresado debe ser un número");
-    } else {cambiarCuotas(aux)}
+    if( !Number.isInteger(aux)){
+      alert("El valor ingresado debe ser un número entero");
+    } else {
+      setGasto(pre=>{
+        pre.cant_cuotas=aux;
+        return pre
+      })
+    }
   }
-  const handler_Categoria = (codigo:number) => setCategoria(codigo) ;
-  
+  const handler_Categoria = (codigo:number) =>{
+    setGasto(pre=>{
+      pre.categoria_id=codigo;
+      return pre
+    })
+  }
+    
   return (
     <View style={[{flex: 1},estilos.centrado]} >
       <Text style={estilos.titulo}>Agregar gasto</Text>
@@ -33,11 +50,13 @@ export default function Gasto() {
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput style={estilos.textInput} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       <Text style={estilos.subtitulo}>Categoría</Text>
-      <Picker style={{ height: 100, width: 150 }} itemStyle={{color: "black"}} selectedValue={categoria} onValueChange={handler_Categoria}> 
+      <Picker style={{ height: 100, width: 150 }} itemStyle={{color: "black"}}  onValueChange={handler_Categoria}> 
         {todasCategorias.map(cat =>{  /*corregir*/
           return (<Picker.Item label={cat.descripcion} value={cat.cod} />)
         })}
       </Picker>
+      <Text style={estilos.subtitulo}>Aclaración/Comentario</Text>
+      <TextInput style={estilos.textInput} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       <Pressable style={[estilos.tarjeta, estilos.centrado, estilos.margen,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>
   );
