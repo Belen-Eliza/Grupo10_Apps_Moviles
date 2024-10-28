@@ -19,9 +19,11 @@ export const estilos = StyleSheet.create({
         flex: 1,
         minWidth: "80%",
         maxHeight: 100,
+        minHeight: 60,
         borderRadius: 5,
         borderWidth: 2,
-        margin: 10
+        margin: 10,
+        
        },
     titulo: {
         padding: 15,
