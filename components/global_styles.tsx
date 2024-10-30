@@ -38,13 +38,14 @@ export const estilos = StyleSheet.create({
         margin: "10%",
         minWidth: "60%",
         maxHeight: 60,
+        minHeight: 40,
         borderColor: "#0538cf",
         borderRadius: 5,
         borderWidth: 2,
         flex: 1,
     },
     margen: {
-        margin: 30
+        margin: 40
     }
 
 });
