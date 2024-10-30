@@ -65,16 +65,18 @@ function nombre_categoria() {
   return (
     <View style={[{flex: 1},estilos.centrado]} >
       <Text style={estilos.titulo}>Agregar gasto</Text>
-      <TextInput style={estilos.textInput} onChangeText={handler_Amount}  placeholder='Ingresar valor'></TextInput>
+      <TextInput style={[estilos.textInput,estilos.margen]} onChangeText={handler_Amount}  placeholder='Ingresar valor'></TextInput>
       
       <Text style={estilos.subtitulo}>Cuotas</Text>
-      <TextInput style={estilos.textInput} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
+      <TextInput style={[estilos.textInput,estilos.margen]} onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
+
+      <Text style={estilos.subtitulo}>Aclaración/Comentario</Text>
+      <TextInput style={[estilos.textInput,estilos.margen]} onChangeText={handler_Comentario} ></TextInput>
       
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen]} open={openPicker} value={cat} items={todasCategorias} setOpen={setOpen} setValue={setCat}   />
 
-      <Text style={estilos.subtitulo}>Aclaración/Comentario</Text>
-      <TextInput style={estilos.textInput} onChangeText={handler_Comentario} ></TextInput>
+      
       
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>

@@ -45,7 +45,7 @@ export const estilos = StyleSheet.create({
         flex: 1,
     },
     margen: {
-        margin: 40
+        margin: 41
     }
 
 });
