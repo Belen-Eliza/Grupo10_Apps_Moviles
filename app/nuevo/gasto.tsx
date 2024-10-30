@@ -1,6 +1,6 @@
 import {Pressable, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
@@ -19,6 +19,9 @@ export default function Gasto() {
   const [openPicker,setOpen] = useState(false);
   const [cat,setCat] =useState(0);
   
+  useEffect(()=>{
+    fetch("")
+  })
   
   const handler_Amount=(input:string)=>{
     let aux=Number(input);
@@ -53,14 +56,8 @@ export default function Gasto() {
     gasto.categoria_id=cat;
     /*subir info a DB*/
     alert("Info: Monto="+gasto.monto+", cuotas="+gasto.cant_cuotas+", categoria="+gasto.categoria_id+", comentario="+gasto.descripcion); /*temporal: chequear que se cargó bien*/
-    router.navigate({pathname:"/nuevo",params:{}}) /*volver a inicio para que se actualice el saldo total*/
+    router.navigate({pathname:"/nuevo",params:{}}) /*volver a inicio para que se actualice el saldo total??*/
   } 
-   
-function nombre_categoria() {
-  let categoria=todasCategorias.find((element) => element.value == gasto.categoria_id) ;
-  return categoria == undefined ? "Otros" : categoria.label
-}
-
     
   return (
     <View style={[{flex: 1},estilos.centrado]} >
@@ -76,8 +73,6 @@ function nombre_categoria() {
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen]} open={openPicker} value={cat} items={todasCategorias} setOpen={setOpen} setValue={setCat}   />
 
-      
-      
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>
   );

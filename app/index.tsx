@@ -1,9 +1,19 @@
 import { Text, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
+import { useState, useEffect } from "react";
 
 export default function Index() {
+  const id_user= 1; /*completar con login y estados globales*/
+  const [data_user,setData] = useState(null);
   const nombre= "Placeholder ";
   const total = 1234;
+
+  useEffect(()=>{
+    fetch("") /*traer datos segun id*/ 
+    .then(response =>response.json())
+    .then(data_user=>setData(data_user))
+  },[id_user])
+  
   return (
     <View style={[{
       flex: 1,
