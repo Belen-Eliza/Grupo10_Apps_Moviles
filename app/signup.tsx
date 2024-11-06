@@ -12,16 +12,20 @@ export default function Signup(){
     const [password1,setPassword]= useState('')
     const [password2,setPassword2]= useState('')
 
-    const signup = async ()=>{
+    async function signup (){
         
         if (password1==password2){
             const user = {mail:mail,name:name,password:password1}
-            try {const response = await fetch("http://localhost:3000/users/signup",{method:'POST',body:JSON.stringify(user)});
-            if (!response.ok) {
-                throw new Error
-            } else {router.navigate('/home');}
+            try {
+                const response = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/signup`,{
+                    method:'POST',
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify(user)});
+                if (!response.ok) {
+                    throw new Error
+                } else {router.navigate('/home');}
             } catch (error) {
-                alert("Error")
+                alert("Error:"+error)
             }
                 
             
