@@ -1,0 +1,53 @@
+import {Pressable, Text, TextInput, View } from "react-native";
+import{estilos,colores} from "@/components/global_styles"
+import { useState, useEffect, useContext } from "react";
+import { Link } from "expo-router";
+import { router } from "expo-router";
+import { useEnv } from "@/hooks/useEnv";
+
+
+export default function Signup(){
+    const [mail,setMail] =useState('');
+    const [name,SetName]= useState('');
+    const [password1,setPassword]= useState('')
+    const [password2,setPassword2]= useState('')
+
+    const signup = async ()=>{
+        
+        if (password1==password2){
+            const user = {mail:mail,name:name,password:password1}
+            try {const response = await fetch("http://localhost:3000/users/signup",{method:'POST',body:JSON.stringify(user)});
+            if (!response.ok) {
+                throw new Error
+            } else {router.navigate('/home');}
+            } catch (error) {
+                alert("Error")
+            }
+                
+            
+        }
+        else {
+            alert("Las contraseñas deben ser iguales")
+        }
+    }
+    return(
+        <View style={[estilos.mainView,{alignItems:"center"}]}>
+        <Text style={[estilos.subtitulo,{marginTop:5}]}>Mail</Text>
+        <TextInput style={[estilos.textInput,{marginTop:5}]} textContentType="emailAddress" keyboardType="email-address" onChangeText={setMail} value={mail}  placeholder='mail@example.com'></TextInput>
+
+        <Text style={estilos.subtitulo}>Nombre de usuario</Text>
+        <TextInput style={[estilos.textInput,{marginTop:5}]}  onChangeText={SetName} value={name}  ></TextInput>
+
+        <Text style={estilos.subtitulo}>Contraseña</Text>
+        <TextInput style={[estilos.textInput,{marginTop:5}]} secureTextEntry={true}  textContentType="password" onChangeText={setPassword}  value={password1}></TextInput>
+
+        <Text style={estilos.subtitulo}>Confirmar contraseña</Text>
+        <TextInput style={[estilos.textInput,{marginTop:5}]} secureTextEntry={true}  textContentType="password" onChangeText={setPassword2}  value={password2}></TextInput>
+
+        <Pressable onPress={signup} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Ingresar</Text></Pressable>
+        
+        <Link href='/' style={estilos.margen}><Text>¿Ya tienes un usuario? Click aquí para ingresar</Text></Link>
+        
+    </View>
+    )
+}
