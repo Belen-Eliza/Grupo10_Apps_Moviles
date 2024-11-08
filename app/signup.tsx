@@ -1,12 +1,14 @@
 import {Pressable, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState, useEffect, useContext } from "react";
+import { useState } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
-import { useEnv } from "@/hooks/useEnv";
+import { useUserContext } from "@/context/UserContext";
 
+type User = {id: number,mail:string,name:string,password:string,saldo:number}
 
 export default function Signup(){
+    const context = useUserContext();
     const [mail,setMail] =useState('');
     const [name,SetName]= useState('');
     const [password1,setPassword]= useState('')
@@ -23,12 +25,14 @@ export default function Signup(){
                     body:JSON.stringify(user)});
                 if (!response.ok) {
                     throw new Error
-                } else {router.navigate('/home');}
+                } else {
+                    //pantalla de loading
+                    const datos_usuario: User = await response.json()
+                    context.login_app(datos_usuario)
+                    router.navigate('/home');}
             } catch (error) {
                 alert("Error:"+error)
             }
-                
-            
         }
         else {
             alert("Las contraseñas deben ser iguales")

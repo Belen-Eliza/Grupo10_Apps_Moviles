@@ -3,14 +3,16 @@ import{estilos,colores} from "@/components/global_styles"
 import { useState, useEffect, useContext } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
-//import { UserContext, useUserContext } from "@/context/UserContext";
+
+import { useUserContext, UserContext } from "@/context/UserContext";
+
+type User = {id: number,mail:string,name:string,password:string,saldo:number}
 
 
-type User = {id: number,mail:String,name:String,password:String,saldo:Number}
 export default function Login(){
     const [mail,setMail]=useState('');
     const [password,setPassword] = useState('')
-    //const {login_app} =useUserContext()
+    const {login_app} =useUserContext()
 
     async function login(){
         const user={email:mail,password_attempt:password}
@@ -22,11 +24,12 @@ export default function Login(){
             if (!rsp.ok){
                 throw new Error(rsp.statusText)
             } else {
-                const datos_usuario = await rsp.json()
-                console.log(datos_usuario);
-
-
-                router.navigate("/home")
+                const datos_usuario: User = await rsp.json()
+                
+                login_app(datos_usuario);
+                //pantalla de loading
+                router.navigate("/home");
+                
             }
         }
         catch(error){
