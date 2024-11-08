@@ -1,4 +1,4 @@
-import {Pressable, Text, TextInput, View } from "react-native";
+import {Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useState, useEffect, useContext } from "react";
 import { Link } from "expo-router";
@@ -16,6 +16,7 @@ export default function Login(){
 
     async function login(){
         const user={email:mail,password_attempt:password}
+        
         try {
             const rsp = await  fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`,{
                     method:"POST",
@@ -25,10 +26,10 @@ export default function Login(){
                 throw new Error(rsp.statusText)
             } else {
                 const datos_usuario: User = await rsp.json()
-                
+                console.log(datos_usuario)
                 login_app(datos_usuario);
                 //pantalla de loading
-                router.navigate("/home");
+                router.navigate("/tabs/");
                 
             }
         }
@@ -40,16 +41,17 @@ export default function Login(){
 
     return(
         <View style={[estilos.mainView,estilos.centrado]}>
-            <Text style={estilos.titulo}>Mail</Text>
-            <TextInput style={[estilos.textInput]} textContentType="emailAddress" keyboardType="email-address" onChangeText={setMail} value={mail}  placeholder='mail@example.com'></TextInput>
+            <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true}>
+                <Text style={estilos.titulo}>Mail</Text>
+                <TextInput style={[estilos.textInput]} textContentType="emailAddress" keyboardType="email-address" onChangeText={setMail} value={mail}  placeholder='mail@example.com'></TextInput>
 
-            <Text style={estilos.titulo}>Contraseña</Text>
-            <TextInput style={[estilos.textInput]} secureTextEntry={true}  textContentType="password" onChangeText={setPassword}  value={password}></TextInput>
+                <Text style={estilos.titulo}>Contraseña</Text>
+                <TextInput style={[estilos.textInput]} secureTextEntry={true}  textContentType="password" onChangeText={setPassword}  value={password}></TextInput>
 
-            <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Ingresar</Text></Pressable>
-            
-            <Link href='/signup' style={estilos.margen}><Text>¿No tienes un usuario? Click aquí para registrarte</Text></Link>
-            
+                <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Ingresar</Text></Pressable>
+                
+                <Link href='/signup' style={estilos.margen}><Text>¿No tienes un usuario? Click aquí para registrarte</Text></Link>
+            </ScrollView>
         </View>
     )
 }
