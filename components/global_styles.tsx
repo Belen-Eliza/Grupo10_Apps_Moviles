@@ -2,6 +2,10 @@ import { StyleSheet } from "react-native";
 
 
 export const estilos = StyleSheet.create({
+    mainView: {
+        flex: 1,
+        width: "100%",
+    },
     estilo1: {
         flex: 1
     },

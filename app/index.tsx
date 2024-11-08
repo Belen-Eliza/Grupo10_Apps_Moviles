@@ -1,33 +1,55 @@
-import { Text, View } from "react-native";
+import {Pressable, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
+import { Link } from "expo-router";
+import { router } from "expo-router";
 
-export default function Index() {
-  const id_user= 1; /*completar con login y estados globales*/
-  const [data_user,setData] = useState(null);
-  const nombre= "Placeholder ";
-  const total = 1234;
+import { useUserContext, UserContext } from "@/context/UserContext";
 
-  useEffect(()=>{
-    fetch("") /*traer datos segun id*/ 
-    .then(response =>response.json())
-    .then(data_user=>setData(data_user))
-  },[id_user])
-  
-  return (
-    <View style={[{
-      flex: 1,
-      flexWrap: "wrap",
-      width: "100%"
-    },estilos.centrado,colores.fondo]}>
-      <View style={[{flex:1, borderBottomWidth: 3,borderBottomColor:"black"},estilos.centrado]} >
-        <Text style={estilos.titulo}>Bienvenido, {nombre}</Text>
-      </View>
+type User = {id: number,mail:string,name:string,password:string,saldo:number}
+
+
+export default function Login(){
+    const [mail,setMail]=useState('');
+    const [password,setPassword] = useState('')
+    const {login_app} =useUserContext()
+
+    async function login(){
+        const user={email:mail,password_attempt:password}
+        try {
+            const rsp = await  fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`,{
+                    method:"POST",
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify(user)})
+            if (!rsp.ok){
+                throw new Error(rsp.statusText)
+            } else {
+                const datos_usuario: User = await rsp.json()
+                
+                login_app(datos_usuario);
+                //pantalla de loading
+                router.navigate("/home");
+                
+            }
+        }
+        catch(error){
+            alert(error)
+        }
         
-      <View style={{flex: 3, alignItems:"center",justifyContent:"space-evenly"}}>
-        <Text style={estilos.subtitulo} >Su balance actual es: </Text>
-        <Text style={estilos.titulo}>${total}</Text>
-      </View>
-    </View>
-  );
+    }
+
+    return(
+        <View style={[estilos.mainView,estilos.centrado]}>
+            <Text style={estilos.titulo}>Mail</Text>
+            <TextInput style={[estilos.textInput]} textContentType="emailAddress" keyboardType="email-address" onChangeText={setMail} value={mail}  placeholder='mail@example.com'></TextInput>
+
+            <Text style={estilos.titulo}>Contraseña</Text>
+            <TextInput style={[estilos.textInput]} secureTextEntry={true}  textContentType="password" onChangeText={setPassword}  value={password}></TextInput>
+
+            <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Ingresar</Text></Pressable>
+            
+            <Link href='/signup' style={estilos.margen}><Text>¿No tienes un usuario? Click aquí para registrarte</Text></Link>
+            
+        </View>
+    )
 }
