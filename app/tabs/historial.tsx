@@ -11,7 +11,7 @@ type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, catego
 type Ingreso = {id:number,monto: number,description: string,category: Category}
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date}
 
-export default function Index() {
+export default function Historial() {
   const context = useUserContext();
   const [gastos,setGastos]= useState<Gasto[]>();
   const [ingresos,setIngresos]= useState<Ingreso[]>();

@@ -23,7 +23,10 @@ export default function Login(){
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(user)})
             if (!rsp.ok){
-                throw new Error(rsp.statusText)
+                
+                if (rsp.status==400) throw new Error("Usuario o contraseña incorrectos")
+                
+                throw new Error()
             } else {
                 const datos_usuario: User = await rsp.json()
                 login_app(datos_usuario);
