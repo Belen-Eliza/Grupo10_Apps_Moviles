@@ -6,7 +6,7 @@ type User = {id: number,mail:string,name:string,password:string,saldo:number}
 
 export const UserContext = createContext({
   nombre: "Ej",
-  id: 0,
+  id: 1,
   mail: "mail",
   isLoggedIn: false,
   saldo: 1,
@@ -77,14 +77,11 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
   }
 
   const login_app = (user:User) => {
-    console.log("hi, "+user);
     setId(user.id);
     setMail(user.mail);
     setNombre(user.name);
     setSaldo(user.saldo);
     setIsLoggedIn(true);
-    console.log(saldo);
-    router.navigate("/home")
   }
 
   const logout = () => {

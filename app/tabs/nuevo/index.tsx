@@ -7,10 +7,10 @@ export default function Index() {
 
   return (
     <View style={[{flex: 1},estilos.centrado]} >
-      <Link href="/nuevo/gasto" asChild>
+      <Link href="/tabs/nuevo/gasto" asChild>
         <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Gasto</Text></Pressable>
       </Link>
-      <Link href="/nuevo/ahorro" asChild>
+      <Link href="/tabs/nuevo/ahorro" asChild>
         <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Ahorro</Text></Pressable>
       </Link>
       
