@@ -11,7 +11,7 @@ type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, catego
 
 export default function Estadisticas (){
     const context = useUserContext();
-    const [gastos,setData] =useState<Gasto[]>([]);
+    const [datos,setData] =useState<Gasto[]>([{id:0,monto:0,cant_cuotas:0,fecha: new Date(),category:{id:0,name:"",description:""}}]);
 
     useEffect(()=>{
         (async ()=>{
@@ -20,20 +20,22 @@ export default function Estadisticas (){
               headers:{"Content-Type":"application/json"}})
             .then(rsp =>rsp.json())
             .then(info =>setData(info))
-        })
+            console.log(datos)
+        })();
     },[context.id])
 
     const data = {
-        labels: ["January", "February", "March", "April", "May", "June"],
+        labels: datos.map(g=>new Date(g.fecha).toDateString()),
         datasets: [
           {
-            data: gastos?.map(g=>g.monto),
+            data: datos.map(g=>g.monto),
             color: (opacity = 1) => `rgba(163, 230, 219, ${opacity})`, // optional
             strokeWidth: 6 // optional
           }
         ],
         legend: ["Gastos"] 
       };
+      
     return (
         <View style={estilos.mainView}>
 
