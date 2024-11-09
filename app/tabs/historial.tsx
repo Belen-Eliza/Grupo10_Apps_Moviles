@@ -67,17 +67,17 @@ export default function Index() {
   const renderIngreso= ({ item }: ListRenderItemInfo<Ingreso>) => {
     return (
       <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
-        <Text style={estilos.subtitulo}>{item.category.name}</Text>
-        <Text>{item.description}</Text>
-        <Text>{item.monto}</Text>
+        <Text style={[estilos.subtitulo,{alignSelf:"flex-start"}]}>{item.category.name}</Text>
+        <Text style={{fontSize:20,color:"#909090"}}>{item.description}</Text>
+        <Text >Monto: ${item.monto}</Text>
       </View>)
   }; 
   const renderPresupuesto= ({ item }: ListRenderItemInfo<Presupuesto>) => {
     return (
       <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={estilos.subtitulo}>{item.descripcion}</Text>
-        <Text>{item.fecha_objetivo.toString()}</Text>
-        <Text>{item.montoTotal}</Text>
+        <Text> Para: {item.fecha_objetivo.toString()}</Text>
+        <Text>Total: ${item.montoTotal}</Text>
       </View>)};
   
   return (<>
