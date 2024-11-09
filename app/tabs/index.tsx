@@ -14,7 +14,6 @@ export default function Index() {
     },estilos.centrado,colores.fondo]}>
       <View style={[{flex:1, borderBottomWidth: 3,borderBottomColor:"black"},estilos.centrado]} >
         <Text style={estilos.titulo}>Bienvenido, {user.nombre}</Text>
-        <Text style={estilos.titulo}>Logged? {user.isLoggedIn.toString()}</Text>
       </View>
         
       <View style={{flex: 3, alignItems:"center",justifyContent:"space-evenly"}}>

@@ -1,8 +1,9 @@
-import { TabBarIcon } from "@/components/navigation/TabBarIcon";
 import { Stack, Tabs } from "expo-router";
+import { UserContextProvider } from "@/context/UserContext";
 
 export default function RootLayout() {
   return (
+    <UserContextProvider>
     <Stack screenOptions={{
       headerStyle: {
         backgroundColor: '#83cefc',
@@ -12,8 +13,10 @@ export default function RootLayout() {
         fontWeight: 'bold',
       },
     }}>
-      <Stack.Screen name='index' options={{title:"Login"/*href:null*/}}/>
-      <Stack.Screen name='signup' options={{title:"Crear cuenta",/*href:null*/}}/>
+      <Stack.Screen name='index' options={{title:"Login"}}/>
+      <Stack.Screen name='signup' options={{title:"Crear cuenta"}}/>
+      <Stack.Screen name='tabs' options={{headerShown: false}}/>
     </Stack>
+    </UserContextProvider>
   );
 }

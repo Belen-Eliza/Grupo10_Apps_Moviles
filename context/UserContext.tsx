@@ -77,7 +77,6 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
   }
 
   const login_app = (user:User) => {
-    console.log("hi, "+user);
     setId(user.id);
     setMail(user.mail);
     setNombre(user.name);
