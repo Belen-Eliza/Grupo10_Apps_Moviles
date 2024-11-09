@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
-import { Text, View, StatusBar } from "react-native";
+import { Text, View, StatusBar, Dimensions, Pressable } from "react-native";
 import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
@@ -12,6 +12,7 @@ type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, catego
 export default function Index() {
   const context = useUserContext();
   const [gastos,setGastos]= useState<Gasto[]>();
+  const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos
   
   useEffect( ()=> {
     (async ()=>{
@@ -20,52 +21,41 @@ export default function Index() {
           headers:{"Content-Type":"application/json"}})
       .then(rsp =>rsp.json())
       .then(info =>setGastos(info))
-      /* try {
-        const rsp =await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/${context.id}`,{
-          method:'GET',
-          headers:{"Content-Type":"application/json"}});
-        if (!rsp.ok) {
-          if (rsp.status==400){ //si no hay gastos aun
-            console.log(rsp.statusText)
-            return rsp.statusText
-          }
-          throw new Error
-        } else {
-          let aux:Gasto[]= await rsp.json();
-          setGastos(aux)
-        }
-      } catch (e){
-        console.log(e);
-        router.navigate("/");
-      } */
     }) ();
   }, [context]  )
   
   
-  const renderItem= ({ item }: ListRenderItemInfo<Gasto>) => {
+    const renderItem= ({ item }: ListRenderItemInfo<Gasto>) => {
     return (
       <View style={[estilos.tarjeta,estilos.margen]}>
         <Text style={estilos.subtitulo}>{item.category.name}</Text>
         <Text>{item.fecha.toString()}</Text>
         <Text>{item.monto}</Text>
+        <Text>Algo </Text>
       </View>)
-  };
-  console.log(gastos);
-  return (
+  }; 
+  
+  return (<>
+    <View style={{flexDirection:"row", alignContent:"center"}}>
+      <Pressable onPress={()=>setSeleccion(1)} style={[estilos.boton1,estilos.centrado]}><Text>Gastos</Text></Pressable>
+      <Pressable onPress={()=>setSeleccion(2)} style={[estilos.boton1,estilos.centrado]}><Text>Ingresos</Text></Pressable>
+      <Pressable onPress={()=>setSeleccion(3)} style={[estilos.boton1,estilos.centrado]}><Text>Presupuestos</Text></Pressable>
+    </View>
     <View
       style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
+        flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"100%"
       }}
     >
-      {gastos?
         <FlashList 
           data={gastos} 
           renderItem={renderItem}
-          estimatedItemSize={200} //reparar
-        ></FlashList> : <Text>Cargando</Text>}
+          estimatedItemSize={400} //reparar (39.0,400.0) 312.0*100.0
+          
+          ListEmptyComponent={<Text>Cargando</Text>}
+          
+        /> 
     </View>
+    </>
   );
 }
 

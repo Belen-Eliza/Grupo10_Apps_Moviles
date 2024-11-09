@@ -50,6 +50,14 @@ export const estilos = StyleSheet.create({
     },
     margen: {
         margin: 41
+    },
+    boton1: {
+        flex:1,
+        padding: 10,
+        borderWidth: 2,
+        borderColor:"black",
+        marginVertical: 10,
+        backgroundColor: "#00c8c8"
     }
 
 });

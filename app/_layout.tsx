@@ -12,7 +12,7 @@ export default function RootLayout() {
         fontWeight: 'bold',
       },
     }}>
-      <Stack.Screen name='index' options={{title:"Login",/*href:null*/}}/>
+      <Stack.Screen name='index' options={{title:"Login"/*href:null*/}}/>
       <Stack.Screen name='signup' options={{title:"Crear cuenta",/*href:null*/}}/>
     </Stack>
   );
