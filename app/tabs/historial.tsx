@@ -56,9 +56,10 @@ export default function Historial() {
   
   
   const renderGasto= ({ item }: ListRenderItemInfo<Gasto>) => {
+    console.log( item.fecha)
     return (
       <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
-        <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {item.fecha.toString()}</Text>
+        <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
         <Text style={estilos.subtitulo}> {item.category.name}</Text>
         <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
         <Text>Monto: ${item.monto}</Text>

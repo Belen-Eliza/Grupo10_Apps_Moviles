@@ -18,14 +18,26 @@ export default function Estadisticas (){
 
     useEffect(()=>{
         (async ()=>{
-            const fechas = {fecha_desde:fecha_desde,fecha_hasta:fecha_hasta}
-            fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}`,{
-              method:'GET',
-              headers:{"Content-Type":"application/json"},
-              body:JSON.stringify(fechas)})
-            .then(rsp =>rsp.json())
-            .then(info =>setData(info))
-            console.log(datos)
+          const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
+          //1972-02-01T00:00.0000Z
+          console.log(fechas)
+            try{
+              const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,{
+                method:'GET',
+                headers:{"Content-Type":"application/json"}})
+              if (!rsp.ok){
+                throw new Error()
+              }else {
+                const info = await rsp.json();
+                console.log(info);
+                setData(info)
+              }
+
+            }
+            catch(e){
+              console.log(e)
+            }
+            
         })();
     },[context.id,fecha_desde,fecha_hasta])
 
