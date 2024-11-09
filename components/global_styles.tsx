@@ -57,9 +57,15 @@ export const estilos = StyleSheet.create({
         borderWidth: 2,
         borderColor:"black",
         marginVertical: 10,
-        backgroundColor: "#00c8c8"
+        backgroundColor: "#00c8c8",
+    },
+    list_element:{
+        borderBottomColor: "black",
+        borderBottomWidth: 2,
+        padding: 5,
+        minWidth: "100%",
+        maxHeight:400
     }
-
 });
 
 export const colores = StyleSheet.create({

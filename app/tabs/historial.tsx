@@ -28,7 +28,7 @@ export default function Index() {
           .then(rsp =>rsp.json())
           .then(info =>setGastos(info))
         }) ();
-        console.log(gastos);
+        
         break;
       case 2:
         (async ()=>{
@@ -38,7 +38,7 @@ export default function Index() {
           .then(rsp =>rsp.json())
           .then(info =>setIngresos(info))
         }) ();
-        console.log(ingresos);
+        
         break;
       case 3:
         (async ()=>{
@@ -47,8 +47,7 @@ export default function Index() {
               headers:{"Content-Type":"application/json"}})
           .then(rsp =>rsp.json())
           .then(info =>setPresupuestos(info))
-        }) ();
-        console.log(presupuestos);
+        }) ();        
         break;
       default:
         break;
@@ -56,29 +55,66 @@ export default function Index() {
   }, [context.id,seleccion]  )
   
   
-    const renderItem= ({ item }: ListRenderItemInfo<Gasto>) => {
+  const renderGasto= ({ item }: ListRenderItemInfo<Gasto>) => {
     return (
-      <View style={[estilos.tarjeta,estilos.margen]}>
-        <Text style={estilos.subtitulo}>{item.category.name}</Text>
-        <Text>{item.fecha.toString()}</Text>
-        <Text>{item.monto}</Text>
-        <Text>Algo </Text>
+      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+        <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {item.fecha.toString()}</Text>
+        <Text style={estilos.subtitulo}> {item.category.name}</Text>
+        <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
+        <Text>Monto: ${item.monto}</Text>
       </View>)
   }; 
+  const renderIngreso= ({ item }: ListRenderItemInfo<Ingreso>) => {
+    return (
+      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+        <Text style={estilos.subtitulo}>{item.category.name}</Text>
+        <Text>{item.description}</Text>
+        <Text>{item.monto}</Text>
+      </View>)
+  }; 
+  const renderPresupuesto= ({ item }: ListRenderItemInfo<Presupuesto>) => {
+    return (
+      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+        <Text style={estilos.subtitulo}>{item.descripcion}</Text>
+        <Text>{item.fecha_objetivo.toString()}</Text>
+        <Text>{item.montoTotal}</Text>
+      </View>)};
   
   return (<>
-    <View style={{flexDirection:"row", alignContent:"center"}}>
+    <View style={{flexDirection:"row", alignContent:"center",flex: 2}}>
       <Pressable onPress={()=>setSeleccion(1)} style={[estilos.boton1,estilos.centrado]}><Text>Gastos</Text></Pressable>
       <Pressable onPress={()=>setSeleccion(2)} style={[estilos.boton1,estilos.centrado]}><Text>Ingresos</Text></Pressable>
       <Pressable onPress={()=>setSeleccion(3)} style={[estilos.boton1,estilos.centrado]}><Text>Presupuestos</Text></Pressable>
     </View>
     
-    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"100%" }}>
+    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:8, 
+      display: seleccion==1? "flex":"none"
+     }}>
         <FlashList 
           data={gastos} 
-          renderItem={renderItem}
-          estimatedItemSize={400} //reparar (39.0,400.0) 312.0*100.0
-          ListEmptyComponent={<Text>Cargando</Text>}
+          renderItem={renderGasto}
+          estimatedItemSize={200} 
+          ListEmptyComponent={<Text>Todavía no has cargado ningún gasto</Text>}
+        /> 
+    </View>
+    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:9, 
+      display: seleccion==2? "flex":"none"
+     }}>
+        <FlashList 
+          data={ingresos} 
+          renderItem={renderIngreso}
+          estimatedItemSize={400} 
+          ListEmptyComponent={<Text>Todavía no has cargado ningún ingreso</Text>}
+        /> 
+    </View>
+    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:9, 
+      display: seleccion==3? "flex":"none"
+     }}>
+        <FlashList 
+          data={presupuestos} 
+          renderItem={renderPresupuesto}
+          estimatedItemSize={400} 
+          ListEmptyComponent={<Text>Todavía no has cargado ningún presupuesto</Text>}
         /> 
     </View>
     </>

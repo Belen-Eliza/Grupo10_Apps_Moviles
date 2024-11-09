@@ -26,7 +26,6 @@ export default function Login(){
                 throw new Error(rsp.statusText)
             } else {
                 const datos_usuario: User = await rsp.json()
-                console.log(datos_usuario)
                 login_app(datos_usuario);
                 //pantalla de loading
                 router.navigate("/tabs/");
