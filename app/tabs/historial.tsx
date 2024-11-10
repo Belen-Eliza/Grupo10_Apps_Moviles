@@ -13,43 +13,45 @@ type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_obj
 
 export default function Historial() {
   const context = useUserContext();
-  const [gastos,setGastos]= useState<Gasto[]>();
-  const [ingresos,setIngresos]= useState<Ingreso[]>();
-  const [presupuestos,setPresupuestos]= useState<Presupuesto[]>();
+  const [gastos,setGastos]= useState<Gasto[]>([]);
+  const [ingresos,setIngresos]= useState<Ingreso[]>([]);
+  const [presupuestos,setPresupuestos]= useState<Presupuesto[]>([]);
   const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos
   
   useEffect( ()=> {
+    const  query= async (url:string,callback:Function) => {
+      try {
+        const rsp = await fetch(url,{
+          method:'GET',
+          headers:{"Content-Type":"application/json"}})
+        if (!rsp.ok) {
+          throw new Error()
+        } else{
+          const info = await rsp.json();
+          callback(info);
+        }
+      
+    } catch (error) {
+      console.log(error)
+    }
+    }
     switch (seleccion) {
       case 1:
         (async ()=>{
-          fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/${context.id}`,{
-              method:'GET',
-              headers:{"Content-Type":"application/json"}})
-          .then(rsp =>rsp.json())
-          .then(info =>setGastos(info))
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/${context.id}`,setGastos)
         }) ();
-        
         break;
+
       case 2:
         (async ()=>{
-          fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,{
-              method:'GET',
-              headers:{"Content-Type":"application/json"}})
-          .then(rsp =>rsp.json())
-          .then(info =>setIngresos(info))
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
         }) ();
-        
         break;
+        
       case 3:
         (async ()=>{
-          fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,{
-              method:'GET',
-              headers:{"Content-Type":"application/json"}})
-          .then(rsp =>rsp.json())
-          .then(info =>setPresupuestos(info))
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
         }) ();        
-        break;
-      default:
         break;
     }    
   }, [context.id,seleccion]  )

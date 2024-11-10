@@ -36,6 +36,7 @@ export default function Estadisticas (){
             }
             catch(e){
               console.log(e)
+              alert("No hay gastos en ese rango")
             }
             
         })();
