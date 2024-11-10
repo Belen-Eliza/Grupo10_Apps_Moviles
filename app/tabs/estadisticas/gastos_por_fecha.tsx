@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Text, View, Pressable, Dimensions,Modal } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
-import { LineChart, PieChart } from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 
 type Category ={id :number, name: string,description: string}
@@ -18,8 +18,8 @@ export default function Gastos_por_Fecha (){
 
     useEffect(()=>{
         (async ()=>{
-          const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
-          //1972-02-01T00:00.0000Z
+          const fechas = {fecha_desde:fecha_desde,fecha_hasta:fecha_hasta}
+          //1972-02-01T00:00.0000Z -> formato ISO
           console.log(fechas)
             try{
               const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,{
