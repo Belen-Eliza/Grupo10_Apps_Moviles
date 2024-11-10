@@ -5,6 +5,7 @@ import { useUserContext } from "@/context/UserContext";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
 
+
 type Categoria= {
   id: number, descripcion: string,name:string
 }
@@ -19,16 +20,16 @@ export default function Gasto() {
   const [openPicker,setOpen] = useState(false);
   const [cat,setCat] =useState(0);
   const context = useUserContext();
-  
   const [categorias,setCategorias]=useState<Categoria[]>([{id: 1,name:"Comida",descripcion:""}])
+
   useEffect(()=>{
-    async ()=>{
+    (async ()=>{
       fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
         method:'GET',
         headers:{"Content-Type":"application/json"}})
-      .then(rsp =>rsp.json())
+      .then(rsp => rsp.json())
       .then(info =>setCategorias(info))
-    }
+    })();
 
   },[context])
   
@@ -56,6 +57,7 @@ export default function Gasto() {
   const confirmar= async ()=>{
     gasto.category_id=cat;
     gasto.user_id= context.id;
+    
     /*subir info a DB*/
     try {
     const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`,{
@@ -66,7 +68,9 @@ export default function Gasto() {
     if (!rsp.ok){
       throw new Error
     }
-    router.navigate({pathname:"/tabs",params:{}})}
+    context.actualizar_info(context.id)
+    alert("Operación exitosa");
+    router.navigate("/tabs");}
     catch (e){
       alert(e)
     }
@@ -75,14 +79,14 @@ export default function Gasto() {
   return (
     <View style={[{flex: 1},estilos.centrado]} >
       <Text style={estilos.titulo}>Agregar gasto</Text>
-      <TextInput style={[estilos.textInput,estilos.margen]} keyboardType="numbers-and-punctuation" onChangeText={handler_Amount}  placeholder='Ingresar valor'></TextInput>
+      <TextInput style={[estilos.textInput,estilos.margen]} keyboardType="decimal-pad" onChangeText={handler_Amount}  placeholder='Ingresar valor'></TextInput>
         
       
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput style={[estilos.textInput,estilos.margen]}  keyboardType="numbers-and-punctuation" onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       
       <Text style={estilos.subtitulo}>Categoría</Text> 
-      <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen]} open={openPicker} value={cat} items={categorias.map(e=>{return {cod:e.id,label:e.name}})} setOpen={setOpen} setValue={setCat} />
+      <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={openPicker} value={cat} items={categorias.map(e=>{return {value:e.id,label:e.name}})} setItems={setCategorias} itemKey="value" setOpen={setOpen} setValue={setCat} />
 
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>

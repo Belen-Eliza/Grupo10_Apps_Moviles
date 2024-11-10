@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
 
-import { useUserContext, UserContext } from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 
 type User = {id: number,mail:string,name:string,password:string,saldo:number}
 

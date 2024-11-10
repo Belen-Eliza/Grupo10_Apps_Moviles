@@ -78,7 +78,7 @@ export default function Historial() {
     return (
       <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={estilos.subtitulo}>{item.descripcion}</Text>
-        <Text> Para: {item.fecha_objetivo.toString()}</Text>
+        <Text> Para: {new Date(item.fecha_objetivo).toDateString()}</Text>
         <Text>Total: ${item.montoTotal}</Text>
       </View>)};
   
