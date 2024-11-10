@@ -47,7 +47,7 @@ export default function Historial() {
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
         }) ();
         break;
-        
+
       case 3:
         (async ()=>{
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
@@ -58,7 +58,6 @@ export default function Historial() {
   
   
   const renderGasto= ({ item }: ListRenderItemInfo<Gasto>) => {
-    console.log( item.fecha)
     return (
       <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
