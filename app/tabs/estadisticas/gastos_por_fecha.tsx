@@ -76,6 +76,7 @@ export default function Gastos_por_Fecha (){
             width={Dimensions.get("window").width}
             height={Dimensions.get("window").height*0.7}
             chartConfig={chartConfig}
+            bezier={true}
           />
         </View>
         <Modal animationType="slide" transparent={false} visible={modalVisible}>
