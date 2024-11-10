@@ -17,42 +17,41 @@ export default function Gastos_por_Fecha (){
     const [modalVisible,setModalVisible] = useState(false);
 
     useEffect(()=>{
-        (async ()=>{
-          const fechas = {fecha_desde:fecha_desde,fecha_hasta:fecha_hasta}
-          //1972-02-01T00:00.0000Z -> formato ISO
-          console.log(fechas)
-            try{
-              const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,{
-                method:'GET',
-                headers:{"Content-Type":"application/json"}})
-              if (!rsp.ok){
-                throw new Error()
-              }else {
-                const info = await rsp.json();
-                console.log(info);
-                setData(info)
-              }
+      (async ()=>{
+        const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
+        //1972-02-01T00:00.0000Z -> formato ISO
+        console.log(fechas)
+          try{
+            const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,{
+              method:'GET',
+              headers:{"Content-Type":"application/json"}})
+            if (!rsp.ok){
+              throw new Error()
+            }else {
+              const info = await rsp.json();
+              setData(info)
+            }
 
-            }
-            catch(e){
-              console.log(e)
-              alert("No hay gastos en ese rango")
-            }
-            
-        })();
+          }
+          catch(e){
+            console.log(e)
+            alert("No hay gastos en ese rango")
+          }
+          
+      })();
     },[context.id,fecha_desde,fecha_hasta])
 
     const data = {
-        labels: datos.map(g=>new Date(g.fecha).toDateString()),
-        datasets: [
-          {
-            data: datos.map(g=>g.monto),
-            color: (opacity = 1) => `rgba(163, 230, 219, ${opacity})`, // optional
-            strokeWidth: 6 // optional
-          }
-        ],
-        legend: ["Gastos"] 
-      };
+      labels: datos.map(g=>new Date(g.fecha).toDateString()),
+      datasets: [
+        {
+          data: datos.map(g=>g.monto),
+          color: (opacity = 1) => `rgba(163, 230, 219, ${opacity})`, // optional
+          strokeWidth: 6 // optional
+        }
+      ],
+      legend: ["Gastos"] 
+    };
     const openDatePicker = ()=>{
       setModalVisible(true);
     }
