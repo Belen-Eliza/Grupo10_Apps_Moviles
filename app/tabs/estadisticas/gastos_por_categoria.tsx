@@ -1,68 +1,64 @@
 import { Pressable, Text, View, StyleSheet, Dimensions } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { Link } from "expo-router";
 import { PieChart } from "react-native-chart-kit";
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 
+type Categoria= {
+  id: number, descripcion: string,name:string
+}
+type Suma= {_sum:{monto:number},category_id:number}
+type Datos = {cant: number,name: string,color:string,legendFontColor: string,legendFontSize:number}
+
 export default function Gastos_por_Categoria() {
     const context = useUserContext();
-    const data = [
-      {
-        name: "Seoul",
-        population: 21500000,
-        color: "rgba(131, 167, 234, 1)",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-      },
-      {
-        name: "Toronto",
-        population: 2800000,
-        color: "#F00",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-      },
-      {
-        name: "Beijing",
-        population: 527612,
-        color: "red",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-      },
-      {
-        name: "New York",
-        population: 8538000,
-        color: "#ffffff",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-      },
-      {
-        name: "Moscow",
-        population: 11920000,
-        color: "rgb(0, 0, 255)",
-        legendFontColor: "#7F7F7F",
-        legendFontSize: 15
-      }
-    ];
+    const [datos,setDatos] = useState<Datos[]>([]);
+    const colors = ["rgba(131, 167, 234, 1)","#ff0080","red","#c722fd","#00d2d2","#159572"]
+    
     useEffect(()=>{
         (async ()=>{
+          try{
+            const cat =await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
+              method:'GET',
+              headers:{"Content-Type":"application/json"}})
 
+            const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}`,{
+              method:'GET',
+              headers:{"Content-Type":"application/json"}})
+            if (!rsp.ok || !cat.ok){
+              throw new Error()
+            }else {
+              const info = await rsp.json();
+              const info_categorias= await cat.json();
+              const lista:Datos[] = info.map((each:Suma,index:number)=>{
+                const nombre_cat=info_categorias.find((cat:Categoria) => cat.id==each.category_id)?.name;
+                return {cant:each._sum.monto,name:nombre_cat,color:colors[index],legendFontColor:"#7F7F7F", legendFontSize: 15}
+              })
+              setDatos(lista);
+            }
+ 
+          }
+          catch(e){
+            console.log(e)
+            alert("No has cargado ningún gasto")
+          }
         })();
-    })
+
+    },[context.id])
 
   return (
     <View style={[{flex: 1},estilos.centrado]} >
-      
+      {datos==undefined ? <Text>No hay gastos</Text>:
       <PieChart
-        data={data}
+        data={datos}
         width={Dimensions.get("window").width}
-        height={200}
+        height={230}
         chartConfig={chartConfig}
-        accessor={"population"}
+        accessor={"cant"}
         backgroundColor={"transparent"}
         paddingLeft={"15"}
         center={[6, 20]}
-      />
+      />}
       
     </View>
   );
@@ -70,12 +66,11 @@ export default function Gastos_por_Categoria() {
 
 
 const chartConfig = {
-  /* backgroundGradientFrom: "#004040",
-  backgroundGradientFromOpacity: 4,
-  backgroundGradientTo: "#005b5b",
-  backgroundGradientToOpacity: 5, */
-  color: (opacity = 1) => `rgba(26, 255, 120, ${opacity})`,
-  strokeWidth: 6, // optional, default 3
-  barPercentage: 0.8,
-  useShadowColorFromDataset: false // optional
+  backgroundGradientFrom: '#1E2923',
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: '#08130D',
+  backgroundGradientToOpacity: 0.5,
+  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  strokeWidth: 2,
+  useShadowColorFromDataset: false,
 };
