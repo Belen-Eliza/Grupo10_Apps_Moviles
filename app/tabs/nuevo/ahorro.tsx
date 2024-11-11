@@ -58,6 +58,7 @@ export default function Ahorro() {
       }
       context.actualizar_info(context.id)
       alert("Operación exitosa");
+      router.dismiss();
       router.replace("/tabs");}
       catch (e){
         alert(e)
@@ -77,7 +78,7 @@ export default function Ahorro() {
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={openPicker} 
           value={cat} items={todas_categorias.map(e=>{return {value:e.id,label:e.name+" - "+e.description}})} setItems={setCategorias} 
-          itemKey="value" setOpen={setOpen} setValue={setCat} />
+          itemKey="value" setOpen={setOpen} setValue={setCat}  />
 
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>

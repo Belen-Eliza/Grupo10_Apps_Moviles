@@ -6,6 +6,7 @@ export default function Layout(){
             <Stack.Screen name='index' options={{title: "Add", headerShown: false}}/>
             <Stack.Screen name='ahorro' options={{presentation:"card", headerShown: false}}/>
             <Stack.Screen name='gasto' options={{presentation:"card", headerShown: false}}/>
+            <Stack.Screen name='presupuesto' options={{presentation:"card", headerShown: false}}/>
         </Stack>
     )
 } 

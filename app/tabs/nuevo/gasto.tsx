@@ -70,6 +70,7 @@ export default function Gasto() {
     }
     context.actualizar_info(context.id)
     alert("Operación exitosa");
+    router.dismiss();
     router.replace("/tabs");}
     catch (e){
       alert(e)

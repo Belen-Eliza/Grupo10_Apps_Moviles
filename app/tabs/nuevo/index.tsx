@@ -15,7 +15,7 @@ export default function Index() {
         <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Ahorro</Text></Pressable>
       </Link>
 
-      <Link href="/tabs/nuevo/ahorro" asChild>
+      <Link href="/tabs/nuevo/presupuesto" asChild>
         <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Presupuesto</Text></Pressable>
       </Link>
       

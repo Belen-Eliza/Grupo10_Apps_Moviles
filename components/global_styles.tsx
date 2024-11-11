@@ -51,6 +51,9 @@ export const estilos = StyleSheet.create({
     margen: {
         margin: 41
     },
+    poco_margen:{
+        margin: 21
+    },
     boton1: {
         flex:1,
         padding: 10,
