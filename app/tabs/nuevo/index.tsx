@@ -1,6 +1,5 @@
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import Boton from "@/components/Boton";
 import { Link } from "expo-router";
 
 export default function Index() {

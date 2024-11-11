@@ -4,7 +4,7 @@ import { useState, useEffect, useContext } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
 
-import { useUserContext, UserContext } from "@/context/UserContext";
+import { useUserContext } from "@/context/UserContext";
 
 type User = {id: number,mail:string,name:string,password:string,saldo:number}
 
@@ -23,12 +23,15 @@ export default function Login(){
                     headers:{"Content-Type":"application/json"},
                     body:JSON.stringify(user)})
             if (!rsp.ok){
-                throw new Error(rsp.statusText)
+                
+                if (rsp.status==400) throw new Error("Usuario o contraseña incorrectos")
+                
+                throw new Error()
             } else {
                 const datos_usuario: User = await rsp.json()
                 login_app(datos_usuario);
                 //pantalla de loading
-                router.navigate("/tabs/");
+                router.replace("/tabs/");
                 
             }
         }
