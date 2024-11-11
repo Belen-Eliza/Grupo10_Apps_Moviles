@@ -3,11 +3,9 @@ import{estilos,colores} from "@/components/global_styles"
 import { useState, useEffect, useContext } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
-
 import { useUserContext } from "@/context/UserContext";
 
 type User = {id: number,mail:string,name:string,password:string,saldo:number}
-
 
 export default function Login(){
     const [mail,setMail]=useState('');
@@ -16,7 +14,6 @@ export default function Login(){
 
     async function login(){
         const user={email:mail,password_attempt:password}
-        
         try {
             const rsp = await  fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`,{
                     method:"POST",

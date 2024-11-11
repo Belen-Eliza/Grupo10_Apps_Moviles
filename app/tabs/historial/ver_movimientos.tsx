@@ -1,10 +1,10 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
-import { Text, View, Dimensions, Pressable } from "react-native";
+import { Text, View, Dimensions, Pressable, Modal } from "react-native";
 import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React from 'react';
-import { router } from "expo-router";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -17,6 +17,9 @@ export default function Historial() {
   const [ingresos,setIngresos]= useState<Ingreso[]>([]);
   const [presupuestos,setPresupuestos]= useState<Presupuesto[]>([]);
   const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos
+  const [DateModalVisible,setDateModalVisible] = useState(false);
+  const [fecha_desde,setFechaDesde]=useState(new Date(0)); 
+  const [fecha_hasta,setFechaHasta]= useState(new Date())
   
   useEffect( ()=> {
     const  query= async (url:string,callback:Function) => {
@@ -24,8 +27,8 @@ export default function Historial() {
         const rsp = await fetch(url,{
           method:'GET',
           headers:{"Content-Type":"application/json"}})
-        if (!rsp.ok) {
-          throw new Error()
+        if (!rsp.ok ) {
+          if (rsp.status!=400)  throw new Error(rsp.status.toString()+", en Historial")
         } else{
           const info = await rsp.json();
           callback(info);
@@ -38,7 +41,8 @@ export default function Historial() {
     switch (seleccion) {
       case 1:
         (async ()=>{
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/${context.id}`,setGastos)
+          const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
         }) ();
         break;
 
@@ -54,33 +58,52 @@ export default function Historial() {
         }) ();        
         break;
     }    
-  }, [context.id,seleccion]  )
-  
+  }, [context.id,seleccion,fecha_desde,fecha_hasta]  )
+
+  const ver_ingreso=(ingreso:Ingreso)=>{
+    console.log(ingreso);
+  }
+  const ver_gasto=(gasto:Gasto)=>{
+    console.log(gasto);
+  }
+  const ver_presupuesto=(presupuesto:Presupuesto)=>{
+    console.log(presupuesto);
+  }
+  const onChangeDesde=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
+    let currentDate = new Date(0);
+    if (selectedDate!=undefined) currentDate=selectedDate
+    setFechaDesde(currentDate);
+  };
+  const onChangeHasta=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
+    let currentDate = new Date();
+    if (selectedDate!=undefined) currentDate=selectedDate
+    setFechaHasta(currentDate);
+  };
   
   const renderGasto= ({ item }: ListRenderItemInfo<Gasto>) => {
     return (
-      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>ver_gasto(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
         <Text style={estilos.subtitulo}> {item.category.name}</Text>
         <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
         <Text>Monto: ${item.monto}</Text>
-      </View>)
+      </Pressable>)
   }; 
   const renderIngreso= ({ item }: ListRenderItemInfo<Ingreso>) => {
     return (
-      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>ver_ingreso(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={[estilos.subtitulo,{alignSelf:"flex-start"}]}>{item.category.name}</Text>
         <Text style={{fontSize:20,color:"#909090"}}>{item.description}</Text>
         <Text >Monto: ${item.monto}</Text>
-      </View>)
+      </Pressable>)
   }; 
   const renderPresupuesto= ({ item }: ListRenderItemInfo<Presupuesto>) => {
     return (
-      <View style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>ver_presupuesto(item)}  style={[estilos.list_element,estilos.margen,estilos.centrado]}>
         <Text style={estilos.subtitulo}>{item.descripcion}</Text>
         <Text> Para: {new Date(item.fecha_objetivo).toDateString()}</Text>
         <Text>Total: ${item.montoTotal}</Text>
-      </View>)};
+      </Pressable>)};
   
   return (<>
     <View style={{flexDirection:"row", alignContent:"center",flex: 2}}>
@@ -89,7 +112,14 @@ export default function Historial() {
       <Pressable onPress={()=>setSeleccion(3)} style={[estilos.boton1,estilos.centrado]}><Text>Presupuestos</Text></Pressable>
     </View>
     
-    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:8, 
+    
+    <View style={{flexDirection:"row", alignContent:"center",flex: 2,display: seleccion==1? "flex":"none",}}>
+    <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
+      <Pressable onPress={()=>setDateModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Fecha</Text></Pressable>
+      <Pressable onPress={()=>setSeleccion(2)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Categoria</Text></Pressable>
+    </View>
+    
+    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"65%",flex:8, 
       display: seleccion==1? "flex":"none"
      }}>
         <FlashList 
@@ -119,6 +149,17 @@ export default function Historial() {
           ListEmptyComponent={<Text>Todavía no has cargado ningún presupuesto</Text>}
         /> 
     </View>
+
+    <Modal animationType="slide" transparent={false} visible={DateModalVisible}>
+        <View style={[estilos.mainView,estilos.centrado]}>
+          <Text style={estilos.titulo}>Desde:</Text>
+          <DateTimePicker style={estilos.margen} value={fecha_desde} onChange={onChangeDesde} mode="date" />
+          <Text style={estilos.titulo}>Hasta:</Text>
+          <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fecha_hasta} mode="date" />
+          <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={()=>setDateModalVisible(false)}><Text >Confirmar</Text></Pressable>
+        </View>
+        
+        </Modal>
     </>
   );
 }
