@@ -31,7 +31,7 @@ export default function Login(){
                 const datos_usuario: User = await rsp.json()
                 login_app(datos_usuario);
                 //pantalla de loading
-                router.navigate("/tabs/");
+                router.replace("/tabs/");
                 
             }
         }

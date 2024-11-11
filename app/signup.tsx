@@ -29,7 +29,7 @@ export default function Signup(){
                     //pantalla de loading
                     const datos_usuario: User = await response.json()
                     context.login_app(datos_usuario)
-                    router.navigate('/tabs/');}
+                    router.replace('/tabs/');}
             } catch (error) {
                 alert("Error:"+error)
             }

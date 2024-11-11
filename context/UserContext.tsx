@@ -13,7 +13,7 @@ export const UserContext = createContext({
   cambiarNombre: (nombre_nuevo: string) => { },
   cambiar_mail: (mail_nuevo: string) => { },
   cambiar_password: (password_nuevo: string) => { },
-  login_app: (user: User) => { console.log("esta")},
+  login_app: (user: User) => {},
   logout: () => { },
   actualizar_info: (id:number)=>{}
 });
@@ -27,11 +27,11 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
   
   const cambiarNombre = async (nombre_nuevo: string) => {
     try {
-        const nuevo_user ={id:id,name:nombre_nuevo}
-        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile`,
+        
+        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
             {method: "PATCH",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(nuevo_user)
+            body:JSON.stringify({new_name:nombre_nuevo})
             }
         )
         if (!rsp.ok){
@@ -44,11 +44,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
 
   const cambiar_mail = async (mail_nuevo: string) => {
     try {
-        const nuevo_user ={id:id,mail:mail_nuevo}
-        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile`,
+        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
             {method: "PATCH",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(nuevo_user)
+            body:JSON.stringify({new_mail:mail_nuevo})
             }
         )
         if (!rsp.ok){
@@ -62,10 +61,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
   const cambiar_password = async (password_nuevo: string) => {
     try {
         const nuevo_user ={id:id,password:password_nuevo}
-        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile`,
+        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
             {method: "PATCH",
             headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(nuevo_user)
+            body:JSON.stringify({new_password:password_nuevo})
             }
         )
         if (!rsp.ok){
@@ -86,6 +85,10 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
 
   const logout = () => {
       setIsLoggedIn(false);
+      setId(0);
+      setMail("");
+      setNombre("");
+      setSaldo(0);
   }
   const actualizar_info = async (id:number) =>{ //después de editar el perfil o agregar gastos e ingresos
     try {
@@ -97,7 +100,6 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
           throw new Error(rsp.statusText)
       } else {
           const datos_usuario: User = await rsp.json();
-          console.log(datos_usuario)
           setMail(datos_usuario.mail);
           setNombre(datos_usuario.name);
           setSaldo(datos_usuario.saldo);
