@@ -70,7 +70,7 @@ export default function Gasto() {
     }
     context.actualizar_info(context.id)
     alert("Operación exitosa");
-    router.navigate("/tabs");}
+    router.replace("/tabs");}
     catch (e){
       alert(e)
     }
@@ -81,7 +81,6 @@ export default function Gasto() {
       <Text style={estilos.titulo}>Agregar gasto</Text>
       <TextInput style={[estilos.textInput,estilos.margen]} keyboardType="decimal-pad" onChangeText={handler_Amount}  placeholder='Ingresar valor'></TextInput>
         
-      
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput style={[estilos.textInput,estilos.margen]}  keyboardType="numbers-and-punctuation" onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       
