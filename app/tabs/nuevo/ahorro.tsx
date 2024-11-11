@@ -2,11 +2,10 @@ import { Text, View, TextInput,Pressable } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useState,useEffect } from "react";
 import { useUserContext } from "@/context/UserContext"; 
-import Boton from "@/components/Boton";
 import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
+import { Category } from "@/components/tipos";
 
-type CategoryIngreso ={ id: number, name: string, description: String}
 type Ingreso = {  monto :number, descripcion: string, category_id: number, user_id: number}
 
 export default function Ahorro() {
@@ -14,7 +13,7 @@ export default function Ahorro() {
   const [ingreso,setIngreso]=useState<Ingreso>({monto:0,descripcion:"",category_id:0,user_id:context.id});
   const [openPicker,setOpen]=useState(false);
   const [cat,setCat]=useState(0)
-  const [todas_categorias,setCategorias] =useState<CategoryIngreso[]>([{id:0,name:"",description:""}])
+  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
 
   useEffect(()=>{
     (async ()=>{

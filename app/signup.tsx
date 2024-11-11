@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
 import { useUserContext } from "@/context/UserContext";
-
-type User = {id: number,mail:string,name:string,password:string,saldo:number}
+import { User } from "@/components/tipos";
 
 export default function Signup(){
     const context = useUserContext();

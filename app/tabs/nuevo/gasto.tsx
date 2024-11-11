@@ -4,15 +4,11 @@ import { useState,useEffect } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
+import { Category } from "@/components/tipos";
 
-
-type Categoria= {
-  id: number, descripcion: string,name:string
-}
 type Gasto ={
   monto: Number,  category_id: number, cant_cuotas: number,user_id:number
 }
-
 
 export default function Gasto() {
   const inicial: Gasto = {monto: 0,category_id:0,cant_cuotas:1,user_id:0};
@@ -20,7 +16,7 @@ export default function Gasto() {
   const [openPicker,setOpen] = useState(false);
   const [cat,setCat] =useState(0);
   const context = useUserContext();
-  const [categorias,setCategorias]=useState<Categoria[]>([{id: 1,name:"Comida",descripcion:""}])
+  const [categorias,setCategorias]=useState<Category[]>([{id: 1,name:"Comida",description:""}])
 
   useEffect(()=>{
     (async ()=>{

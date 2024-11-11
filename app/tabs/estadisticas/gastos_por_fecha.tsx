@@ -5,9 +5,7 @@ import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
 import { LineChart } from "react-native-chart-kit";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-
-type Category ={id :number, name: string,description: string}
-type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
+import { Gasto } from "@/components/tipos";
 
 export default function Gastos_por_Fecha (){
     const context = useUserContext();

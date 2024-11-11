@@ -5,6 +5,7 @@ import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React from 'react';
+import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/renderList";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -80,30 +81,6 @@ export default function Historial() {
     setFechaHasta(currentDate);
   };
   
-  const renderGasto= ({ item }: ListRenderItemInfo<Gasto>) => {
-    return (
-      <Pressable onPress={()=>ver_gasto(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
-        <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
-        <Text style={estilos.subtitulo}> {item.category.name}</Text>
-        <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
-        <Text>Monto: ${item.monto}</Text>
-      </Pressable>)
-  }; 
-  const renderIngreso= ({ item }: ListRenderItemInfo<Ingreso>) => {
-    return (
-      <Pressable onPress={()=>ver_ingreso(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
-        <Text style={[estilos.subtitulo,{alignSelf:"flex-start"}]}>{item.category.name}</Text>
-        <Text style={{fontSize:20,color:"#909090"}}>{item.description}</Text>
-        <Text >Monto: ${item.monto}</Text>
-      </Pressable>)
-  }; 
-  const renderPresupuesto= ({ item }: ListRenderItemInfo<Presupuesto>) => {
-    return (
-      <Pressable onPress={()=>ver_presupuesto(item)}  style={[estilos.list_element,estilos.margen,estilos.centrado]}>
-        <Text style={estilos.subtitulo}>{item.descripcion}</Text>
-        <Text> Para: {new Date(item.fecha_objetivo).toDateString()}</Text>
-        <Text>Total: ${item.montoTotal}</Text>
-      </Pressable>)};
   
   return (<>
     <View style={{flexDirection:"row", alignContent:"center",flex: 2}}>
@@ -124,7 +101,7 @@ export default function Historial() {
      }}>
         <FlashList 
           data={gastos} 
-          renderItem={renderGasto}
+          renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item,ver_gasto)}
           estimatedItemSize={200} 
           ListEmptyComponent={<Text>Todavía no has cargado ningún gasto</Text>}
         /> 
@@ -134,7 +111,7 @@ export default function Historial() {
      }}>
         <FlashList 
           data={ingresos} 
-          renderItem={renderIngreso}
+          renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item,ver_ingreso)}
           estimatedItemSize={400} 
           ListEmptyComponent={<Text>Todavía no has cargado ningún ingreso</Text>}
         /> 
@@ -144,7 +121,7 @@ export default function Historial() {
      }}>
         <FlashList 
           data={presupuestos} 
-          renderItem={renderPresupuesto}
+          renderItem={({ item }: ListRenderItemInfo<Presupuesto>) => renderPresupuesto(item,ver_presupuesto)}
           estimatedItemSize={400} 
           ListEmptyComponent={<Text>Todavía no has cargado ningún presupuesto</Text>}
         /> 

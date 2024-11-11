@@ -3,10 +3,8 @@ import{estilos,colores} from "@/components/global_styles"
 import { PieChart } from "react-native-chart-kit";
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
+import { Category } from "@/components/tipos";
 
-type Categoria= {
-  id: number, descripcion: string,name:string
-}
 type Suma= {_sum:{monto:number},category_id:number}
 type Datos = {cant: number,name: string,color:string,legendFontColor: string,legendFontSize:number}
 
@@ -31,7 +29,7 @@ export default function Gastos_por_Categoria() {
               const info = await rsp.json();
               const info_categorias= await cat.json();
               const lista:Datos[] = info.map((each:Suma,index:number)=>{
-                const nombre_cat=info_categorias.find((cat:Categoria) => cat.id==each.category_id)?.name;
+                const nombre_cat=info_categorias.find((cat:Category) => cat.id==each.category_id)?.name;
                 return {cant:each._sum.monto,name:nombre_cat,color:colors[index],legendFontColor:"#7F7F7F", legendFontSize: 15}
               })
               setDatos(lista);
