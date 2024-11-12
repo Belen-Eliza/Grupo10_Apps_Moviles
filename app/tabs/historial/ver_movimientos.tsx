@@ -7,6 +7,7 @@ import React from 'react';
 import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
+import { router } from "expo-router";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -71,13 +72,13 @@ export default function Historial() {
   }, [context.id,seleccion,fecha_desde,fecha_hasta]  )
 
   const ver_ingreso=(ingreso:Ingreso)=>{
-    console.log(ingreso);
+    router.navigate({pathname:"/tabs/historial/ver_ingreso",params:{ingreso_id:ingreso.id}})
   }
   const ver_gasto=(gasto:Gasto)=>{
-    console.log(gasto);
+    router.navigate({pathname:"/tabs/historial/ver_gasto",params:{gasto_id:gasto.id}})
   }
   const ver_presupuesto=(presupuesto:Presupuesto)=>{
-    console.log(presupuesto);
+    router.navigate({pathname:"/tabs/historial/ver_presupuesto",params:{presupuesto_id:presupuesto.id}})
   }
 
   const filtrar_por_cate = ()=>{
@@ -105,7 +106,8 @@ export default function Historial() {
         <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
         <Pressable onPress={()=>setDateModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Fecha</Text></Pressable>
         <Pressable onPress={()=>setCatModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Categoria</Text></Pressable>
-        <Pressable onPress={limpiar_filtros} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Limpiar filtros</Text></Pressable>
+        <Pressable onPress={limpiar_filtros} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Limpiar filtros</Text></Pressable> 
+        
       </View>
         <FlashList 
           data={gastos} 
