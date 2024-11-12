@@ -1,4 +1,4 @@
-import { Pressable, Text, TextInput, View, ScrollView } from "react-native";
+import { Pressable, Text, TextInput, View, ScrollView, StyleSheet, ImageBackground } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useState } from "react";
 import { Link } from "expo-router";
@@ -18,7 +18,6 @@ export default function Signup() {
     const [errorPassword, setErrorPassword] = useState('');
     const [errorPasswordConfirm, setErrorPasswordConfirm] = useState('');
 
-
     const validateEmail = (email: string) => {
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
@@ -30,7 +29,6 @@ export default function Signup() {
         }
     };
 
-
     const validatePassword = (password: string) => {
         const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
         if (!passwordRegex.test(password)) {
@@ -41,7 +39,6 @@ export default function Signup() {
             return true;
         }
     };
-
 
     const validatePasswordConfirm = (password1: string, password2: string) => {
         if (password1 !== password2) {
@@ -75,13 +72,11 @@ export default function Signup() {
     };
 
     async function signup() {
-     
         const isEmailValid = validateEmail(mail);
         const isNameValid = name !== '';
         const isPasswordValid = validatePassword(password1);
         const isPasswordConfirmValid = validatePasswordConfirm(password1, password2);
 
-        
         if (isEmailValid && isNameValid && isPasswordValid && isPasswordConfirmValid) {
             const user = { mail: mail, name: name, password: password1 };
             try {
@@ -101,59 +96,65 @@ export default function Signup() {
                 alert("Error: " + error);
             }
         } else {
-            alert('Corrija los errores resaltados en pantalla para la correcta creacion del usuario');
+            alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
         }
     }
 
     return (
-        <View style={[estilos.mainView, { alignItems: "center" }]}>
-            <ScrollView contentContainerStyle={[estilos.mainView, { alignItems: "center" }]} automaticallyAdjustKeyboardInsets={true}>
-                <Text style={[estilos.subtitulo, { marginTop: 5 }]}>Mail</Text>
+        <ImageBackground source={require('../assets/images/fondo.jpg')} style={estilos.background}>
+            <ScrollView contentContainerStyle={estilos.formContainer} automaticallyAdjustKeyboardInsets={true}>
+                <Text style={[estilos.titulo]}>Mail</Text>
                 <TextInput
-                    style={[estilos.textInput, { marginTop: 10}]}
+                    style={[estilos.textInput]}
                     textContentType="emailAddress"
                     keyboardType="email-address"
                     onChangeText={handleEmailChange}
                     value={mail}
                     placeholder="mail@example.com"
                 />
-                {errorEmail ? <Text style={{ color: 'red' }}>{errorEmail}</Text> : null}
+                {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
 
-                <Text style={estilos.subtitulo}>Nombre de usuario</Text>
+                <Text style={estilos.titulo}>Nombre de usuario</Text>
                 <TextInput
-                    style={[estilos.textInput, { marginTop: 5 }]}
+                    style={[estilos.textInput]}
                     onChangeText={handleNameChange}
                     value={name}
                 />
-                {errorName ? <Text style={{ color: 'red' }}>{errorName}</Text> : null}
+                {errorName ? <Text style={estilos.errorText}>{errorName}</Text> : null}
 
-                <Text style={estilos.subtitulo}>Contraseña</Text>
+                <Text style={estilos.titulo}>Contraseña</Text>
                 <TextInput
-                    style={[estilos.textInput, { marginTop: 5 }]}
+                    style={[estilos.textInput]}
                     secureTextEntry={true}
                     textContentType="password"
                     onChangeText={handlePasswordChange}
                     value={password1}
                 />
-                {errorPassword ? <Text style={{ color: 'red' }}>{errorPassword}</Text> : null}
+                {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
-                <Text style={estilos.subtitulo}>Confirmar contraseña</Text>
+                <Text style={estilos.titulo}>Confirmar contraseña</Text>
                 <TextInput
-                    style={[estilos.textInput, { marginTop: 5 }]}
+                    style={[estilos.textInput]}
                     secureTextEntry={true}
                     textContentType="password"
                     onChangeText={handlePasswordConfirmChange}
                     value={password2}
                 />
-                {errorPasswordConfirm ? <Text style={{ color: 'red' }}>{errorPasswordConfirm}</Text> : null}
+                {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
 
                 <Pressable onPress={signup} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
                     <Text style={estilos.subtitulo}>Registrarse</Text>
                 </Pressable>
-                <Link href="/" style={estilos.margen}>
-                    <Text>¿Ya tienes un usuario? Click aquí para ingresar</Text>
-                </Link>
+
+                <View style={estilos.signupContainer}>
+                    <Text>¿Ya tienes un usuario? </Text>
+                    <Link href="/">
+                        <Text style={estilos.a}>Click aquí para ingresar</Text>
+                    </Link>
+                </View>
             </ScrollView>
-        </View>
+        </ImageBackground>
     );
 }
+
+

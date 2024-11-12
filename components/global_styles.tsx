@@ -64,11 +64,7 @@ export const estilos = StyleSheet.create({
         fontSize: 25,
         fontWeight: "semibold"
     },
-    background: {
-        flex: 1,
-        resizeMode: 'cover',
-        justifyContent: 'center',
-      },
+
     tarjeta: {
         flex: 1,
         minWidth: "80%",
@@ -90,7 +86,7 @@ export const estilos = StyleSheet.create({
         padding:8,
         backgroundColor: "white",
         fontSize:18,
-        margin: "10%",
+        
         minWidth: "60%",
         maxHeight: 60,
         minHeight: 40,
@@ -102,6 +98,35 @@ export const estilos = StyleSheet.create({
     margen: {
         margin: 41
     },
+    background: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        resizeMode: 'cover',
+    },
+    formContainer: {
+        width: '80%',
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: 10,
+        padding: 20,
+        alignItems: 'center',
+    },
+    signupContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    errorText: {
+        color: 'red',
+        marginTop: 5,
+    },
+    centeredContainer: {
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+
+    },
+    
     poco_margen:{
         margin: 21
     },

@@ -1,13 +1,17 @@
-import {ImageBackground, Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import { ImageBackground, Pressable, Text, TextInput, View, StyleSheet } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { Link } from "expo-router";
 import { router } from "expo-router";
-
 import { useUserContext } from "@/context/UserContext";
-import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
-type User = { id: number; mail: string; name: string; password: string; saldo: number };
+type User = {
+    id: number;
+    mail: string;
+    name: string;
+    password: string;
+    saldo: number;
+};
 
 export default function Login() {
     const [mail, setMail] = useState('');
@@ -24,7 +28,6 @@ export default function Login() {
             setErrorEmail('');
         }
     };
-
 
     const validatePassword = (password: string) => {
         const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
@@ -69,40 +72,43 @@ export default function Login() {
     }
 
     return (
-        <ImageBackground source={require('../assets/images/fondo.jpg') } style={estilos.background} >
-        
-        <View style={[estilos.mainView, estilos.centrado, estilos.overlay]}>
-            <ScrollView contentContainerStyle={[estilos.mainView, { alignItems: "center" }]} automaticallyAdjustKeyboardInsets={true}>
-                <Text style={estilos.titulo}>Mail</Text>
-                <TextInput
-                    style={[estilos.textInput]}
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                    onChangeText={handleEmailChange}
-                    value={mail}
-                    placeholder="mail@example.com"
-                />
-                {errorEmail ? <Text style={{ color: 'red' }}>{errorEmail}</Text> : null}
+        <ImageBackground source={require('../assets/images/fondo.jpg')} style={estilos.background}>
+            <View style={estilos.centeredContainer}>
+                <View style={estilos.formContainer}>
+                    <Text style={estilos.titulo}>Mail</Text>
+                    <TextInput
+                        style={[estilos.textInput]}
+                        textContentType="emailAddress"
+                        keyboardType="email-address"
+                        onChangeText={handleEmailChange}
+                        value={mail}
+                        placeholder="mail@example.com"
+                    />
+                    {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
 
-                <Text style={estilos.titulo}>Contraseña</Text>
-                <TextInput
-                    style={[estilos.textInput]}
-                    secureTextEntry={true}
-                    textContentType="password"
-                    onChangeText={handlePasswordChange}
-                    value={password}
-                />
-                {errorPassword ? <Text style={{ color: 'red' }}>{errorPassword}</Text> : null}
+                    <Text style={estilos.titulo}>Contraseña</Text>
+                    <TextInput
+                        style={[estilos.textInput]}
+                        secureTextEntry={true}
+                        textContentType="password"
+                        onChangeText={handlePasswordChange}
+                        value={password}
+                    />
+                    {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
-                <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
-                    <Text style={estilos.subtitulo}>Ingresar</Text>
-                </Pressable>
-                <Text >¿No tienes un usuario? </Text>
-                <Link href="/signup" >
-                    <Text style={estilos.a}>Click aquí para registrarte</Text>
-                </Link>
-            </ScrollView>
-        </View>
+                    <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
+                        <Text style={estilos.subtitulo}>Ingresar</Text>
+                    </Pressable>
+
+                    {/* Enlace de registro dentro del formulario */}
+                    <View style={estilos.signupContainer}>
+                        <Text>¿No tienes un usuario? </Text>
+                        <Link href="/signup">
+                            <Text style={estilos.a}>Click aquí para registrarte</Text>
+                        </Link>
+                    </View>
+                </View>
+            </View>
         </ImageBackground>
     );
 }
