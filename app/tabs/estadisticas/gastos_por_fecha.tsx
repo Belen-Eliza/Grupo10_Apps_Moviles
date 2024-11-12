@@ -1,3 +1,4 @@
+import { botonesEstado } from '@/components/global_styles';
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import { Text, View, Pressable, Dimensions, Modal, ScrollView } from "react-native";
@@ -128,35 +129,76 @@ export default function Gastos_por_Fecha() {
     return (
         <>
             <ScrollView contentContainerStyle={estilos.mainView}>
-                <Pressable style={[estilos.tarjeta, estilos.centrado]} onPress={openDatePicker}>
-                    <Text>Filtrar por fecha</Text>
-                </Pressable>
-                <Pressable
-                    style={[estilos.tarjeta, estilos.centrado, { marginVertical: 10 }]}
-                    onPress={() => setChartType((prevType) => 
-                        prevType === "Gastos" ? "Ingresos" : prevType === "Ingresos" ? "Balance" : "Gastos")}
-                >
-                    <Text>
-                        {chartType === "Gastos" ? "Mostrar Ingresos" : chartType === "Ingresos" ? "Mostrar Balance" : "Mostrar Gastos"}
-                    </Text>
-                </Pressable>
-                
-                {chartType === "Gastos" && datosGastos.length === 0 ? (
-                    <Text>No hay gastos en el rango de fechas seleccionado.</Text>
-                ) : chartType === "Ingresos" && datosIngresos.length === 0 ? (
-                    <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
-                ) : chartType === "Balance" && combinedData.length === 0 ? (
-                    <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
-                ) : (
-                    <LineChart
-                        data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
-                        width={screenWidth - 20} 
-                        height={screenHeight}
-                        chartConfig={chartConfig}
-                        bezier={true}
-                    />
-                )}
-            </ScrollView>
+    <Pressable style={[estilos.tarjeta, estilos.centrado]} onPress={openDatePicker}>
+        <Text>Filtrar por fecha</Text>
+    </Pressable>
+
+    {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
+    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%', paddingHorizontal: 10 }}>
+    <Pressable
+    style={[
+        estilos.tarjetasesp,
+        estilos.centrado,
+        { 
+            flex: 1, 
+            marginHorizontal: 5, 
+            backgroundColor: chartType === "Gastos" ? botonesEstado.active : botonesEstado.inactive 
+        }
+    ]}
+    onPress={() => setChartType("Gastos")}
+>
+    <Text style={{ color: chartType === "Gastos" ? "white" : "black" }}>Gastos</Text>
+</Pressable>
+
+<Pressable
+    style={[
+        estilos.tarjetasesp,
+        estilos.centrado,
+        { 
+            flex: 1, 
+            marginHorizontal: 5, 
+            backgroundColor: chartType === "Ingresos" ? botonesEstado.active : botonesEstado.inactive 
+        }
+    ]}
+    onPress={() => setChartType("Ingresos")}
+>
+    <Text style={{ color: chartType === "Ingresos" ? "white" : "black" }}>Ingresos</Text>
+</Pressable>
+
+<Pressable
+    style={[
+        estilos.tarjetasesp,
+        estilos.centrado,
+        { 
+            flex: 1, 
+            marginHorizontal: 5, 
+            backgroundColor: chartType === "Balance" ? botonesEstado.active : botonesEstado.inactive 
+        }
+    ]}
+    onPress={() => setChartType("Balance")}
+>
+    <Text style={{ color: chartType === "Balance" ? "white" : "black" }}>Balance</Text>
+</Pressable>
+    </View>
+    
+    {/* Mostrar el gráfico correspondiente */}
+    {chartType === "Gastos" && datosGastos.length === 0 ? (
+        <Text>No hay gastos en el rango de fechas seleccionado.</Text>
+    ) : chartType === "Ingresos" && datosIngresos.length === 0 ? (
+        <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
+    ) : chartType === "Balance" && combinedData.length === 0 ? (
+        <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
+    ) : (
+        <LineChart
+            data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
+            width={screenWidth - 20} 
+            height={screenHeight}
+            chartConfig={chartConfig}
+            bezier={true}
+        />
+    )}
+</ScrollView>
+
             
             <Modal animationType="slide" transparent={false} visible={modalVisible}>
                 <View style={[estilos.mainView, estilos.centrado]}>

@@ -64,7 +64,15 @@ export const estilos = StyleSheet.create({
         fontSize: 25,
         fontWeight: "semibold"
     },
-
+    tarjetasesp:{
+        flex: 1,
+        minWidth: "30%",
+        maxHeight: 100,
+        minHeight: 60,
+        borderRadius: 5,
+        borderWidth: 2,
+        margin: 10,
+    },
     tarjeta: {
         flex: 1,
         minWidth: "80%",
@@ -155,7 +163,9 @@ export const colores = StyleSheet.create({
         backgroundColor: "lightblue",
         borderColor: "#0082bf",
         borderWidth: 3,
-        borderRadius: 5
+        borderRadius: 5,
+        
+
     },
 
     menu: {
@@ -164,3 +174,8 @@ export const colores = StyleSheet.create({
     }
 })
 
+
+export const botonesEstado = {
+    active: "#228B22",  // Color for active button
+    inactive: "#D3D3D3" // Color for inactive button
+};
