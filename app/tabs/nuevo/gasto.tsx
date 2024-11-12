@@ -1,10 +1,9 @@
 import {Pressable, Text, TextInput, View } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
-import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
-import { Category } from "@/components/tipos";
+import { CategoryPicker } from "@/components/CategoryPicker";
 
 type Gasto ={
   monto: Number,  category_id: number, cant_cuotas: number,user_id:number
@@ -16,18 +15,6 @@ export default function Gasto() {
   const [openPicker,setOpen] = useState(false);
   const [cat,setCat] =useState(0);
   const context = useUserContext();
-  const [categorias,setCategorias]=useState<Category[]>([{id: 1,name:"Comida",description:""}])
-
-  useEffect(()=>{
-    (async ()=>{
-      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
-        method:'GET',
-        headers:{"Content-Type":"application/json"}})
-      .then(rsp => rsp.json())
-      .then(info =>setCategorias(info))
-    })();
-
-  },[context])
   
   const handler_Amount=(input:string)=>{
     let aux=Number(input.replace(",","."));
@@ -82,7 +69,7 @@ export default function Gasto() {
       <TextInput style={[estilos.textInput,estilos.margen]}  keyboardType="numbers-and-punctuation" onChangeText={handler_Cuotas}  placeholder='Ingresar cuotas'></TextInput>
       
       <Text style={estilos.subtitulo}>Categoría</Text> 
-      <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={openPicker} value={cat} items={categorias.map(e=>{return {value:e.id,label:e.name}})} setItems={setCategorias} itemKey="value" setOpen={setOpen} setValue={setCat} />
+      <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryPicker>
 
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>

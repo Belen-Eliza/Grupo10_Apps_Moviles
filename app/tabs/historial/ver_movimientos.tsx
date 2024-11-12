@@ -6,6 +6,7 @@ import { estilos,colores } from "@/components/global_styles";
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React from 'react';
 import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/renderList";
+import { CategoryPicker } from "@/components/CategoryPicker";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -17,10 +18,13 @@ export default function Historial() {
   const [gastos,setGastos]= useState<Gasto[]>([]);
   const [ingresos,setIngresos]= useState<Ingreso[]>([]);
   const [presupuestos,setPresupuestos]= useState<Presupuesto[]>([]);
-  const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos
+  const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos, 4 filtrar gastos por categoria
   const [DateModalVisible,setDateModalVisible] = useState(false);
+  const [CateModalVisible,setCatModalVisible] = useState(false);
   const [fecha_desde,setFechaDesde]=useState(new Date(0)); 
   const [fecha_hasta,setFechaHasta]= useState(new Date())
+  const [cate_id,setCateId]=useState(0);
+  const [openPicker,setOpen] = useState(false);
   
   useEffect( ()=> {
     const  query= async (url:string,callback:Function) => {
@@ -58,6 +62,11 @@ export default function Historial() {
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
         }) ();        
         break;
+      case 4:
+        (async ()=>{
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}/${cate_id}`,setGastos)
+        }) ();
+        break;
     }    
   }, [context.id,seleccion,fecha_desde,fecha_hasta]  )
 
@@ -80,6 +89,10 @@ export default function Historial() {
     if (selectedDate!=undefined) currentDate=selectedDate
     setFechaHasta(currentDate);
   };
+  const filtrar_por_cate = ()=>{
+    setCatModalVisible(false);
+    setSeleccion(4);
+  }
   
   
   return (<>
@@ -89,16 +102,14 @@ export default function Historial() {
       <Pressable onPress={()=>setSeleccion(3)} style={[estilos.boton1,estilos.centrado]}><Text>Presupuestos</Text></Pressable>
     </View>
     
-    
-    <View style={{flexDirection:"row", alignContent:"center",flex: 2,display: seleccion==1? "flex":"none",}}>
-    <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
-      <Pressable onPress={()=>setDateModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Fecha</Text></Pressable>
-      <Pressable onPress={()=>setSeleccion(2)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Categoria</Text></Pressable>
-    </View>
-    
-    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"65%",flex:8, 
-      display: seleccion==1? "flex":"none"
+    <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:8, 
+      display: seleccion==1 || seleccion==4? "flex":"none"
      }}>
+      <View style={{flexDirection:"row", alignContent:"center",minWidth:"100%",maxHeight:70}}>
+        <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
+        <Pressable onPress={()=>setDateModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Fecha</Text></Pressable>
+        <Pressable onPress={()=>setCatModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Categoria</Text></Pressable>
+      </View>
         <FlashList 
           data={gastos} 
           renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item,ver_gasto)}
@@ -135,8 +146,15 @@ export default function Historial() {
           <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fecha_hasta} mode="date" />
           <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={()=>setDateModalVisible(false)}><Text >Confirmar</Text></Pressable>
         </View>
-        
-        </Modal>
+    </Modal>
+
+    <Modal animationType="slide" transparent={false} visible={CateModalVisible}>
+      <View style={[estilos.mainView,estilos.centrado]}>
+      <Text style={estilos.titulo}>Seleccionar Categoría</Text>
+      <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cate_id} set_cat_id={setCateId}></CategoryPicker>
+      <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={filtrar_por_cate}><Text >Confirmar</Text></Pressable>
+      </View>
+    </Modal>
     </>
   );
 }

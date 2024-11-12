@@ -1,10 +1,9 @@
 import { Text, View, TextInput,Pressable } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState,useEffect } from "react";
+import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
-import DropDownPicker from 'react-native-dropdown-picker';
 import { router } from "expo-router";
-import { Category } from "@/components/tipos";
+import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 
 type Ingreso = {  monto :number, descripcion: string, category_id: number, user_id: number}
 
@@ -12,18 +11,7 @@ export default function Ahorro() {
   const context = useUserContext();
   const [ingreso,setIngreso]=useState<Ingreso>({monto:0,descripcion:"",category_id:0,user_id:context.id});
   const [openPicker,setOpen]=useState(false);
-  const [cat,setCat]=useState(0)
-  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
-
-  useEffect(()=>{
-    (async ()=>{
-      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_ingresos`,{
-        method:'GET',
-        headers:{"Content-Type":"application/json"}})
-      .then(rsp => rsp.json())
-      .then(info =>setCategorias(info))
-    })();
-  })
+  const [cat,setCat]=useState(0);
 
   const handler_monto =(input:string)=>{
     const monto = Number(input.replace(",","."))
@@ -75,9 +63,10 @@ export default function Ahorro() {
       <TextInput style={[estilos.textInput,estilos.margen]} keyboardType="default" onChangeText={handler_descripcion}></TextInput>
 
       <Text style={estilos.subtitulo}>Categoría</Text> 
-      <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={openPicker} 
+      <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
+      {/* <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={openPicker} 
           value={cat} items={todas_categorias.map(e=>{return {value:e.id,label:e.name+" - "+e.description}})} setItems={setCategorias} 
-          itemKey="value" setOpen={setOpen} setValue={setCat}  />
+          itemKey="value" setOpen={setOpen} setValue={setCat}  /> */}
 
       <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
     </View>

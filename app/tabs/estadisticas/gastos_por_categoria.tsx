@@ -20,7 +20,7 @@ export default function Gastos_por_Categoria() {
               method:'GET',
               headers:{"Content-Type":"application/json"}})
 
-            const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}`,{
+            const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/agrupar_por_categoria/${context.id}`,{
               method:'GET',
               headers:{"Content-Type":"application/json"}})
             if (!rsp.ok || !cat.ok){
