@@ -1,12 +1,12 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
-import { Text, View, Dimensions, Pressable, Modal } from "react-native";
+import { Text, View, Pressable, Modal } from "react-native";
 import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import React from 'react';
 import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker } from "@/components/CategoryPicker";
+import { DateRangeModal } from "@/components/DateRangeModal";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -79,16 +79,7 @@ export default function Historial() {
   const ver_presupuesto=(presupuesto:Presupuesto)=>{
     console.log(presupuesto);
   }
-  const onChangeDesde=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
-    let currentDate = new Date(0);
-    if (selectedDate!=undefined) currentDate=selectedDate
-    setFechaDesde(currentDate);
-  };
-  const onChangeHasta=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
-    let currentDate = new Date();
-    if (selectedDate!=undefined) currentDate=selectedDate
-    setFechaHasta(currentDate);
-  };
+
   const filtrar_por_cate = ()=>{
     setCatModalVisible(false);
     setSeleccion(4);
@@ -138,15 +129,8 @@ export default function Historial() {
         /> 
     </View>
 
-    <Modal animationType="slide" transparent={false} visible={DateModalVisible}>
-        <View style={[estilos.mainView,estilos.centrado]}>
-          <Text style={estilos.titulo}>Desde:</Text>
-          <DateTimePicker style={estilos.margen} value={fecha_desde} onChange={onChangeDesde} mode="date" />
-          <Text style={estilos.titulo}>Hasta:</Text>
-          <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fecha_hasta} mode="date" />
-          <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={()=>setDateModalVisible(false)}><Text >Confirmar</Text></Pressable>
-        </View>
-    </Modal>
+    <DateRangeModal visible={DateModalVisible} setVisible={setDateModalVisible} fecha_desde={fecha_desde} fecha_hasta={fecha_hasta}
+                    setDesde={setFechaDesde} setHasta={setFechaHasta}></DateRangeModal>
 
     <Modal animationType="slide" transparent={false} visible={CateModalVisible}>
       <View style={[estilos.mainView,estilos.centrado]}>

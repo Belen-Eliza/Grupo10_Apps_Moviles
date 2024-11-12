@@ -4,8 +4,8 @@ import { Text, View, Pressable, Dimensions,Modal } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
 import { LineChart } from "react-native-chart-kit";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { Gasto } from "@/components/tipos";
+import { DateRangeModal } from "@/components/DateRangeModal";
 
 export default function Gastos_por_Fecha (){
     const context = useUserContext();
@@ -49,25 +49,11 @@ export default function Gastos_por_Fecha (){
       ],
       legend: ["Gastos"] 
     };
-    const openDatePicker = ()=>{
-      setModalVisible(true);
-    }
-    const closeDatePicker= ()=>{
-      setModalVisible(false)
-    }
-    const onChangeDesde=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
-      let currentDate = new Date(0);
-      if (selectedDate!=undefined) currentDate=selectedDate
-      setFechaDesde(currentDate);
-    };
-    const onChangeHasta=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
-      let currentDate = new Date();
-      if (selectedDate!=undefined) currentDate=selectedDate
-      setFechaHasta(currentDate);
-    };
+    
+   
     return (<>
         <View style={estilos.mainView}>
-          <Pressable style={[estilos.tarjeta,estilos.centrado]} onPress={openDatePicker}><Text >Filtrar por fecha</Text></Pressable>
+          <Pressable style={[estilos.tarjeta,estilos.centrado]} onPress={()=>setModalVisible(true)}><Text >Filtrar por fecha</Text></Pressable>
           <LineChart
             data={data}
             width={Dimensions.get("window").width}
@@ -76,16 +62,9 @@ export default function Gastos_por_Fecha (){
             bezier={true}
           />
         </View>
-        <Modal animationType="slide" transparent={false} visible={modalVisible}>
-        <View style={[estilos.mainView,estilos.centrado]}>
-          <Text style={estilos.titulo}>Desde:</Text>
-          <DateTimePicker style={estilos.margen} value={fecha_desde} onChange={onChangeDesde} mode="date" />
-          <Text style={estilos.titulo}>Hasta:</Text>
-          <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fecha_hasta} mode="date" />
-          <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={closeDatePicker}><Text >Confirmar</Text></Pressable>
-        </View>
         
-        </Modal>
+        <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fecha_desde} fecha_hasta={fecha_hasta}
+                        setDesde={setFechaDesde} setHasta={setFechaHasta}></DateRangeModal>
         </>
     )
 }
