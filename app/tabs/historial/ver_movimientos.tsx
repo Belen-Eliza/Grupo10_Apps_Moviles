@@ -84,7 +84,12 @@ export default function Historial() {
     setCatModalVisible(false);
     setSeleccion(4);
   }
-  
+  const limpiar_filtros = ()=>{
+    setFechaDesde(new Date(0));
+    setFechaHasta(new Date());
+    setCateId(0);
+    setSeleccion(1);
+  }
   
   return (<>
     <View style={{flexDirection:"row", alignContent:"center",flex: 2}}>
@@ -100,6 +105,7 @@ export default function Historial() {
         <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
         <Pressable onPress={()=>setDateModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Fecha</Text></Pressable>
         <Pressable onPress={()=>setCatModalVisible(true)} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Categoria</Text></Pressable>
+        <Pressable onPress={limpiar_filtros} style={[estilos.boton1,estilos.centrado,colores.botones]}><Text>Limpiar filtros</Text></Pressable>
       </View>
         <FlashList 
           data={gastos} 
