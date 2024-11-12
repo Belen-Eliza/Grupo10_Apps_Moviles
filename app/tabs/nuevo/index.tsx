@@ -1,41 +1,50 @@
+import React, { useState } from "react";
 import { Pressable, Text, View, StyleSheet } from "react-native";
-import{estilos,colores} from "@/components/global_styles"
+import { estilos, colores } from "@/components/global_styles";
 import { Link } from "expo-router";
+import { MaterialIcons } from "@expo/vector-icons"; // Iconos de flecha
 
 export default function Index() {
+  const [menuVisible, setMenuVisible] = useState(false);
+
+  const toggleMenu = () => setMenuVisible(!menuVisible);
 
   return (
-    <View style={[{flex: 1},estilos.centrado]} >
+    
+    <View style={[{ flex: 1 }, estilos.centrado]}>
+      {/* Botón principal con flecha */}
+      <Pressable onPress={toggleMenu} style={estilos.mainButton}>
+        <Text style={estilos.subtitulo}>Menú de Opciones</Text>
+        <MaterialIcons 
+          name={menuVisible ? "keyboard-arrow-up" : "keyboard-arrow-down"} 
+          size={24} 
+          color="white" 
+        />
+      </Pressable>
 
-      <Link href="/tabs/nuevo/gasto" asChild>
-        <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Gasto</Text></Pressable>
-      </Link>
+      {/* Opciones del menú */}
+      {menuVisible && (
+        <View style={estilos.menu}>
+          <Link href="/tabs/nuevo/gasto" asChild>
+            <Pressable style={estilos.option}>
+              <Text style={estilos.subtitulo}>Agregar Gasto</Text>
+            </Pressable>
+          </Link>
 
-      <Link href="/tabs/nuevo/ahorro" asChild>
-        <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Ahorro</Text></Pressable>
-      </Link>
+          <Link href="/tabs/nuevo/ahorro" asChild>
+            <Pressable style={estilos.option}>
+              <Text style={estilos.subtitulo}>Agregar Ahorro</Text>
+            </Pressable>
+          </Link>
 
-      <Link href="/tabs/nuevo/presupuesto" asChild>
-        <Pressable style={stylish.tarjeta}><Text style={estilos.subtitulo}>Agregar Presupuesto</Text></Pressable>
-      </Link>
-      
+          <Link href="/tabs/nuevo/presupuesto" asChild>
+            <Pressable style={estilos.option}>
+              <Text style={estilos.subtitulo}>Agregar Presupuesto</Text>
+            </Pressable>
+          </Link>
+        </View>
+      )}
     </View>
   );
 }
-const stylish = StyleSheet.create({
-  tarjeta: {
-    flex: 1,
-    minWidth: "80%",
-    maxHeight: 100,
-    borderRadius: 5,
-    borderWidth: 2,
-    margin: 10,
-    
-    backgroundColor: "lightblue",
-    borderColor: "#0082bf",
-    justifyContent: "center",
-    alignContent: "center",
-    alignItems: "center",
-    alignSelf: "center"
-   },
-})
+

@@ -110,7 +110,7 @@ export default function Signup() {
             <ScrollView contentContainerStyle={[estilos.mainView, { alignItems: "center" }]} automaticallyAdjustKeyboardInsets={true}>
                 <Text style={[estilos.subtitulo, { marginTop: 5 }]}>Mail</Text>
                 <TextInput
-                    style={[estilos.textInput, { marginTop: 5 }]}
+                    style={[estilos.textInput, { marginTop: 10}]}
                     textContentType="emailAddress"
                     keyboardType="email-address"
                     onChangeText={handleEmailChange}

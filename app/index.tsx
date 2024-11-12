@@ -5,6 +5,7 @@ import { Link } from "expo-router";
 import { router } from "expo-router";
 
 import { useUserContext } from "@/context/UserContext";
+import { red } from "react-native-reanimated/lib/typescript/reanimated2/Colors";
 
 type User = { id: number; mail: string; name: string; password: string; saldo: number };
 
@@ -96,9 +97,9 @@ export default function Login() {
                 <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
                     <Text style={estilos.subtitulo}>Ingresar</Text>
                 </Pressable>
-
-                <Link href="/signup" style={estilos.margen}>
-                    <Text>¿No tienes un usuario? Click aquí para registrarte</Text>
+                <Text >¿No tienes un usuario? </Text>
+                <Link href="/signup" >
+                    <Text style={estilos.a}>Click aquí para registrarte</Text>
                 </Link>
             </ScrollView>
         </View>

@@ -10,11 +10,50 @@ export const estilos = StyleSheet.create({
     overlay:{
         ...StyleSheet.absoluteFillObject,
         backgroundColor: "rgba(240, 240, 240, 0.8)", 
-        opacity:20
+        opacity:0.6
     },
     estilo1: {
         flex: 1
     },
+    a: {
+        color: '#0077cc',
+        textDecorationLine: 'underline', // Esto simula el subrayado de un enlace
+      },
+      aActive: {
+        color: '#003d66',
+      },
+      mainButton: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: 15,
+        borderTopLeftRadius: 5,
+        borderTopRightRadius: 5,
+        backgroundColor:  "#0082bf",
+        width: "55%",
+        borderWidth: 1,
+        borderColor: "#0082bf",
+      },
+      menu: {
+        width: "80%",
+        borderLeftWidth: 1,
+        borderRightWidth: 1,
+        borderBottomWidth: 1,
+        borderColor: "#0082bf",
+        borderBottomLeftRadius: 5,
+        borderBottomRightRadius: 5,
+        overflow: "hidden", // Asegura que las opciones se alineen sin espacio
+      },
+      option: {
+        paddingVertical: 15,
+        backgroundColor: "lightblue",
+        alignItems: "center",
+        borderBottomWidth: 1,
+        borderColor: "#0082bf",
+      },
+      lastOption: {
+        borderBottomWidth: 0, // Quita el borde inferior en la última opción
+      },
     centrado:{
         justifyContent: "center",
         alignContent: "center",
@@ -42,7 +81,7 @@ export const estilos = StyleSheet.create({
        },
     titulo: {
         
-        padding: 15,
+        padding: 10,
         fontSize: 30,
         fontWeight: "bold",
         color:  "black",
