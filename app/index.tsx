@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, Text, TextInput, View } from "react-native";
+import {ImageBackground, Pressable, ScrollView, Text, TextInput, View } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useState, useContext } from "react";
 import { Link } from "expo-router";
@@ -68,7 +68,9 @@ export default function Login() {
     }
 
     return (
-        <View style={[estilos.mainView, estilos.centrado]}>
+        <ImageBackground source={require('../assets/images/fondo.jpg') } style={estilos.background} >
+        
+        <View style={[estilos.mainView, estilos.centrado, estilos.overlay]}>
             <ScrollView contentContainerStyle={[estilos.mainView, { alignItems: "center" }]} automaticallyAdjustKeyboardInsets={true}>
                 <Text style={estilos.titulo}>Mail</Text>
                 <TextInput
@@ -100,5 +102,6 @@ export default function Login() {
                 </Link>
             </ScrollView>
         </View>
+        </ImageBackground>
     );
 }

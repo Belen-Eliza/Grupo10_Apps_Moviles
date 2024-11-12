@@ -5,6 +5,12 @@ export const estilos = StyleSheet.create({
     mainView: {
         flex: 1,
         width: "100%",
+        
+    },
+    overlay:{
+        ...StyleSheet.absoluteFillObject,
+        backgroundColor: "rgba(240, 240, 240, 0.8)", 
+        opacity:20
     },
     estilo1: {
         flex: 1
@@ -19,6 +25,11 @@ export const estilos = StyleSheet.create({
         fontSize: 25,
         fontWeight: "semibold"
     },
+    background: {
+        flex: 1,
+        resizeMode: 'cover',
+        justifyContent: 'center',
+      },
     tarjeta: {
         flex: 1,
         minWidth: "80%",
@@ -30,6 +41,7 @@ export const estilos = StyleSheet.create({
         
        },
     titulo: {
+        
         padding: 15,
         fontSize: 30,
         fontWeight: "bold",
@@ -81,6 +93,7 @@ export const colores = StyleSheet.create({
         borderWidth: 3,
         borderRadius: 5
     },
+
     menu: {
         backgroundColor: "#aeffff",
         borderRadius: 10
