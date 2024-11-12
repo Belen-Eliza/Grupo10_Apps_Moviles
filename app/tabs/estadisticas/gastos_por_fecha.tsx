@@ -140,25 +140,16 @@ export default function Gastos_por_Fecha() {
                         {chartType === "Gastos" ? "Mostrar Ingresos" : chartType === "Ingresos" ? "Mostrar Balance" : "Mostrar Gastos"}
                     </Text>
                 </Pressable>
-                {chartType === "Balance" ? (
-                    <LineChart
-                        data={dataBalance}
-                        width={screenWidth - 20} 
-                        height={screenHeight}
-                        chartConfig={chartConfig}
-                        bezier={true}
-                    />
-                ) : chartType === "Ingresos" ? (
-                    <LineChart
-                        data={dataIngresos}
-                        width={screenWidth - 20} 
-                        height={screenHeight}
-                        chartConfig={chartConfig}
-                        bezier={true}
-                    />
+                
+                {chartType === "Gastos" && datosGastos.length === 0 ? (
+                    <Text>No hay gastos en el rango de fechas seleccionado.</Text>
+                ) : chartType === "Ingresos" && datosIngresos.length === 0 ? (
+                    <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
+                ) : chartType === "Balance" && combinedData.length === 0 ? (
+                    <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
                 ) : (
                     <LineChart
-                        data={dataGastos}
+                        data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
                         width={screenWidth - 20} 
                         height={screenHeight}
                         chartConfig={chartConfig}
@@ -166,6 +157,7 @@ export default function Gastos_por_Fecha() {
                     />
                 )}
             </ScrollView>
+            
             <Modal animationType="slide" transparent={false} visible={modalVisible}>
                 <View style={[estilos.mainView, estilos.centrado]}>
                     <Text style={estilos.titulo}>Desde:</Text>
@@ -179,4 +171,5 @@ export default function Gastos_por_Fecha() {
             </Modal>
         </>
     );
+    
 }
