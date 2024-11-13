@@ -1,4 +1,5 @@
-import { Modal, Pressable, Text, TextInput, View } from "react-native";
+import { ImageBackground, Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { Modal } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useUserContext } from "@/context/UserContext";
 import { useState } from "react";
@@ -44,19 +45,44 @@ export default function Index() {
         <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={user.logout}><Text style={estilos.subtitulo}>Cerrar sesión</Text></Pressable>
       </View>
       <Modal animationType="slide" transparent={false} visible={modalVisible}>
-        <View style={[estilos.mainView,estilos.centrado]}>
-          <Text style={estilos.subtitulo}>Nuevo nombre</Text>
-          <TextInput style={[estilos.textInput,estilos.margen]} value={nombre}  keyboardType="default" onChangeText={handler_name}  defaultValue={user.nombre}></TextInput>
+    <ImageBackground source={require('@/assets/images/fondo.jpg')} style={estilos.background}>
+        <View style={estilos.formContainer}>
+            <Text style={estilos.subtitulo}>Nuevo nombre</Text>
+            <TextInput
+                style={[estilos.textInput, estilos.margen]}
+                value={nombre}
+                keyboardType="default"
+                onChangeText={handler_name}
+                defaultValue={user.nombre}
+            />
 
-          <Text style={estilos.subtitulo}>Nuevo mail</Text>
-          <TextInput style={[estilos.textInput,estilos.margen]} value={mail}  keyboardType="email-address" onChangeText={handler_mail}  defaultValue={user.mail}></TextInput>
+            <Text style={estilos.subtitulo}>Nuevo mail</Text>
+            <TextInput
+                style={[estilos.textInput, estilos.margen]}
+                value={mail}
+                keyboardType="email-address"
+                onChangeText={handler_mail}
+                defaultValue={user.mail}
+            />
 
-          <Text style={estilos.subtitulo}>Nueva contraseña</Text>
-          <TextInput style={[estilos.textInput,estilos.margen]} value={pass}  keyboardType="default" onChangeText={handler_password} secureTextEntry={true}  textContentType="password"></TextInput>
+            <Text style={estilos.subtitulo}>Nueva contraseña</Text>
+            <TextInput
+                style={[estilos.textInput, estilos.margen]}
+                value={pass}
+                keyboardType="default"
+                onChangeText={handler_password}
+                secureTextEntry={true}
+                textContentType="password"
+            />
 
-          <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={confirmar}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
+            <Pressable style={[estilos.tarjeta, colores.botones, estilos.centrado, { maxHeight: 50 }]}
+                onPress={confirmar}
+            >
+                <Text style={estilos.subtitulo}>Confirmar</Text>
+            </Pressable>
         </View>
-      </Modal>
+    </ImageBackground>
+</Modal>
       </View>}
     </View>
   );
