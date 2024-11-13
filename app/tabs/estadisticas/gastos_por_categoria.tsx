@@ -1,9 +1,10 @@
-import { Pressable, Text, View, StyleSheet, Dimensions } from "react-native";
+import { Text, View,  Dimensions } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { PieChart } from "react-native-chart-kit";
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import { Category } from "@/components/tipos";
+
 
 type Suma= {_sum:{monto:number},category_id:number}
 type Datos = {cant: number,name: string,color:string,legendFontColor: string,legendFontSize:number}

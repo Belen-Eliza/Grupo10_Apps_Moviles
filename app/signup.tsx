@@ -5,7 +5,7 @@ import { Link } from "expo-router";
 import { router } from "expo-router";
 import { useUserContext } from "@/context/UserContext";
 import { User } from "@/components/tipos";
-
+import { validateEmail,validatePassword } from "@/components/validations";
 
 export default function Signup() {
     const context = useUserContext();
@@ -17,28 +17,6 @@ export default function Signup() {
     const [errorName, setErrorName] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
     const [errorPasswordConfirm, setErrorPasswordConfirm] = useState('');
-
-    const validateEmail = (email: string) => {
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            setErrorEmail('El formato del email no es válido');
-            return false;
-        } else {
-            setErrorEmail('');
-            return true;
-        }
-    };
-
-    const validatePassword = (password: string) => {
-        const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-        if (!passwordRegex.test(password)) {
-            setErrorPassword('La contraseña debe tener al menos 8 caracteres y un carácter especial');
-            return false;
-        } else {
-            setErrorPassword('');
-            return true;
-        }
-    };
 
     const validatePasswordConfirm = (password1: string, password2: string) => {
         if (password1 !== password2) {
@@ -52,7 +30,7 @@ export default function Signup() {
 
     const handleEmailChange = (text: string) => {
         setMail(text);
-        validateEmail(text);
+        setErrorEmail(validateEmail(text));
     };
 
     const handleNameChange = (text: string) => {
@@ -62,7 +40,7 @@ export default function Signup() {
 
     const handlePasswordChange = (text: string) => {
         setPassword1(text);
-        validatePassword(text);
+        setErrorPassword(validatePassword(text));
         validatePasswordConfirm(text, password2);
     };
 

@@ -3,6 +3,7 @@ import { estilos, colores } from "@/components/global_styles";
 import { useState, useEffect } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import DropDownPicker from 'react-native-dropdown-picker';
+import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 import { router } from "expo-router";
 import Animated, {
   useAnimatedStyle,
@@ -17,20 +18,7 @@ export default function Ahorro() {
   const context = useUserContext();
   const [ingreso, setIngreso] = useState<Ingreso>({ monto: 0, descripcion: "", category_id: 0, user_id: context.id });
   const [openPicker, setOpen] = useState(false);
-  const [cat, setCat] = useState(0);
-  const [todas_categorias, setCategorias] = useState<CategoryIngreso[]>([{ id: 0, name: "", description: "" }]);
-
-  useEffect(() => {
-    (async () => {
-      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_ingresos`, {
-        method: 'GET',
-        headers: { "Content-Type": "application/json" }
-      })
-      .then(rsp => rsp.json())
-      .then(info => setCategorias(info))
-    })();
-  }, []);  
-
+  const [cat, setCat] = useState(0); 
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
@@ -105,17 +93,7 @@ export default function Ahorro() {
 
 
       <Text style={estilos.subtitulo}>Categoría</Text>
-      <DropDownPicker
-        style={[{ maxWidth: "60%" }, estilos.textInput, estilos.margen, estilos.centrado]}
-        open={openPicker}
-        value={cat}
-        items={todas_categorias.map(e => ({ value: e.id, label: `${e.name} - ${e.description}` }))}
-        setItems={setCategorias}
-        itemKey="value"
-        setOpen={setOpen}
-        setValue={setCat}
-      />
-
+      <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
 
       <Pressable
         onPressIn={handlePressIn}
