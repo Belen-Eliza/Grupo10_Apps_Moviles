@@ -8,18 +8,20 @@ type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_obj
 
 export default function DetallePresupuesto(){
     const { presupuesto_id = 0} = useLocalSearchParams();
-    const [presupuesto,setPresupuesto]=useState<Presupuesto>();
     if (presupuesto_id==0) {
+        alert("Valor inválido");
         router.dismiss();
         router.replace("/tabs");
     }
+    const [presupuesto,setPresupuesto]=useState<Presupuesto>();
+   
     useEffect(()=>{
         (async ()=>{
             try {
-                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuesto/${presupuesto_id}`,{
+                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/unico/${presupuesto_id}`,{
                     method:'GET',
                     headers:{"Content-Type":"application/json"}});
-                if (!rsp.ok) throw new Error
+                if (!rsp.ok)  throw new Error
                 else {
                     const data= await rsp.json();
                     setPresupuesto(data);

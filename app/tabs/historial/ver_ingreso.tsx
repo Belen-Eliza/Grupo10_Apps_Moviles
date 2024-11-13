@@ -7,11 +7,14 @@ import React from "react";
 
 export default function DetalleIngreso(){
     const {ingreso_id = 0} = useLocalSearchParams();
-    const [ingreso,setIngreso]=useState<Ingreso>();
     if (ingreso_id==0) {
+        alert("Valor inválido");
         router.dismiss();
         router.replace("/tabs");
     }
+
+    const [ingreso,setIngreso]=useState<Ingreso>();
+    
     useEffect(()=>{
         (async ()=>{
             try {

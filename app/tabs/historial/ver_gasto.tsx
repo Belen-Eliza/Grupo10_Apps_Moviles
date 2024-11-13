@@ -7,11 +7,14 @@ import React from "react";
 
 export default function DetalleGasto(){
     const { gasto_id = 0} = useLocalSearchParams();
-    const [gasto,setGasto]=useState<Gasto>();
     if (gasto_id==0) {
+        alert("Valor inválido");
         router.dismiss();
         router.replace("/tabs");
     }
+
+    const [gasto,setGasto]=useState<Gasto>();
+    
     useEffect(()=>{
         (async ()=>{
             try {

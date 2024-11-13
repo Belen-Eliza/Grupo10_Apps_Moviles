@@ -77,6 +77,7 @@ export default function Historial() {
   const ver_gasto=(gasto:Gasto)=>{
     router.navigate({pathname:"/tabs/historial/ver_gasto",params:{gasto_id:gasto.id}})
   }
+
   const ver_presupuesto=(presupuesto:Presupuesto)=>{
     router.navigate({pathname:"/tabs/historial/ver_presupuesto",params:{presupuesto_id:presupuesto.id}})
   }
