@@ -23,7 +23,9 @@ export default function Historial() {
   const [DateModalVisible,setDateModalVisible] = useState(false);
   const [CateModalVisible,setCatModalVisible] = useState(false);
   const [fecha_desde,setFechaDesde]=useState(new Date(0)); 
-  const [fecha_hasta,setFechaHasta]= useState(new Date())
+  let fecha = new Date();
+  fecha.setHours(23,59); //por omisión hasta hoy a las 23:59
+  const [fecha_hasta,setFechaHasta]= useState(fecha)
   const [cate_id,setCateId]=useState(0);
   const [openPicker,setOpen] = useState(false);
   

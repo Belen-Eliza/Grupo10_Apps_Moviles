@@ -17,7 +17,9 @@ export default function Gastos_por_Fecha() {
     const [datosGastos, setDatosGastos] = useState<Gasto[]>([]);
     const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
-    const [fechaHasta, setFechaHasta] = useState(new Date());
+    let fecha = new Date();
+    fecha.setHours(23,59); //por omisión hasta hoy a las 23:59
+    const [fechaHasta, setFechaHasta] = useState(fecha);
     const [modalVisible, setModalVisible] = useState(false);
     const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
 
