@@ -143,7 +143,7 @@ export const estilos = StyleSheet.create({
         padding: 10,
         borderWidth: 2,
         borderColor:"black",
-        marginVertical: 10,
+        marginBottom: 10,
         backgroundColor: "#00c8c8",
     },
     list_element:{

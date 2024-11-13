@@ -5,7 +5,7 @@ import { Text, View, Pressable, Dimensions, Modal, ScrollView } from "react-nati
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { DateRangeModal } from '@/components/DateRangeModal';
 
 type Category = { id: number; name: string; description: string };
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
@@ -13,6 +13,7 @@ type Ingreso = { id: number; monto: number; fecha: Date; category: Category };
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
+
     const [datosGastos, setDatosGastos] = useState<Gasto[]>([]);
     const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
@@ -48,6 +49,7 @@ export default function Gastos_por_Fecha() {
             } catch (e) {
                 console.log(e);
                 alert("No hay datos en ese rango");
+
             }
         };
 
@@ -80,6 +82,7 @@ export default function Gastos_por_Fecha() {
         ],
         legend: ["Ingresos"],
     };
+
 
     // Calcula el balance acumulado ordenando los ingresos y gastos por fecha
     const combinedData = [...datosIngresos.map(i => ({ ...i, tipo: 'ingreso' })), ...datosGastos.map(g => ({ ...g, tipo: 'gasto' }))]
@@ -117,14 +120,6 @@ export default function Gastos_por_Fecha() {
     };
 
     const openDatePicker = () => setModalVisible(true);
-    const closeDatePicker = () => setModalVisible(false);
-
-    const onChangeDesde = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-        setFechaDesde(selectedDate || new Date(0));
-    };
-    const onChangeHasta = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-        setFechaHasta(selectedDate || new Date());
-    };
 
     return (
         <>
@@ -199,18 +194,10 @@ export default function Gastos_por_Fecha() {
     )}
 </ScrollView>
 
-            
-            <Modal animationType="slide" transparent={false} visible={modalVisible}>
-                <View style={[estilos.mainView, estilos.centrado]}>
-                    <Text style={estilos.titulo}>Desde:</Text>
-                    <DateTimePicker style={estilos.margen} value={fechaDesde} onChange={onChangeDesde} mode="date" />
-                    <Text style={estilos.titulo}>Hasta:</Text>
-                    <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fechaHasta} mode="date" />
-                    <Pressable style={[estilos.tarjeta, estilos.centrado, colores.botones]} onPress={closeDatePicker}>
-                        <Text>Confirmar</Text>
-                    </Pressable>
-                </View>
-            </Modal>
+            <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fechaDesde} fecha_hasta={fechaHasta}
+            setDesde={setFechaDesde} setHasta={setFechaHasta}            
+            ></DateRangeModal>
+
         </>
     );
     

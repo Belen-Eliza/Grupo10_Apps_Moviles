@@ -1,7 +1,7 @@
 import { View, Pressable, Text, StyleSheet } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 
-function Boton(props: { texto: string}){
+function Boton(props: { texto: string, callback :Function}){
     
     const estilos_priv = StyleSheet.create({
         tarjeta: {
@@ -23,7 +23,7 @@ function Boton(props: { texto: string}){
     
     return(
         <View style={[estilos_priv.tarjeta,estilos.centrado, colores.botones]}>
-            <Pressable style={estilos.centrado} >
+            <Pressable onPress={()=>props.callback()} style={estilos.centrado} >
                 <Text style={[estilos_priv.texto,estilos.centrado]}>{props.texto}</Text>
             </Pressable>
         </View>
