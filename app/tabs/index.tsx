@@ -19,22 +19,45 @@ export default function Index() {
     setModalVisible(true)
   }
   const confirmar = ()=>{
-    if (nombre!=undefined) user.cambiarNombre(nombre);
-    if (mail!=undefined) user.cambiar_mail(mail);
-    if (pass!=undefined) user.cambiar_password(pass);
-    setTimeout( ()=> user.actualizar_info(user.id),200)
-   ;
-    setModalVisible(false);
+    if (nombre!=undefined ) {
+      if (nombre !== '')  {
+        user.cambiarNombre(nombre);
+        
+      }
+      else {
+        alert("El nombre no puede estar vacío");
+        handler_name(user.nombre)
+      }
+    }
+
+    if (mail!=undefined) {
+      if (validateEmail(mail).status) user.cambiar_mail(mail);
+      else {
+        alert("Formato inválido");
+        handler_mail(user.mail);
+        setErrorEmail("")
+      }
+    }
+    if (pass!=undefined) {
+      if (validatePassword(pass).status) user.cambiar_password(pass);
+      else {
+        alert("Contraseña inválida");
+        handler_password("");
+        setErrorPassword("")
+      }
+    }
+    setTimeout( ()=> user.actualizar_info(user.id),200);
+    setModalVisible(false)
     
   }
   const handleEmailChange = (text: string) => {
-    setErrorEmail(validateEmail(text));
+    setErrorEmail(validateEmail(text).msj);
     handler_mail(text);
     
 };
 
 const handlePasswordChange = (text: string) => {
-  setErrorPassword(validatePassword(text));
+  setErrorPassword(validatePassword(text).msj);
   handler_password(text);
     
 };

@@ -16,36 +16,42 @@ export default function Login() {
 
     const handleEmailChange = (text: string) => {
         setMail(text);
-        setErrorEmail(validateEmail(text));
+        setErrorEmail(validateEmail(text).msj);
     };
 
     const handlePasswordChange = (text: string) => {
         setPassword(text);
-        setErrorPassword(validatePassword(text));
+        setErrorPassword(validatePassword(text).msj);
     };
 
 
     async function login() {
         const user = { email: mail, password_attempt: password };
+        const isEmailValid = validateEmail(mail).status;
+        const isPasswordValid = validatePassword(password).status;
+        
+        if (isEmailValid && isPasswordValid ) {
 
+            try {
+                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(user),
+                });
 
-        try {
-            const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(user),
-            });
-
-            if (!rsp.ok) {
-                if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
-                throw new Error();
-            } else {
-                const datos_usuario: User = await rsp.json();
-                login_app(datos_usuario);
-                router.replace("/tabs/");
+                if (!rsp.ok) {
+                    if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
+                    throw new Error();
+                } else {
+                    const datos_usuario: User = await rsp.json();
+                    login_app(datos_usuario);
+                    router.replace("/tabs/");
+                }
+            } catch (error) {
+                alert(error);
             }
-        } catch (error) {
-            alert(error);
+        } else {
+            alert('Corrija los errores resaltados en pantalla para ingresar');
         }
     }
 

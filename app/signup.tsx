@@ -30,7 +30,7 @@ export default function Signup() {
 
     const handleEmailChange = (text: string) => {
         setMail(text);
-        setErrorEmail(validateEmail(text));
+        setErrorEmail(validateEmail(text).msj);
     };
 
     const handleNameChange = (text: string) => {
@@ -40,7 +40,7 @@ export default function Signup() {
 
     const handlePasswordChange = (text: string) => {
         setPassword1(text);
-        setErrorPassword(validatePassword(text));
+        setErrorPassword(validatePassword(text).msj);
         validatePasswordConfirm(text, password2);
     };
 
@@ -50,9 +50,9 @@ export default function Signup() {
     };
 
     async function signup() {
-        const isEmailValid = validateEmail(mail);
+        const isEmailValid = validateEmail(mail).status;
         const isNameValid = name !== '';
-        const isPasswordValid = validatePassword(password1);
+        const isPasswordValid = validatePassword(password1).status;
         const isPasswordConfirmValid = validatePasswordConfirm(password1, password2);
 
         if (isEmailValid && isNameValid && isPasswordValid && isPasswordConfirmValid) {
