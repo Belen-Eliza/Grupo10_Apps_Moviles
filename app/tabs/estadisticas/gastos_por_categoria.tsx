@@ -12,7 +12,7 @@ type Datos = {cant: number,name: string,color:string,legendFontColor: string,leg
 export default function Gastos_por_Categoria() {
     const context = useUserContext();
     const [datos,setDatos] = useState<Datos[]>([]);
-    const colors = ["rgba(131, 167, 234, 1)","#ff0080","red","#c722fd","#00d2d2","#159572"]
+    const colors = ["rgba(131, 167, 234, 1)","#ff3c9d","red","#c722fd","#00d2d2","#159572"]
     
     useEffect(()=>{
         (async ()=>{
