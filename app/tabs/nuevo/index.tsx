@@ -4,11 +4,12 @@ import { estilos } from "@/components/global_styles";
 import { Link } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons"; 
 import { useUserContext } from "@/context/UserContext";
+import { Ingreso,Gasto } from "@/components/tipos";
 
 export default function Index() {
   const context = useUserContext();
-  const [datosGastos, setDatosGastos] = useState([]); 
-  const [datosIngresos, setDatosIngresos] = useState([]);
+  const [datosGastos, setDatosGastos] = useState<Gasto[]>([]); 
+  const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,7 +44,7 @@ export default function Index() {
 
   movimientosRecientes.sort((a, b) => b.id.localeCompare(a.id));
 
-  const Item = ({ type, monto }) => (
+  const Item = ({ type, monto }:{type:string,monto:number}) => (
     <View style={styles.item}>
       <Text style={styles.title}>{type}: {monto}</Text>
     </View>
@@ -69,9 +70,9 @@ export default function Index() {
               <Text style={styles.buttonText}>Agregar Gasto</Text>
             </Pressable>
           </Link>
-          <Link href="/tabs/nuevo/ahorro" asChild>
+          <Link href="/tabs/nuevo/ingreso" asChild>
             <Pressable style={styles.button}>
-              <Text style={styles.buttonText}>Agregar Ahorro</Text>
+              <Text style={styles.buttonText}>Agregar Ingreso</Text>
             </Pressable>
           </Link>
         </View>
