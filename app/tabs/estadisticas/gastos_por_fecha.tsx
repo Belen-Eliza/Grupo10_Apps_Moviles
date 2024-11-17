@@ -1,8 +1,7 @@
-import { botonesEstado } from '@/components/global_styles';
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import { Text, View, Pressable, Dimensions, Modal, ScrollView } from "react-native";
-import { estilos, colores } from "@/components/global_styles";
+import { estilos, colores,botonesEstado } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { DateRangeModal } from '@/components/DateRangeModal';
