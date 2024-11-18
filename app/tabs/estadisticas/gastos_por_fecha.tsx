@@ -9,6 +9,11 @@ import { DateRangeModal } from '@/components/DateRangeModal';
 type Category = { id: number; name: string; description: string };
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
 type Ingreso = { id: number; monto: number; fecha: Date; category: Category };
+const today =()=>{
+  let fecha = new Date();
+  fecha.setHours(23,59);
+  return fecha
+}
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
@@ -16,9 +21,7 @@ export default function Gastos_por_Fecha() {
     const [datosGastos, setDatosGastos] = useState<Gasto[]>([]);
     const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
-    let fecha = new Date();
-    fecha.setHours(23,59); //por omisión hasta hoy a las 23:59
-    const [fechaHasta, setFechaHasta] = useState(fecha);
+    const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
     const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
 

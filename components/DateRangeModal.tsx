@@ -1,18 +1,34 @@
 import { estilos,colores } from "@/components/global_styles";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
 import { Text, View, Pressable, Modal, Platform, StyleSheet } from "react-native";
+import { useState } from "react";
 
-function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,setHasta:React.Dispatch<React.SetStateAction<Date>>}) {
+function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,
+  fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,
+  setHasta:React.Dispatch<React.SetStateAction<Date>>}) {
+    const [nuevo_desde,setNuevoDesde] = useState(props.fecha_desde);
+    const [nuevo_hasta,setNuevoHasta] = useState(props.fecha_hasta);
+
     const onChangeDesde=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
         let currentDate = new Date(0);
         if (selectedDate!=undefined) currentDate=selectedDate
-        props.setDesde(currentDate);
+        setNuevoDesde(currentDate);
       };
       const onChangeHasta=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
         let currentDate = new Date();
         if (selectedDate!=undefined) currentDate=selectedDate
-        props.setHasta(currentDate);
+        setNuevoHasta(currentDate);
       };
+      const confirmar= ()=>{
+        props.setDesde(nuevo_desde);
+        props.setHasta(nuevo_hasta);
+        props.setVisible(false);
+      }
+      const cancelar = ()=>{
+        setNuevoDesde(props.fecha_desde);
+        setNuevoHasta(props.fecha_hasta);
+        props.setVisible(false);
+      }
       if (Platform.OS === "android"){
         const showModeDesde = (currentMode: AndroidNativeProps['mode']) => {
           DateTimePickerAndroid.open({
@@ -41,12 +57,12 @@ function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.
     return (
         <Modal animationType="slide" transparent={false} visible={props.visible}>
             <View style={[estilos.mainView,estilos.centrado]}>
-
+                <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
                 <Text style={estilos.titulo}>Desde:</Text>
                 <View style={styles.androidDateTime}>
                     <Pressable onPress={showDatepickerDesde}>
                     <Text style={estilos.show_date}>
-                        {props.fecha_desde.toLocaleDateString([], {
+                        {nuevo_desde.toLocaleDateString([], {
                         weekday: "short",
                         year: "numeric",
                         month: "short",
@@ -60,7 +76,7 @@ function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.
                 <View style={styles.androidDateTime}>
                     <Pressable onPress={showDatepickerHasta}>
                         <Text style={estilos.show_date}>
-                            {props.fecha_hasta.toLocaleDateString([], {
+                            {nuevo_hasta.toLocaleDateString([], {
                             weekday: "short",
                             year: "numeric",
                             month: "short",
@@ -70,18 +86,20 @@ function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.
                     </Pressable>
                 </View> 
                 
-                <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={()=>props.setVisible(false)}><Text >Confirmar</Text></Pressable>
+                <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={confirmar}><Text >Confirmar</Text></Pressable>
             </View>
         </Modal>
     )}
     else {
-        return (<Modal animationType="slide" transparent={false} visible={props.visible}>
+        return (
+        <Modal animationType="slide" transparent={false} visible={props.visible}>
             <View style={[estilos.mainView,estilos.centrado]}>
+            <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
                 <Text style={estilos.titulo}>Desde:</Text>
                 <DateTimePicker style={estilos.margen} value={props.fecha_desde} onChange={onChangeDesde} mode="date" />
                 <Text style={estilos.titulo}>Hasta:</Text>
                 <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={props.fecha_hasta} mode="date" />
-                <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={()=>props.setVisible(false)}><Text >Confirmar</Text></Pressable>
+                <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={confirmar}><Text >Confirmar</Text></Pressable>
             </View>
         </Modal>)
     }

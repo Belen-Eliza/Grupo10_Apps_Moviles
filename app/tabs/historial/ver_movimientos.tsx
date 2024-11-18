@@ -32,7 +32,6 @@ export default function Historial() {
   const [cate_id,setCateId]=useState(0);
   const [openPicker,setOpen] = useState(false);
   
-  
   useEffect( ()=> {
     const  query= async (url:string,callback:Function) => {
       try {
@@ -92,6 +91,10 @@ export default function Historial() {
     setCatModalVisible(false);
     setSeleccion(4);
   }
+  const cancelar = ()=>{
+    setCateId(0);
+    setCatModalVisible(false);
+  }
   const limpiar_filtros = ()=>{
     setFechaDesde(new Date(0));
     setFechaHasta(new Date());
@@ -149,9 +152,10 @@ export default function Historial() {
 
     <Modal animationType="slide" transparent={false} visible={CateModalVisible}>
       <View style={[estilos.mainView,estilos.centrado]}>
-      <Text style={estilos.titulo}>Seleccionar Categoría</Text>
-      <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cate_id} set_cat_id={setCateId}></CategoryPicker>
-      <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={filtrar_por_cate}><Text >Confirmar</Text></Pressable>
+      <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
+        <Text style={estilos.titulo}>Seleccionar Categoría</Text>
+        <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cate_id} set_cat_id={setCateId}></CategoryPicker>
+        <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={filtrar_por_cate}><Text >Confirmar</Text></Pressable>
       </View>
     </Modal>
     </>
