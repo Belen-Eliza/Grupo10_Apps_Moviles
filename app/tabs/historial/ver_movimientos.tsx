@@ -1,18 +1,23 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
-import { Text, View, Pressable, Modal } from "react-native";
+import { Text, View, Pressable, Modal,Dimensions } from "react-native";
 import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
 import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
 type Ingreso = {id:number,monto: number,description: string,category: Category}
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date}
+const today = ()=>{
+  let fecha = new Date();
+  fecha.setHours(23,59);
+  return fecha
+}
 
 export default function Historial() {
   const context = useUserContext();
@@ -23,11 +28,10 @@ export default function Historial() {
   const [DateModalVisible,setDateModalVisible] = useState(false);
   const [CateModalVisible,setCatModalVisible] = useState(false);
   const [fecha_desde,setFechaDesde]=useState(new Date(0)); 
-  let fecha = new Date();
-  fecha.setHours(23,59); //por omisión hasta hoy a las 23:59
-  const [fecha_hasta,setFechaHasta]= useState(fecha)
+  const [fecha_hasta,setFechaHasta]= useState(today())
   const [cate_id,setCateId]=useState(0);
   const [openPicker,setOpen] = useState(false);
+  
   
   useEffect( ()=> {
     const  query= async (url:string,callback:Function) => {
@@ -115,17 +119,17 @@ export default function Historial() {
         <FlashList 
           data={gastos} 
           renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item,ver_gasto)}
-          estimatedItemSize={200} 
+          estimatedItemSize={400} 
           ListEmptyComponent={<Text>Todavía no has cargado ningún gasto</Text>}
         /> 
     </View>
     <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:9, 
-      display: seleccion==2? "flex":"none"
-     }}>
+      display: seleccion==2? "flex":"none" ,}}>
         <FlashList 
           data={ingresos} 
           renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item,ver_ingreso)}
           estimatedItemSize={400} 
+          
           ListEmptyComponent={<Text>Todavía no has cargado ningún ingreso</Text>}
         /> 
     </View>

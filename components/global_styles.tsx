@@ -152,6 +152,14 @@ export const estilos = StyleSheet.create({
         padding: 5,
         minWidth: "100%",
         maxHeight:400
+    },
+    show_date:{
+        borderColor: "#808080",
+        borderRadius: 5,
+        borderWidth: 2,
+        padding: 8,
+        backgroundColor: "white",
+        marginVertical:10 
     }
 });
 

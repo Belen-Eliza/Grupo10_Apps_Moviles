@@ -45,7 +45,7 @@ function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.
                 <Text style={estilos.titulo}>Desde:</Text>
                 <View style={styles.androidDateTime}>
                     <Pressable onPress={showDatepickerDesde}>
-                    <Text style={styles.show_date}>
+                    <Text style={estilos.show_date}>
                         {props.fecha_desde.toLocaleDateString([], {
                         weekday: "short",
                         year: "numeric",
@@ -59,7 +59,7 @@ function DateRangeModal(props:{visible:boolean,setVisible: React.Dispatch<React.
                 <Text style={estilos.titulo}>Hasta:</Text>
                 <View style={styles.androidDateTime}>
                     <Pressable onPress={showDatepickerHasta}>
-                        <Text style={styles.show_date}>
+                        <Text style={estilos.show_date}>
                             {props.fecha_hasta.toLocaleDateString([], {
                             weekday: "short",
                             year: "numeric",
@@ -91,12 +91,6 @@ const styles = StyleSheet.create({
     androidDateTime: {
       flexDirection: "row",
       justifyContent: "space-around",
-    },
-    show_date:{
-        borderColor: "#808080",
-        borderRadius: 5,
-        borderWidth: 2,
-        padding: 8
     }
   });
 

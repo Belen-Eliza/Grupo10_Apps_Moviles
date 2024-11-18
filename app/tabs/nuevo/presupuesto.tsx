@@ -1,9 +1,9 @@
-import {Pressable, Text, TextInput, ScrollView, View } from "react-native";
+import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
+import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
 
 type Presupuesto = { descripcion: string, montoTotal : number,cant_cuotas : number, 
                     fecha_objetivo: string, total_acumulado: number,user_id: number}
@@ -43,6 +43,17 @@ export default function Presupuesto() {
         if (selectedDate!=undefined) currentDate=selectedDate
         setFecha(currentDate);
       };
+      const showMode = (currentMode: AndroidNativeProps['mode']) => {
+        DateTimePickerAndroid.open({
+          value: fecha,
+          onChange:onChangeDate,
+          mode: currentMode,
+          is24Hour: false,
+        });
+      };
+    const showDatepicker = () => {
+        showMode("date");
+    };
 
     const confirmar = async ()=>{
         presupuesto.fecha_objetivo=fecha.toISOString()
@@ -79,10 +90,34 @@ export default function Presupuesto() {
             <TextInput style={[estilos.textInput,estilos.poco_margen]} keyboardType="default" onChangeText={handler_descripcion}></TextInput>
 
             <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
-            <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" />
+            {Platform.OS==='android' ?
+                <View style={styles.androidDateTime}>
+                <Pressable onPress={showDatepicker}>
+                    <Text style={estilos.show_date}>
+                        {fecha.toLocaleDateString([], {
+                            weekday: "short",
+                            year: "numeric",
+                            month: "short",
+                            day: "2-digit",
+                        })}
+                    </Text>
+                </Pressable>
+                </View> 
+                :
+                <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" />
+            }
+            
 
             <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
         </ScrollView>
         </View>
     );
 }
+
+
+const styles = StyleSheet.create({
+    androidDateTime: {
+      flexDirection: "row",
+      justifyContent: "space-around",
+    }
+  });
