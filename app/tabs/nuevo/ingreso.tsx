@@ -1,8 +1,7 @@
 import { Text, View, TextInput, Pressable } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
-import DropDownPicker from 'react-native-dropdown-picker';
 import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 import { router } from "expo-router";
 import Animated, {
@@ -11,8 +10,10 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 
-type CategoryIngreso = { id: number, name: string, description: string };
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
+function es_valido(ingreso:Ingreso){
+  return ingreso.category_id!=0 && ingreso.monto!=0 //descripción opcional
+}
 
 export default function Ahorro() {
   const context = useUserContext();
@@ -35,22 +36,27 @@ export default function Ahorro() {
 
   const confirmar = async () => {
     ingreso.category_id = cat;
-    try {
-      const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(ingreso)
-      });
+    if (!es_valido(ingreso)){
+      alert("Complete los campos vacíos para continuar");
+    }
+    else {
+      try {
+        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(ingreso)
+        });
 
-      if (!rsp.ok) {
-        throw new Error("Error en la operación");
+        if (!rsp.ok) {
+          throw new Error("Error en la operación");
+        }
+        context.actualizar_info(context.id);
+        alert("Operación exitosa");
+        router.dismiss();
+        router.replace("/tabs");
+      } catch (e) {
+        alert(e);
       }
-      context.actualizar_info(context.id);
-      alert("Operación exitosa");
-      router.dismiss();
-      router.replace("/tabs");
-    } catch (e) {
-      alert(e);
     }
   };
 

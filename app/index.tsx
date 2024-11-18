@@ -1,4 +1,4 @@
-import { ImageBackground, Pressable, Text, TextInput, View, StyleSheet } from "react-native";
+import { ImageBackground, Pressable, Text, TextInput, View, ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useState } from "react";
 import { Link } from "expo-router";
@@ -57,8 +57,8 @@ export default function Login() {
 
     return (
         <ImageBackground source={require('../assets/images/fondo.jpg')} style={estilos.background}>
-            <View style={estilos.centeredContainer}>
-                <View style={estilos.formContainer}>
+            <View style={estilos.formContainer}>
+                <ScrollView contentContainerStyle={estilos.centrado}>
                     <Text style={estilos.titulo}>Mail</Text>
                     <TextInput
                         style={[estilos.textInput,estilos.poco_margen]}
@@ -80,7 +80,9 @@ export default function Login() {
                     />
                     {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
-                    <Pressable onPress={login} style={[estilos.tarjeta,estilos.poco_margen, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
+                    
+                </ScrollView>
+                <Pressable onPress={login} style={[estilos.tarjeta,estilos.poco_margen, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
                         <Text style={estilos.subtitulo}>Ingresar</Text>
                     </Pressable>
 
@@ -91,7 +93,6 @@ export default function Login() {
                             <Text style={estilos.a}>Click aquí para registrarte</Text>
                         </Link>
                     </View>
-                </View>
             </View>
         </ImageBackground>
     );
