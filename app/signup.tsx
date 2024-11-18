@@ -80,10 +80,11 @@ export default function Signup() {
 
     return (
         <ImageBackground source={require('../assets/images/fondo.jpg')} style={estilos.background}>
-            <ScrollView contentContainerStyle={estilos.formContainer} automaticallyAdjustKeyboardInsets={true}>
-                <Text style={[estilos.titulo]}>Mail</Text>
+            <View style={[estilos.formContainer,estilos.centrado,{height:700}]}>
+            <ScrollView automaticallyAdjustKeyboardInsets={true} contentContainerStyle={estilos.centrado}>
+                <Text style={[estilos.titulo,estilos.centrado]}>Mail</Text>
                 <TextInput
-                    style={[estilos.textInput]}
+                    style={[estilos.textInput,estilos.poco_margen]}
                     textContentType="emailAddress"
                     keyboardType="email-address"
                     onChangeText={handleEmailChange}
@@ -94,7 +95,7 @@ export default function Signup() {
 
                 <Text style={estilos.titulo}>Nombre de usuario</Text>
                 <TextInput
-                    style={[estilos.textInput]}
+                    style={[estilos.textInput,estilos.poco_margen]}
                     onChangeText={handleNameChange}
                     value={name}
                 />
@@ -102,7 +103,7 @@ export default function Signup() {
 
                 <Text style={estilos.titulo}>Contraseña</Text>
                 <TextInput
-                    style={[estilos.textInput]}
+                    style={[estilos.textInput,estilos.poco_margen]}
                     secureTextEntry={true}
                     textContentType="password"
                     onChangeText={handlePasswordChange}
@@ -112,7 +113,7 @@ export default function Signup() {
 
                 <Text style={estilos.titulo}>Confirmar contraseña</Text>
                 <TextInput
-                    style={[estilos.textInput]}
+                    style={[estilos.textInput,estilos.poco_margen]}
                     secureTextEntry={true}
                     textContentType="password"
                     onChangeText={handlePasswordConfirmChange}
@@ -120,7 +121,9 @@ export default function Signup() {
                 />
                 {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
 
-                <Pressable onPress={signup} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
+                
+            </ScrollView>
+            <Pressable onPress={signup} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
                     <Text style={estilos.subtitulo}>Registrarse</Text>
                 </Pressable>
 
@@ -130,7 +133,7 @@ export default function Signup() {
                         <Text style={estilos.a}>Click aquí para ingresar</Text>
                     </Link>
                 </View>
-            </ScrollView>
+            </View>
         </ImageBackground>
     );
 }

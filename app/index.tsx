@@ -61,7 +61,7 @@ export default function Login() {
                 <View style={estilos.formContainer}>
                     <Text style={estilos.titulo}>Mail</Text>
                     <TextInput
-                        style={[estilos.textInput]}
+                        style={[estilos.textInput,estilos.poco_margen]}
                         textContentType="emailAddress"
                         keyboardType="email-address"
                         onChangeText={handleEmailChange}
@@ -72,7 +72,7 @@ export default function Login() {
 
                     <Text style={estilos.titulo}>Contraseña</Text>
                     <TextInput
-                        style={[estilos.textInput]}
+                        style={[estilos.textInput,estilos.poco_margen]}
                         secureTextEntry={true}
                         textContentType="password"
                         onChangeText={handlePasswordChange}
@@ -80,7 +80,7 @@ export default function Login() {
                     />
                     {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
-                    <Pressable onPress={login} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
+                    <Pressable onPress={login} style={[estilos.tarjeta,estilos.poco_margen, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
                         <Text style={estilos.subtitulo}>Ingresar</Text>
                     </Pressable>
 

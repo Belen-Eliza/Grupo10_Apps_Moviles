@@ -118,6 +118,7 @@ export const estilos = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
+        height: 500
     },
     signupContainer: {
         flexDirection: 'row',

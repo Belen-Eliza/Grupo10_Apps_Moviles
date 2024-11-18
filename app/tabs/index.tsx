@@ -15,8 +15,13 @@ export default function Index() {
   const [errorEmail, setErrorEmail] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
 
-  const editar_perfil= ()=>{
-    setModalVisible(true)
+  const cancelar = ()=>{
+    handler_name(undefined);
+    handler_mail(undefined);
+    handler_password(undefined);
+    setErrorEmail("");
+    setErrorPassword("");
+    setModalVisible(false);
   }
   const confirmar = ()=>{
     if (nombre!=undefined ) {
@@ -78,13 +83,15 @@ const handlePasswordChange = (text: string) => {
       <View style={{flex: 3, alignItems:"center",justifyContent:"space-evenly"}}>
         <Text style={estilos.subtitulo} >Su balance actual es: </Text>
         <Text style={estilos.titulo}>${user.saldo}</Text>
-        <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={editar_perfil}><Text style={estilos.subtitulo}>Editar perfil</Text></Pressable>
+        <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={()=> setModalVisible(true)}><Text style={estilos.subtitulo}>Editar perfil</Text></Pressable>
         <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={user.logout}><Text style={estilos.subtitulo}>Cerrar sesión</Text></Pressable>
       </View>
 
       <Modal animationType="slide" transparent={false} visible={modalVisible}>
       <ImageBackground source={require('@/assets/images/fondo.jpg')} style={estilos.background}>
+      
           <View style={estilos.formContainer}>
+          <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
             <ScrollView automaticallyAdjustKeyboardInsets={true}>
               <Text style={estilos.subtitulo}>Nuevo nombre</Text>
               <TextInput
