@@ -1,7 +1,7 @@
 
 import { Pressable, Text, TextInput, View } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
@@ -19,15 +19,17 @@ type Gasto = {
   user_id: number;
 };
 
-
+function es_valido(gasto:Gasto){
+  return gasto.cant_cuotas!=0 && gasto.category_id!=0 && gasto.monto!=0
+}
 export default function Gasto() {
-  const inicial: Gasto = { monto: 0, category_id: 0, cant_cuotas: 1, user_id: 0 };
+  const inicial: Gasto = { monto: 0, category_id: 0, cant_cuotas: 0, user_id: 0 };
   const [gasto, setGasto] = useState(inicial);
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0);
   const context = useUserContext();
 
-
+  
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
     if (Number.isNaN(aux)) {
@@ -53,23 +55,28 @@ export default function Gasto() {
     gasto.category_id = cat;
     gasto.user_id = context.id;
 
-    try {
-      const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
-        method: 'POST',
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(gasto)
-      });
+    if (!es_valido(gasto)){
+      alert("Complete todos los campos para continuar");
+    }
+    else {
+      try {
+        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(gasto)
+        });
 
-      if (!rsp.ok) {
-        throw new Error("Error en la operación");
+        if (!rsp.ok) {
+          throw new Error("Error en la operación");
+        }
+
+        context.actualizar_info(context.id);
+        alert("Operación exitosa");
+        router.dismiss();
+        router.replace("/tabs");
+      } catch (e) {
+        alert(e);
       }
-
-      context.actualizar_info(context.id);
-      alert("Operación exitosa");
-      router.dismiss();
-      router.replace("/tabs");
-    } catch (e) {
-      alert(e);
     }
   };
 
