@@ -26,6 +26,7 @@ export default function Gastos_por_Fecha() {
     const [modalVisible, setModalVisible] = useState(false);
     const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
 
+    const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
@@ -68,12 +69,12 @@ export default function Gastos_por_Fecha() {
 
     const screenWidth = Dimensions.get("window").width;
     const screenHeight = Dimensions.get("window").height * 0.5; 
-    const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
+    
     const dataGastos = {
         
         labels: datosGastos.map((g) => {
             let fecha =new Date(g.fecha);
-            return fecha.getDate() + " " + meses [fecha.getMonth()]
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
         }),
         datasets: [
             {
@@ -86,7 +87,10 @@ export default function Gastos_por_Fecha() {
     };
 
     const dataIngresos = {
-        labels: datosIngresos.map((i) => new Date(i.fecha).toDateString()),
+        labels: datosIngresos.map((i) => {
+            let fecha =new Date(i.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
+        }),
         datasets: [
             {
                 data: datosIngresos.map((i) => i.monto),
@@ -104,7 +108,10 @@ export default function Gastos_por_Fecha() {
 
     let balance = 0;
     const dataBalance = {
-        labels: combinedData.map(d => new Date(d.fecha).toDateString()),
+        labels: combinedData.map(d => {
+            let fecha = new Date(d.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
+        }),
         datasets: [
             {
                 data: combinedData.map(d => {
@@ -200,7 +207,7 @@ export default function Gastos_por_Fecha() {
     ) : (
         <LineChart
             data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
-            width={screenWidth - 20} 
+            width={screenWidth } 
             height={screenHeight}
             chartConfig={chartConfig}
             bezier={true}
