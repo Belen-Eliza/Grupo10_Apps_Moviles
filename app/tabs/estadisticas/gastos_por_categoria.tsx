@@ -5,6 +5,8 @@ import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import { Category } from "@/components/tipos";
 import { FontAwesome } from "@expo/vector-icons";
+import { useFocusEffect } from "expo-router"; //libreria corecta?
+import React from "react";
 
 
 type Suma= {_sum:{monto:number},category_id:number}
@@ -12,10 +14,11 @@ type Datos = {cant: number,name: string,color:string,legendFontColor: string,leg
 
 export default function Gastos_por_Categoria() {
     const context = useUserContext();
-    const [datos,setDatos] = useState<Datos[]>([]);
+    const [datos,setDatos] = useState<Datos[]>();
     const colors = ["rgba(131, 167, 234, 1)","#ff3c9d","red","#c722fd","#00d2d2","#159572"]
-    
-    useEffect(()=>{
+
+    useFocusEffect(
+      React.useCallback(() => {
         (async ()=>{
           try{
             const cat =await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
@@ -40,16 +43,19 @@ export default function Gastos_por_Categoria() {
  
           }
           catch(e){
-            console.log(e)
-            alert("No has cargado ningún gasto")
+            console.log(e);
           }
         })();
-
-    },[context.id])
-
+    
+        return () => {
+          false;
+        };
+      }, [context.id])
+    );
+    
   return (
     <View style={[{flex: 1},estilos.centrado]} >
-      {datos==undefined ? <Text>No hay gastos</Text>:
+      {datos==undefined ? <Text>Todavía no has cargado gastos</Text>:
       <View>
         <PieChart
           data={datos}

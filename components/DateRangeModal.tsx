@@ -55,7 +55,7 @@ function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<Reac
      
       
     return (
-        <Modal animationType="slide" transparent={false} visible={props.visible}>
+        <Modal animationType="slide" transparent={false} visible={props.visible} onRequestClose={cancelar}>
             <View style={[estilos.mainView,estilos.centrado]}>
                 <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
                 <Text style={estilos.titulo}>Desde:</Text>

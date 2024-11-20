@@ -53,7 +53,7 @@ export default function Index() {
     }
     setTimeout( ()=> user.actualizar_info(user.id),200);
     setModalVisible(false)
-    
+    alert("Cambios aplicados");
   }
   const handleEmailChange = (text: string) => {
     setErrorEmail(validateEmail(text).msj);
@@ -87,7 +87,7 @@ const handlePasswordChange = (text: string) => {
         <Pressable style={[estilos.tarjeta,colores.botones,estilos.centrado]} onPress={user.logout}><Text style={estilos.subtitulo}>Cerrar sesión</Text></Pressable>
       </View>
 
-      <Modal animationType="slide" transparent={false} visible={modalVisible}>
+      <Modal animationType="slide" transparent={false} visible={modalVisible} onRequestClose={cancelar} >
       <ImageBackground source={require('@/assets/images/fondo.jpg')} style={estilos.background}>
       
           <View style={estilos.formContainer}>

@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/UserContext";
-import { useState, useEffect } from "react";
-import { Text, View, Pressable, Modal,Dimensions } from "react-native";
+import { useState } from "react";
+import { Text, View, Pressable, Modal } from "react-native";
 import { FlashList,ListRenderItemInfo } from "@shopify/flash-list";
 import { estilos,colores } from "@/components/global_styles";
 import React from 'react';
@@ -32,49 +32,57 @@ export default function Historial() {
   const [cate_id,setCateId]=useState(0);
   const [openPicker,setOpen] = useState(false);
   
-  useEffect( ()=> {
-    const  query= async (url:string,callback:Function) => {
-      try {
-        const rsp = await fetch(url,{
-          method:'GET',
-          headers:{"Content-Type":"application/json"}})
-        if (!rsp.ok ) {
-          if (rsp.status!=400)  throw new Error(rsp.status.toString()+", en Historial")
-        } else{
-          const info = await rsp.json();
-          callback(info);
-        }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const  query= async (url:string,callback:Function) => {
+        try {
+          const rsp = await fetch(url,{
+            method:'GET',
+            headers:{"Content-Type":"application/json"}})
+          if (!rsp.ok ) {
+            if (rsp.status!=400)  throw new Error(rsp.status.toString()+", en Historial")
+          } else{
+            const info = await rsp.json();
+            callback(info);
+          }
+        
+      } catch (error) {
+        console.log(error)
+      }
+      }
       
-    } catch (error) {
-      console.log(error)
-    }
-    }
-    switch (seleccion) {
-      case 1:
-        (async ()=>{
-          const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
-        }) ();
-        break;
-
-      case 2:
-        (async ()=>{
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
-        }) ();
-        break;
-
-      case 3:
-        (async ()=>{
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
-        }) ();        
-        break;
-      case 4:
-        (async ()=>{
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}/${cate_id}`,setGastos)
-        }) ();
-        break;
-    }    
-  }, [context.id,seleccion,fecha_desde,fecha_hasta]  )
+      switch (seleccion) {
+        case 1:
+          (async ()=>{
+            const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
+          }) ();
+          break;
+  
+        case 2:
+          (async ()=>{
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
+          }) ();
+          break;
+  
+        case 3:
+          (async ()=>{
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
+          }) ();        
+          break;
+        case 4:
+          (async ()=>{
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}/${cate_id}`,setGastos)
+          }) ();
+          break;
+      }    
+  
+      return () => {
+       false;
+      };
+    }, [context.id,seleccion,fecha_desde,fecha_hasta])
+  );
 
   const ver_ingreso=(ingreso:Ingreso)=>{
     router.navigate({pathname:"/tabs/historial/ver_ingreso",params:{ingreso_id:ingreso.id}})
@@ -150,7 +158,7 @@ export default function Historial() {
     <DateRangeModal visible={DateModalVisible} setVisible={setDateModalVisible} fecha_desde={fecha_desde} fecha_hasta={fecha_hasta}
                     setDesde={setFechaDesde} setHasta={setFechaHasta}></DateRangeModal>
 
-    <Modal animationType="slide" transparent={false} visible={CateModalVisible}>
+    <Modal animationType="slide" transparent={false} visible={CateModalVisible} onRequestClose={cancelar}>
       <View style={[estilos.mainView,estilos.centrado]}>
       <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
         <Text style={estilos.titulo}>Seleccionar Categoría</Text>

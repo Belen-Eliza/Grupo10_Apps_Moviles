@@ -1,10 +1,11 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
-import { Text, View, Pressable, Dimensions, Modal, ScrollView } from "react-native";
+import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
 import { estilos, colores,botonesEstado } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { DateRangeModal } from '@/components/DateRangeModal';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Category = { id: number; name: string; description: string };
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
@@ -25,7 +26,46 @@ export default function Gastos_por_Fecha() {
     const [modalVisible, setModalVisible] = useState(false);
     const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
 
-    useEffect(() => {
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchData = async () => {
+                const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
+                try {
+                    const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    });
+                    if (rspGastos.ok) {
+                        const gastosData = await rspGastos.json();
+                        setDatosGastos(gastosData);
+                    } else {
+                        console.error("Error al obtener datos de gastos");
+                    }
+    
+                    const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    });
+                    if (rspIngresos.ok) {
+                        const ingresosData = await rspIngresos.json();
+                        setDatosIngresos(ingresosData);
+                    } else {
+                        console.error("Error al obtener datos de ingresos");
+                    }
+                } catch (e) {
+                    console.log(e);
+                    alert("No hay datos en ese rango");
+    
+                }
+            };
+    
+            fetchData();
+          return () => {
+            false
+          };
+        }, [context.id, fechaDesde, fechaHasta])
+      );
+   /*  useEffect(() => {
         const fetchData = async () => {
             const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
             try {
@@ -58,7 +98,7 @@ export default function Gastos_por_Fecha() {
         };
 
         fetchData();
-    }, [context.id, fechaDesde, fechaHasta]);
+    }, [context.id, fechaDesde, fechaHasta]); */
 
     const screenWidth = Dimensions.get("window").width;
     const screenHeight = Dimensions.get("window").height * 0.5; 
