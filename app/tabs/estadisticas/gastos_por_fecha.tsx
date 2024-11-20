@@ -65,46 +65,16 @@ export default function Gastos_por_Fecha() {
           };
         }, [context.id, fechaDesde, fechaHasta])
       );
-   /*  useEffect(() => {
-        const fetchData = async () => {
-            const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
-            try {
-                const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-                if (rspGastos.ok) {
-                    const gastosData = await rspGastos.json();
-                    setDatosGastos(gastosData);
-                } else {
-                    console.error("Error al obtener datos de gastos");
-                }
-
-                const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-                if (rspIngresos.ok) {
-                    const ingresosData = await rspIngresos.json();
-                    setDatosIngresos(ingresosData);
-                } else {
-                    console.error("Error al obtener datos de ingresos");
-                }
-            } catch (e) {
-                console.log(e);
-                alert("No hay datos en ese rango");
-
-            }
-        };
-
-        fetchData();
-    }, [context.id, fechaDesde, fechaHasta]); */
 
     const screenWidth = Dimensions.get("window").width;
     const screenHeight = Dimensions.get("window").height * 0.5; 
-
+    const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
     const dataGastos = {
-        labels: datosGastos.map((g) => new Date(g.fecha).toDateString()),
+        
+        labels: datosGastos.map((g) => {
+            let fecha =new Date(g.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()]
+        }),
         datasets: [
             {
                 data: datosGastos.map((g) => g.monto),
@@ -234,6 +204,8 @@ export default function Gastos_por_Fecha() {
             height={screenHeight}
             chartConfig={chartConfig}
             bezier={true}
+            yAxisLabel="$"
+            fromZero={true}
         />
     )}
 </ScrollView>

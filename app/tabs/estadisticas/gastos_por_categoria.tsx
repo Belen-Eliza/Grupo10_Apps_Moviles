@@ -5,7 +5,7 @@ import { useUserContext } from "@/context/UserContext";
 import { useState, useEffect } from "react";
 import { Category } from "@/components/tipos";
 import { FontAwesome } from "@expo/vector-icons";
-import { useFocusEffect } from "expo-router"; //libreria corecta?
+import { useFocusEffect } from "expo-router";
 import React from "react";
 
 
