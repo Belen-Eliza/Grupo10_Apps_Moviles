@@ -7,10 +7,13 @@ import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNati
 
 type Presupuesto = { descripcion: string, montoTotal : number,cant_cuotas : number, 
                     fecha_objetivo: string, total_acumulado: number,user_id: number}
+function es_valido(presupuesto :Presupuesto){
+    return presupuesto.cant_cuotas!=0 && presupuesto.descripcion.length!=0 && presupuesto.montoTotal!=0 
+}
 
 export default function Presupuesto() {
     const context =useUserContext();
-    const [presupuesto,setPresupuesto] =useState<Presupuesto>({descripcion:"",montoTotal:0,cant_cuotas:0,fecha_objetivo: (new Date()).toISOString(),total_acumulado:0,user_id:context.id});
+    const [presupuesto,setPresupuesto] =useState<Presupuesto>({descripcion:"",montoTotal:0,cant_cuotas:0,fecha_objetivo: "",total_acumulado:0,user_id:context.id});
     const [fecha,setFecha]= useState(new Date())
     const handler_descripcion = (input:string)=>{
         setPresupuesto(pre=>{
@@ -49,6 +52,7 @@ export default function Presupuesto() {
           onChange:onChangeDate,
           mode: currentMode,
           is24Hour: false,
+          minimumDate:new Date()
         });
       };
     const showDatepicker = () => {
@@ -59,21 +63,27 @@ export default function Presupuesto() {
         presupuesto.fecha_objetivo=fecha.toISOString()
         presupuesto.user_id=context.id;
         presupuesto.total_acumulado=0;
-        try {
-            const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/`,{
-                method:'POST',
-                headers:{"Content-Type":"application/json"},
-                body:JSON.stringify(presupuesto)})
-        
-            if (!rsp.ok){
-                throw new Error
-            }
-            alert("Operación exitosa");
-            router.dismiss();
-            router.replace("/tabs");}
-        catch (e){
-            alert(e)
-        }  
+        if (!es_valido(presupuesto) || fecha<=(new Date())){
+            alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
+        }
+        else {
+            try {
+                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/`,{
+                    method:'POST',
+                    headers:{"Content-Type":"application/json"},
+                    body:JSON.stringify(presupuesto)})
+            
+                if (!rsp.ok){
+                    throw new Error
+                }
+                alert("Operación exitosa");
+                router.dismiss();
+                router.replace("/tabs");}
+            catch (e){
+                alert(e)
+            } 
+        }
+         
     }
 
 
@@ -104,7 +114,7 @@ export default function Presupuesto() {
                 </Pressable>
                 </View> 
                 :
-                <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" />
+                <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" minimumDate={new Date()}/>
             }
             
 
