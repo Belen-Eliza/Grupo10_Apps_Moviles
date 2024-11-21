@@ -6,6 +6,7 @@ import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { DateRangeModal } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
+import { Alternar } from "@/components/botones";
 
 type Category = { id: number; name: string; description: string };
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
@@ -24,7 +25,8 @@ export default function Gastos_por_Fecha() {
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
     const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
-    const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
+    //const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
+    const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
 
     const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
     useFocusEffect(
@@ -150,63 +152,19 @@ export default function Gastos_por_Fecha() {
     </Pressable>
 
     {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
-    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%', paddingHorizontal: 10 }}>
-    <Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Gastos" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Gastos")}
->
-    <Text style={{ color: chartType === "Gastos" ? "white" : "black" }}>Gastos</Text>
-</Pressable>
-
-<Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Ingresos" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Ingresos")}
->
-    <Text style={{ color: chartType === "Ingresos" ? "white" : "black" }}>Ingresos</Text>
-</Pressable>
-
-<Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Balance" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Balance")}
->
-    <Text style={{ color: chartType === "Balance" ? "white" : "black" }}>Balance</Text>
-</Pressable>
-    </View>
+    
+    <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
     {/* Mostrar el gráfico correspondiente */}
-    {chartType === "Gastos" && datosGastos.length === 0 ? (
+    {chartType === 0 && datosGastos.length === 0 ? (
         <Text>No hay gastos en el rango de fechas seleccionado.</Text>
-    ) : chartType === "Ingresos" && datosIngresos.length === 0 ? (
+    ) : chartType === 1 && datosIngresos.length === 0 ? (
         <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
-    ) : chartType === "Balance" && combinedData.length === 0 ? (
+    ) : chartType === 2 && combinedData.length === 0 ? (
         <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
     ) : (
         <LineChart
-            data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
+            data={chartType === 2 ? dataBalance : chartType === 1 ? dataIngresos : dataGastos}
             width={screenWidth } 
             height={screenHeight}
             chartConfig={chartConfig}

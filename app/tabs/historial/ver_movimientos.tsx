@@ -8,6 +8,7 @@ import { renderGasto, renderIngreso,renderPresupuesto } from "@/components/rende
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
+import { Alternar } from "@/components/botones";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
@@ -24,7 +25,7 @@ export default function Historial() {
   const [gastos,setGastos]= useState<Gasto[]>([]);
   const [ingresos,setIngresos]= useState<Ingreso[]>([]);
   const [presupuestos,setPresupuestos]= useState<Presupuesto[]>([]);
-  const [seleccion,setSeleccion]=useState(1) //1 gastos, 2 ingresos, 3 presupuestos, 4 filtrar gastos por categoria
+  const [seleccion,setSeleccion]=useState(0) //0 gastos, 1 ingresos, 2 presupuestos, 4 filtrar gastos por categoria
   const [DateModalVisible,setDateModalVisible] = useState(false);
   const [CateModalVisible,setCatModalVisible] = useState(false);
   const [fecha_desde,setFechaDesde]=useState(new Date(0)); 
@@ -111,14 +112,11 @@ export default function Historial() {
   }
   
   return (<>
-    <View style={{flexDirection:"row", alignContent:"center",flex: 2}}>
-      <Pressable onPress={()=>setSeleccion(1)} style={[estilos.boton1,estilos.centrado]}><Text>Gastos</Text></Pressable>
-      <Pressable onPress={()=>setSeleccion(2)} style={[estilos.boton1,estilos.centrado]}><Text>Ingresos</Text></Pressable>
-      <Pressable onPress={()=>setSeleccion(3)} style={[estilos.boton1,estilos.centrado]}><Text>Presupuestos</Text></Pressable>
-    </View>
+   
+    <Alternar activo={seleccion} callback={setSeleccion} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Presupuestos",params_callback:2}]}></Alternar>
     
     <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:8, 
-      display: seleccion==1 || seleccion==4? "flex":"none"
+      display: seleccion==0 || seleccion==4? "flex":"none"
      }}>
       <View style={{flexDirection:"row", alignContent:"center",minWidth:"100%",maxHeight:70}}>
         <Text style={[estilos.subtitulo,]}>Filtrar por: </Text>
@@ -135,7 +133,7 @@ export default function Historial() {
         /> 
     </View>
     <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:9, 
-      display: seleccion==2? "flex":"none" ,}}>
+      display: seleccion==1? "flex":"none" ,}}>
         <FlashList 
           data={ingresos} 
           renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item,ver_ingreso)}
@@ -145,7 +143,7 @@ export default function Historial() {
         /> 
     </View>
     <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:9, 
-      display: seleccion==3? "flex":"none"
+      display: seleccion==2? "flex":"none"
      }}>
         <FlashList 
           data={presupuestos} 
