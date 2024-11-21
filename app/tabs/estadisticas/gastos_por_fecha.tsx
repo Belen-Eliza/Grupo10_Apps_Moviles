@@ -1,16 +1,15 @@
 import { useUserContext } from "@/context/UserContext";
-import { useState, useEffect } from "react";
+import { useState, } from "react";
 import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
-import { estilos, colores,botonesEstado } from "@/components/global_styles";
+import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { DateRangeModal } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar } from "@/components/botones";
 
-type Category = { id: number; name: string; description: string };
-type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
-type Ingreso = { id: number; monto: number; fecha: Date; category: Category };
+type DatosGasto = { fecha: Date; _sum: {monto: number} };
+type DatosIngreso = { fecha: Date; _sum: {monto: number} };
 const today =()=>{
   let fecha = new Date();
   fecha.setHours(23,59);
@@ -20,12 +19,11 @@ const today =()=>{
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
 
-    const [datosGastos, setDatosGastos] = useState<Gasto[]>([]);
-    const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
+    const [datosGastos, setDatosGastos] = useState<DatosGasto[]>([]);
+    const [datosIngresos, setDatosIngresos] = useState<DatosIngreso[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
     const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
-    //const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
     const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
 
     const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
@@ -80,7 +78,7 @@ export default function Gastos_por_Fecha() {
         }),
         datasets: [
             {
-                data: datosGastos.map((g) => g.monto),
+                data: datosGastos.map((g) => g._sum.monto),
                 color: (opacity = 1) => `rgba(255, 69, 0, ${opacity})`, // rojo para gastos
                 strokeWidth: 4,
             },
@@ -95,7 +93,7 @@ export default function Gastos_por_Fecha() {
         }),
         datasets: [
             {
-                data: datosIngresos.map((i) => i.monto),
+                data: datosIngresos.map((i) => i._sum.monto),
                 color: (opacity = 1) => `rgba(34, 139, 34, ${opacity})`, // verde para ingresos
                 strokeWidth: 4,
             },
@@ -117,7 +115,7 @@ export default function Gastos_por_Fecha() {
         datasets: [
             {
                 data: combinedData.map(d => {
-                    balance += d.tipo === 'ingreso' ? d.monto : -d.monto;
+                    balance += d.tipo === 'ingreso' ? d._sum.monto : -d._sum.monto;
                     return balance;
                 }),
                 color: (opacity = 1) => `rgba(70, 130, 180, ${opacity})`, // azul para balance
