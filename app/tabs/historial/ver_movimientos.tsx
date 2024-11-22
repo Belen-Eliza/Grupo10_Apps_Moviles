@@ -12,7 +12,7 @@ import { Alternar } from "@/components/botones";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
-type Ingreso = {id:number,monto: number,description: string,category: Category}
+type Ingreso = {id:number,monto: number,description: string,category: Category, fecha: Date}
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date}
 const today = ()=>{
   let fecha = new Date();

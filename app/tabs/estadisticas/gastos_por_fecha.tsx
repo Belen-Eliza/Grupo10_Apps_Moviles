@@ -8,8 +8,8 @@ import { DateRangeModal } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar } from "@/components/botones";
 
-type DatosGasto = { fecha: Date; _sum: {monto: number} };
-type DatosIngreso = { fecha: Date; _sum: {monto: number} };
+type Datos = { fecha: Date; _sum: {monto: number} };
+
 const today =()=>{
   let fecha = new Date();
   fecha.setHours(23,59);
@@ -19,8 +19,8 @@ const today =()=>{
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
 
-    const [datosGastos, setDatosGastos] = useState<DatosGasto[]>([]);
-    const [datosIngresos, setDatosIngresos] = useState<DatosIngreso[]>([]);
+    const [datosGastos, setDatosGastos] = useState<Datos[]>([]);
+    const [datosIngresos, setDatosIngresos] = useState<Datos[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
     const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
@@ -38,7 +38,8 @@ export default function Gastos_por_Fecha() {
                     });
                     if (rspGastos.ok) {
                         const gastosData = await rspGastos.json();
-                        setDatosGastos(gastosData);
+                        setDatosGastos(agrupar_por_fecha(gastosData));
+                        
                     } else {
                         console.error("Error al obtener datos de gastos");
                     }
@@ -49,7 +50,8 @@ export default function Gastos_por_Fecha() {
                     });
                     if (rspIngresos.ok) {
                         const ingresosData = await rspIngresos.json();
-                        setDatosIngresos(ingresosData);
+                        setDatosIngresos(agrupar_por_fecha(ingresosData));
+                        
                     } else {
                         console.error("Error al obtener datos de ingresos");
                     }
@@ -180,4 +182,23 @@ export default function Gastos_por_Fecha() {
         </>
     );
     
+}
+
+
+function agrupar_por_fecha(data : Datos[]){
+    let agrupado : Datos[]=[];
+    let index_actual =0;
+    agrupado.push({fecha:data[0].fecha,_sum:{monto:0}})
+    data.forEach((value)=>{
+        const fecha_aux = new Date(agrupado[index_actual].fecha);
+        const fecha_actual = new Date( value.fecha);
+        if (fecha_actual.getDate()==fecha_aux.getDate() && fecha_actual.getMonth()==fecha_aux.getMonth() && fecha_actual.getFullYear()==fecha_aux.getFullYear()){
+            agrupado[index_actual]._sum.monto += value._sum.monto
+        } else {
+            agrupado.push(value);
+            index_actual +=1;
+        }
+    })
+
+    return agrupado
 }
