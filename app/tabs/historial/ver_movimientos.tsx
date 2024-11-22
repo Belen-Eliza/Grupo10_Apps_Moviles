@@ -54,22 +54,29 @@ export default function Historial() {
       }
       
       switch (seleccion) {
-        case 1:
+        case 0:
+          
           (async ()=>{
+            console.log("Buscando gastos",(new Date()).getMilliseconds())
             const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
+            console.log("Listo gastos",(new Date()).getMilliseconds());
+          }) ();
+          break;
+  
+        case 1:
+          (async ()=>{
+            console.log("Buscando ingresos",(new Date()).getMilliseconds())
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
+            console.log("Listo ingresos",(new Date()).getMilliseconds());
           }) ();
           break;
   
         case 2:
           (async ()=>{
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
-          }) ();
-          break;
-  
-        case 3:
-          (async ()=>{
+            console.log("Buscando presupuestos",(new Date()).getMilliseconds())
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
+            console.log("Listo presupuestos",(new Date()).getMilliseconds());
           }) ();        
           break;
         case 4:
