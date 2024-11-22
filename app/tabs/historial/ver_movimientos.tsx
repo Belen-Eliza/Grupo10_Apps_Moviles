@@ -54,20 +54,20 @@ export default function Historial() {
       }
       
       switch (seleccion) {
-        case 1:
+        case 0:
           (async ()=>{
             const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
           }) ();
           break;
   
-        case 2:
+        case 1:
           (async ()=>{
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
           }) ();
           break;
   
-        case 3:
+        case 2:
           (async ()=>{
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
           }) ();        
