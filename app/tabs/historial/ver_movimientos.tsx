@@ -108,7 +108,7 @@ export default function Historial() {
     setFechaDesde(new Date(0));
     setFechaHasta(new Date());
     setCateId(0);
-    setSeleccion(1);
+    setSeleccion(0);
   }
   
   return (<>
