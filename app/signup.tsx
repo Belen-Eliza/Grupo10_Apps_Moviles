@@ -88,7 +88,7 @@ export default function Signup() {
         }
 
     }
-  }
+  
 
   return (
     <ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
@@ -160,7 +160,7 @@ export default function Signup() {
 
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
-              <Link href="/login" style={styles.loginLink}>
+              <Link href="/" style={styles.loginLink}>
                 <Text style={styles.loginLinkText}>Inicia sesión aquí</Text>
               </Link>
             </View>

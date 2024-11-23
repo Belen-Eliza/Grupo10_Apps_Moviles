@@ -70,14 +70,13 @@ export default function Index() {
   const handleEmailChange = (text: string) => {
     setErrorEmail(validateEmail(text).msj);
     handler_mail(text);
-    
-};
+  };
 
-const handlePasswordChange = (text: string) => {
-  setErrorPassword(validatePassword(text).msj);
-  handler_password(text);
-    
-};
+  const handlePasswordChange = (text: string) => {
+    setErrorPassword(validatePassword(text).msj);
+    handler_password(text);
+      
+  };
    if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
@@ -97,7 +96,7 @@ const handlePasswordChange = (text: string) => {
         </View>
 
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={editarPerfil}>
+          <Pressable style={styles.button} onPress={()=>setModalVisible(true)}>
             <Ionicons name="person-outline" size={24} color="#fff" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Editar perfil</Text>
           </Pressable>
@@ -142,38 +141,32 @@ const handlePasswordChange = (text: string) => {
                   <TextInput
                     style={styles.input}
                     value={mail}
-                    onChangeText={(text) => {
-                      setMail(text);
-                      validateEmail(text);
-                    }}
+                    onChangeText={handleEmailChange}
                     placeholder="Nuevo email"
                     placeholderTextColor="#999"
                     keyboardType="email-address"
                   />
                 </View>
-                {errorMail ? <Text style={styles.errorText}>{errorMail}</Text> : null}
+                {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
 
                 <View style={styles.inputContainer}>
                   <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
                   <TextInput
                     style={styles.input}
                     value={pass}
-                    onChangeText={(text) => {
-                      setPass(text);
-                      validatePassword(text);
-                    }}
+                    onChangeText={ handlePasswordChange}
                     placeholder="Nueva contraseña"
                     placeholderTextColor="#999"
                     secureTextEntry={true}
                   />
                 </View>
-                {errorPass ? <Text style={styles.errorText}>{errorPass}</Text> : null}
+                {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
                 <Pressable style={styles.confirmButton} onPress={confirmar}>
                   <Text style={styles.confirmButtonText}>Confirmar</Text>
                 </Pressable>
 
-                <Pressable style={styles.cancelButton} onPress={() => setModalVisible(false)}>
+                <Pressable style={styles.cancelButton} onPress={cancelar}>
                   <Text style={styles.cancelButtonText}>Cancelar</Text>
                 </Pressable>
               </View>
