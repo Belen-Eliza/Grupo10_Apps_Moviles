@@ -55,7 +55,7 @@ export default function Historial() {
       
       switch (seleccion) {
         case 0:
-          
+
           (async ()=>{
             const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos);

@@ -1,11 +1,21 @@
-import { Pressable, Text, TextInput, View, ScrollView, StyleSheet, ImageBackground } from "react-native";
-import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
-import { Link } from "expo-router";
-import { router } from "expo-router";
-import { useUserContext } from "@/context/UserContext";
+import React, { useState } from 'react';
+import {
+  ImageBackground,
+  Pressable,
+  Text,
+  TextInput,
+  View,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import { Link, router } from 'expo-router';
+import { useUserContext } from '@/context/UserContext';
+import { Ionicons } from '@expo/vector-icons';
 import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
+import { estilos, colores } from "@/components/global_styles";
 
 export default function Signup() {
     const context = useUserContext();
@@ -76,66 +86,178 @@ export default function Signup() {
         } else {
             alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
         }
+
     }
+  
 
-    return (
-        <ImageBackground source={require('../assets/images/fondo.jpg')} style={estilos.background}>
-            <View style={[estilos.formContainer,estilos.centrado,{height:700}]}>
-            <ScrollView automaticallyAdjustKeyboardInsets={true} contentContainerStyle={estilos.centrado}>
-                <Text style={[estilos.titulo,estilos.centrado]}>Mail</Text>
-                <TextInput
-                    style={[estilos.textInput,estilos.poco_margen]}
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                    onChangeText={handleEmailChange}
-                    value={mail}
-                    placeholder="mail@example.com"
-                />
-                {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
-
-                <Text style={estilos.titulo}>Nombre de usuario</Text>
-                <TextInput
-                    style={[estilos.textInput,estilos.poco_margen]}
-                    onChangeText={handleNameChange}
-                    value={name}
-                />
-                {errorName ? <Text style={estilos.errorText}>{errorName}</Text> : null}
-
-                <Text style={estilos.titulo}>Contraseña</Text>
-                <TextInput
-                    style={[estilos.textInput,estilos.poco_margen]}
-                    secureTextEntry={true}
-                    textContentType="password"
-                    onChangeText={handlePasswordChange}
-                    value={password1}
-                />
-                {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
-
-                <Text style={estilos.titulo}>Confirmar contraseña</Text>
-                <TextInput
-                    style={[estilos.textInput,estilos.poco_margen]}
-                    secureTextEntry={true}
-                    textContentType="password"
-                    onChangeText={handlePasswordConfirmChange}
-                    value={password2}
-                />
-                {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
-
-                
-            </ScrollView>
-            <Pressable onPress={signup} style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }]}>
-                    <Text style={estilos.subtitulo}>Registrarse</Text>
-                </Pressable>
-
-                <View style={estilos.signupContainer}>
-                    <Text>¿Ya tienes un usuario? </Text>
-                    <Link href="/">
-                        <Text style={estilos.a}>Click aquí para ingresar</Text>
-                    </Link>
-                </View>
+  return (
+    <ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Crear Cuenta</Text>
+            
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                onChangeText={handleNameChange}
+                value={name}
+                placeholder="Nombre"
+                placeholderTextColor="#999"
+              />
             </View>
-        </ImageBackground>
-    );
+            {errorName ? <Text style={styles.errorText}>{errorName}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                onChangeText={handleEmailChange}
+                value={mail}
+                placeholder="Correo electrónico"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                textContentType="newPassword"
+                onChangeText={handlePasswordChange}
+                value={password1}
+                placeholder="Contraseña"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                textContentType="newPassword"
+                onChangeText={handlePasswordConfirmChange}
+                value={password2}
+                placeholder="Confirmar Contraseña"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorPasswordConfirm ? <Text style={styles.errorText}>{errorPasswordConfirm}</Text> : null}
+
+            <Pressable onPress={signup} style={styles.signupButton}>
+              <Text style={styles.signupButtonText}>Registrarse</Text>
+            </Pressable>
+
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
+              <Link href="/" style={styles.loginLink}>
+                <Text style={styles.loginLinkText}>Inicia sesión aquí</Text>
+              </Link>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </ImageBackground>
+  );
+
 }
 
+const styles = StyleSheet.create({
+  background: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
+  },
+  container: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  formContainer: {
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 20,
+    padding: 20,
+    width: '90%',
+    maxWidth: 400,
+    alignSelf: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ddd',
+    marginBottom: 15,
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  input: {
+    flex: 1,
+    height: 50,
+    fontSize: 16,
+    color: '#333',
+  },
+  errorText: {
+    color: '#ff3b30',
+    fontSize: 12,
+    marginBottom: 10,
+  },
+  signupButton: {
+    backgroundColor: '#007AFF',
+    borderRadius: 10,
+    height: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  signupButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 20,
+  },
+  loginText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  loginLink: {
+    marginLeft: 5,
+  },
+  loginLinkText: {
+    color: '#007AFF',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+});
 
