@@ -12,7 +12,7 @@ import { Alternar } from "@/components/botones";
 
 type Category ={id :number, name: string,description: string}
 type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
-type Ingreso = {id:number,monto: number,description: string,category: Category}
+type Ingreso = {id:number,monto: number,description: string,category: Category, fecha: Date}
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date}
 const today = ()=>{
   let fecha = new Date();
@@ -55,21 +55,22 @@ export default function Historial() {
       
       switch (seleccion) {
         case 0:
+
           (async ()=>{
             const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos);
           }) ();
           break;
   
         case 1:
           (async ()=>{
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos)
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`,setIngresos);
           }) ();
           break;
   
         case 2:
           (async ()=>{
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos)
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`,setPresupuestos);
           }) ();        
           break;
         case 4:
