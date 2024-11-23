@@ -13,9 +13,9 @@ export default function RootLayout() {
       },
     }}>
       <Tabs.Screen name='index' options={{title:"Home", tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "home" : "home-outline"} color={color}/>}}/>
-      <Tabs.Screen name="nuevo" options={{title:"Add", tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "add-circle" : "add-circle-outline"} color={color}/>}}/>
-      <Tabs.Screen name='historial' options={{title:"History", tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "pricetag" : "pricetag-outline"} color={color}/>}}/>
-      <Tabs.Screen name='estadisticas' options={{title:"Statistics", tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "clipboard" : "clipboard-outline"} color={color}/>}}/>
+      <Tabs.Screen name="nuevo" options={{title:"Add", headerShown: false, tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "add-circle" : "add-circle-outline"} color={color}/>}}/>
+      <Tabs.Screen name='historial' options={{title:"History", headerShown: false, tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "pricetag" : "pricetag-outline"} color={color}/>}}/>
+      <Tabs.Screen name='estadisticas' options={{title:"Statistics", headerShown: false, tabBarIcon: ({focused,color})=><TabBarIcon name={focused? "clipboard" : "clipboard-outline"} color={color}/>}}/>
       
     </Tabs>
   );

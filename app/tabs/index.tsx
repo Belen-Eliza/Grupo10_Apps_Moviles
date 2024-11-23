@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import {
   ImageBackground,
@@ -14,64 +15,73 @@ import {
 import { Redirect } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
+import{estilos,colores} from "@/components/global_styles"
+import { validatePassword,validateEmail } from "@/components/validations";
 
-export default function Profile() {
+export default function Index() {
   const user = useUserContext();
-  const [modalVisible, setModalVisible] = useState(false);
-  const [nombre, setNombre] = useState(user.nombre);
-  const [mail, setMail] = useState(user.mail);
-  const [pass, setPass] = useState('');
-  const [errorNombre, setErrorNombre] = useState('');
-  const [errorMail, setErrorMail] = useState('');
-  const [errorPass, setErrorPass] = useState('');
+  const [modalVisible,setModalVisible]= useState(false);
+  const [nombre,handler_name]=useState<string>();
+  const [mail,handler_mail]=useState<string>();
+  const [pass,handler_password]=useState<string>()
+  const [errorEmail, setErrorEmail] = useState('');
+  const [errorPassword, setErrorPassword] = useState('');
 
-  const editarPerfil = () => {
-    setModalVisible(true);
-  };
-
-  const validateNombre = (name: string) => {
-    if (name.length < 2) {
-      setErrorNombre('El nombre debe tener al menos 2 caracteres');
-    } else {
-      setErrorNombre('');
-    }
-  };
-
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorMail('El formato del email no es válido');
-    } else {
-      setErrorMail('');
-    }
-  };
-
-  const validatePassword = (password: string) => {
-    if (password && password.length < 8) {
-      setErrorPass('La contraseña debe tener al menos 8 caracteres');
-    } else {
-      setErrorPass('');
-    }
-  };
-
-  const confirmar = () => {
-    if (errorNombre || errorMail || errorPass) {
-      alert('Por favor, corrija los errores antes de continuar.');
-      return;
-    }
-
-    if (nombre !== user.nombre) user.cambiarNombre(nombre);
-    if (mail !== user.mail) user.cambiar_mail(mail);
-    if (pass) user.cambiar_password(pass);
-    
-    setTimeout(() => user.actualizar_info(user.id), 200);
+  const cancelar = ()=>{
+    handler_name(undefined);
+    handler_mail(undefined);
+    handler_password(undefined);
+    setErrorEmail("");
+    setErrorPassword("");
     setModalVisible(false);
-  };
+  }
+  const confirmar = ()=>{
+    if (nombre!=undefined ) {
+      if (nombre !== '')  {
+        user.cambiarNombre(nombre);
+        
+      }
+      else {
+        alert("El nombre no puede estar vacío");
+        handler_name(user.nombre)
+      }
+    }
 
-  if (!user.isLoggedIn) {
+    if (mail!=undefined) {
+      if (validateEmail(mail).status) user.cambiar_mail(mail);
+      else {
+        alert("Formato inválido");
+        handler_mail(user.mail);
+        setErrorEmail("")
+      }
+    }
+    if (pass!=undefined) {
+      if (validatePassword(pass).status) user.cambiar_password(pass);
+      else {
+        alert("Contraseña inválida");
+        handler_password("");
+        setErrorPassword("")
+      }
+    }
+    setTimeout( ()=> user.actualizar_info(user.id),200);
+    setModalVisible(false)
+    alert("Cambios aplicados");
+  }
+  const handleEmailChange = (text: string) => {
+    setErrorEmail(validateEmail(text).msj);
+    handler_mail(text);
+    
+};
+
+const handlePasswordChange = (text: string) => {
+  setErrorPassword(validatePassword(text).msj);
+  handler_password(text);
+    
+};
+   if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
-
+  
   return (
     <ImageBackground source={require('@/assets/images/fondo.jpg')} style={styles.background}>
       <View style={styles.container}>
@@ -80,6 +90,7 @@ export default function Profile() {
           <Text style={styles.nameText}>{user.nombre}</Text>
         </View>
         
+
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Su balance actual es:</Text>
           <Text style={styles.balanceAmount}>${user.saldo}</Text>
@@ -106,7 +117,8 @@ export default function Profile() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.modalContainer}
           >
-            <ScrollView contentContainerStyle={styles.modalContent}>
+             <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
+            <ScrollView contentContainerStyle={styles.modalContent} automaticallyAdjustKeyboardInsets={true}>
               <View style={styles.modalForm}>
                 <Text style={styles.modalTitle}>Editar Perfil</Text>
 
@@ -170,6 +182,7 @@ export default function Profile() {
         </Modal>
       </View>
     </ImageBackground>
+
   );
 }
 

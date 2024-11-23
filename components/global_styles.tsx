@@ -118,6 +118,7 @@ export const estilos = StyleSheet.create({
         borderRadius: 10,
         padding: 20,
         alignItems: 'center',
+        height: 500
     },
     signupContainer: {
         flexDirection: 'row',
@@ -143,7 +144,7 @@ export const estilos = StyleSheet.create({
         padding: 10,
         borderWidth: 2,
         borderColor:"black",
-        marginVertical: 10,
+        marginBottom: 10,
         backgroundColor: "#00c8c8",
     },
     list_element:{
@@ -152,6 +153,14 @@ export const estilos = StyleSheet.create({
         padding: 5,
         minWidth: "100%",
         maxHeight:400
+    },
+    show_date:{
+        borderColor: "#808080",
+        borderRadius: 5,
+        borderWidth: 2,
+        padding: 8,
+        backgroundColor: "white",
+        marginVertical:10 
     }
 });
 

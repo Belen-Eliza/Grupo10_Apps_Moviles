@@ -1,67 +1,84 @@
-import { botonesEstado } from '@/components/global_styles';
 import { useUserContext } from "@/context/UserContext";
-import { useState, useEffect } from "react";
-import { Text, View, Pressable, Dimensions, Modal, ScrollView } from "react-native";
+import { useState, } from "react";
+import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
-import DateTimePicker, { DateTimePickerEvent } from "@react-native-community/datetimepicker";
+import { DateRangeModal } from '@/components/DateRangeModal';
+import { useFocusEffect } from '@react-navigation/native';
+import { Alternar } from "@/components/botones";
 
-type Category = { id: number; name: string; description: string };
-type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category };
-type Ingreso = { id: number; monto: number; fecha: Date; category: Category };
+type DatosGasto = { fecha: Date; _sum: {monto: number} };
+type DatosIngreso = { fecha: Date; _sum: {monto: number} };
+const today =()=>{
+  let fecha = new Date();
+  fecha.setHours(23,59);
+  return fecha
+}
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
-    const [datosGastos, setDatosGastos] = useState<Gasto[]>([]);
-    const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
+
+    const [datosGastos, setDatosGastos] = useState<DatosGasto[]>([]);
+    const [datosIngresos, setDatosIngresos] = useState<DatosIngreso[]>([]);
     const [fechaDesde, setFechaDesde] = useState(new Date(0));
-    const [fechaHasta, setFechaHasta] = useState(new Date());
+    const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
-    const [chartType, setChartType] = useState<"Gastos" | "Ingresos" | "Balance">("Gastos");
+    const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
 
-    useEffect(() => {
-        const fetchData = async () => {
-            const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
-            try {
-                const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-                if (rspGastos.ok) {
-                    const gastosData = await rspGastos.json();
-                    setDatosGastos(gastosData);
-                } else {
-                    console.error("Error al obtener datos de gastos");
+    const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
+    useFocusEffect(
+        React.useCallback(() => {
+            const fetchData = async () => {
+                const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
+                try {
+                    const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    });
+                    if (rspGastos.ok) {
+                        const gastosData = await rspGastos.json();
+                        setDatosGastos(gastosData);
+                    } else {
+                        console.error("Error al obtener datos de gastos");
+                    }
+    
+                    const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
+                        method: "GET",
+                        headers: { "Content-Type": "application/json" },
+                    });
+                    if (rspIngresos.ok) {
+                        const ingresosData = await rspIngresos.json();
+                        setDatosIngresos(ingresosData);
+                    } else {
+                        console.error("Error al obtener datos de ingresos");
+                    }
+                } catch (e) {
+                    console.log(e);
+                    alert("No hay datos en ese rango");
+    
                 }
-
-                const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
-                    method: "GET",
-                    headers: { "Content-Type": "application/json" },
-                });
-                if (rspIngresos.ok) {
-                    const ingresosData = await rspIngresos.json();
-                    setDatosIngresos(ingresosData);
-                } else {
-                    console.error("Error al obtener datos de ingresos");
-                }
-            } catch (e) {
-                console.log(e);
-                alert("No hay datos en ese rango");
-            }
-        };
-
-        fetchData();
-    }, [context.id, fechaDesde, fechaHasta]);
+            };
+    
+            fetchData();
+          return () => {
+            false
+          };
+        }, [context.id, fechaDesde, fechaHasta])
+      );
 
     const screenWidth = Dimensions.get("window").width;
     const screenHeight = Dimensions.get("window").height * 0.5; 
-
+    
     const dataGastos = {
-        labels: datosGastos.map((g) => new Date(g.fecha).toDateString()),
+        
+        labels: datosGastos.map((g) => {
+            let fecha =new Date(g.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
+        }),
         datasets: [
             {
-                data: datosGastos.map((g) => g.monto),
+                data: datosGastos.map((g) => g._sum.monto),
                 color: (opacity = 1) => `rgba(255, 69, 0, ${opacity})`, // rojo para gastos
                 strokeWidth: 4,
             },
@@ -70,10 +87,13 @@ export default function Gastos_por_Fecha() {
     };
 
     const dataIngresos = {
-        labels: datosIngresos.map((i) => new Date(i.fecha).toDateString()),
+        labels: datosIngresos.map((i) => {
+            let fecha =new Date(i.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
+        }),
         datasets: [
             {
-                data: datosIngresos.map((i) => i.monto),
+                data: datosIngresos.map((i) => i._sum.monto),
                 color: (opacity = 1) => `rgba(34, 139, 34, ${opacity})`, // verde para ingresos
                 strokeWidth: 4,
             },
@@ -81,17 +101,21 @@ export default function Gastos_por_Fecha() {
         legend: ["Ingresos"],
     };
 
+
     // Calcula el balance acumulado ordenando los ingresos y gastos por fecha
     const combinedData = [...datosIngresos.map(i => ({ ...i, tipo: 'ingreso' })), ...datosGastos.map(g => ({ ...g, tipo: 'gasto' }))]
         .sort((a, b) => new Date(a.fecha).getTime() - new Date(b.fecha).getTime());
 
     let balance = 0;
     const dataBalance = {
-        labels: combinedData.map(d => new Date(d.fecha).toDateString()),
+        labels: combinedData.map(d => {
+            let fecha = new Date(d.fecha);
+            return fecha.getDate() + " " + meses [fecha.getMonth()] + " " + fecha.getFullYear()
+        }),
         datasets: [
             {
                 data: combinedData.map(d => {
-                    balance += d.tipo === 'ingreso' ? d.monto : -d.monto;
+                    balance += d.tipo === 'ingreso' ? d._sum.monto : -d._sum.monto;
                     return balance;
                 }),
                 color: (opacity = 1) => `rgba(70, 130, 180, ${opacity})`, // azul para balance
@@ -117,14 +141,6 @@ export default function Gastos_por_Fecha() {
     };
 
     const openDatePicker = () => setModalVisible(true);
-    const closeDatePicker = () => setModalVisible(false);
-
-    const onChangeDesde = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-        setFechaDesde(selectedDate || new Date(0));
-    };
-    const onChangeHasta = (event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-        setFechaHasta(selectedDate || new Date());
-    };
 
     return (
         <>
@@ -134,83 +150,33 @@ export default function Gastos_por_Fecha() {
     </Pressable>
 
     {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
-    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%', paddingHorizontal: 10 }}>
-    <Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Gastos" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Gastos")}
->
-    <Text style={{ color: chartType === "Gastos" ? "white" : "black" }}>Gastos</Text>
-</Pressable>
-
-<Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Ingresos" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Ingresos")}
->
-    <Text style={{ color: chartType === "Ingresos" ? "white" : "black" }}>Ingresos</Text>
-</Pressable>
-
-<Pressable
-    style={[
-        estilos.tarjetasesp,
-        estilos.centrado,
-        { 
-            flex: 1, 
-            marginHorizontal: 5, 
-            backgroundColor: chartType === "Balance" ? botonesEstado.active : botonesEstado.inactive 
-        }
-    ]}
-    onPress={() => setChartType("Balance")}
->
-    <Text style={{ color: chartType === "Balance" ? "white" : "black" }}>Balance</Text>
-</Pressable>
-    </View>
+    
+    <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
     {/* Mostrar el gráfico correspondiente */}
-    {chartType === "Gastos" && datosGastos.length === 0 ? (
+    {chartType === 0 && datosGastos.length === 0 ? (
         <Text>No hay gastos en el rango de fechas seleccionado.</Text>
-    ) : chartType === "Ingresos" && datosIngresos.length === 0 ? (
+    ) : chartType === 1 && datosIngresos.length === 0 ? (
         <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
-    ) : chartType === "Balance" && combinedData.length === 0 ? (
+    ) : chartType === 2 && combinedData.length === 0 ? (
         <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
     ) : (
         <LineChart
-            data={chartType === "Balance" ? dataBalance : chartType === "Ingresos" ? dataIngresos : dataGastos}
-            width={screenWidth - 20} 
+            data={chartType === 2 ? dataBalance : chartType === 1 ? dataIngresos : dataGastos}
+            width={screenWidth } 
             height={screenHeight}
             chartConfig={chartConfig}
             bezier={true}
+            yAxisLabel="$"
+            fromZero={true}
         />
     )}
 </ScrollView>
 
-            
-            <Modal animationType="slide" transparent={false} visible={modalVisible}>
-                <View style={[estilos.mainView, estilos.centrado]}>
-                    <Text style={estilos.titulo}>Desde:</Text>
-                    <DateTimePicker style={estilos.margen} value={fechaDesde} onChange={onChangeDesde} mode="date" />
-                    <Text style={estilos.titulo}>Hasta:</Text>
-                    <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={fechaHasta} mode="date" />
-                    <Pressable style={[estilos.tarjeta, estilos.centrado, colores.botones]} onPress={closeDatePicker}>
-                        <Text>Confirmar</Text>
-                    </Pressable>
-                </View>
-            </Modal>
+            <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fechaDesde} fecha_hasta={fechaHasta}
+            setDesde={setFechaDesde} setHasta={setFechaHasta}            
+            ></DateRangeModal>
+
         </>
     );
     

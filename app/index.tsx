@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import {
   ImageBackground,
   Pressable,
@@ -13,14 +12,11 @@ import {
 import { Link, router } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
+import { estilos, colores } from "@/components/global_styles";
+import { useState } from "react";
+import { User } from "@/components/tipos";
+import { validateEmail,validatePassword } from "@/components/validations";
 
-type User = {
-  id: number;
-  mail: string;
-  name: string;
-  password: string;
-  saldo: number;
-};
 
 export default function Login() {
   const [mail, setMail] = useState('');
@@ -29,56 +25,49 @@ export default function Login() {
   const [errorPassword, setErrorPassword] = useState('');
   const { login_app } = useUserContext();
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorEmail('El formato del email no es válido');
-    } else {
-      setErrorEmail('');
-    }
-  };
+    const handleEmailChange = (text: string) => {
+        setMail(text);
+        setErrorEmail(validateEmail(text).msj);
+    };
 
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setErrorPassword('La contraseña debe tener al menos 8 caracteres y un carácter especial');
-    } else {
-      setErrorPassword('');
-    }
-  };
+    const handlePasswordChange = (text: string) => {
+        setPassword(text);
+        setErrorPassword(validatePassword(text).msj);
+    };
 
-  const handleEmailChange = (text: string) => {
-    setMail(text);
-    validateEmail(text);
-  };
 
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    validatePassword(text);
-  };
+    async function login() {
+        const user = { email: mail, password_attempt: password };
+        const isEmailValid = validateEmail(mail).status;
+        const isPasswordValid = validatePassword(password).status;
+        
+        if (isEmailValid && isPasswordValid ) {
 
-  async function login() {
-    const user = { email: mail, password_attempt: password };
+            try {
+                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(user),
+                });
 
-    try {
-      const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-      });
+                if (!rsp.ok) {
+                    if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
+                    throw new Error();
+                } else {
+                    const datos_usuario: User = await rsp.json();
+                    login_app(datos_usuario);
+                    router.replace("/tabs/");
+                }
+            } catch (error) {
+                alert(error);
+            }
+        } else {
+            alert('Corrija los errores resaltados en pantalla para ingresar');
+        }
 
-      if (!rsp.ok) {
-        if (rsp.status == 400) throw new Error('Usuario o contraseña incorrectos');
-        throw new Error();
-      } else {
-        const datos_usuario: User = await rsp.json();
-        login_app(datos_usuario);
-        router.replace('/tabs/');
-      }
-    } catch (error) {
-      alert(error);
     }
   }
+
 
   return (
     <ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
@@ -127,6 +116,7 @@ export default function Login() {
               <Link href="/signup" style={styles.signupLink}>
                 <Text style={styles.signupLinkText}>Regístrate aquí</Text>
               </Link>
+
             </View>
           </View>
         </ScrollView>

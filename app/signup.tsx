@@ -13,105 +13,80 @@ import {
 import { Link, router } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
-
-type User = {
-  id: number;
-  mail: string;
-  name: string;
-  password: string;
-  saldo: number;
-};
+import { User } from "@/components/tipos";
+import { validateEmail,validatePassword } from "@/components/validations";
+import { estilos, colores } from "@/components/global_styles";
 
 export default function Signup() {
-  const [name, setName] = useState('');
-  const [mail, setMail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [errorName, setErrorName] = useState('');
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorPassword, setErrorPassword] = useState('');
-  const [errorConfirmPassword, setErrorConfirmPassword] = useState('');
-  const { login_app } = useUserContext();
+    const context = useUserContext();
+    const [mail, setMail] = useState('');
+    const [name, setName] = useState('');
+    const [password1, setPassword1] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [errorEmail, setErrorEmail] = useState('');
+    const [errorName, setErrorName] = useState('');
+    const [errorPassword, setErrorPassword] = useState('');
+    const [errorPasswordConfirm, setErrorPasswordConfirm] = useState('');
 
-  const validateName = (name: string) => {
-    if (name.length < 2) {
-      setErrorName('El nombre debe tener al menos 2 caracteres');
-    } else {
-      setErrorName('');
-    }
-  };
+    const validatePasswordConfirm = (password1: string, password2: string) => {
+        if (password1 !== password2) {
+            setErrorPasswordConfirm('Las contraseñas deben coincidir');
+            return false;
+        } else {
+            setErrorPasswordConfirm('');
+            return true;
+        }
+    };
 
-  const validateEmail = (email: string) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-      setErrorEmail('El formato del email no es válido');
-    } else {
-      setErrorEmail('');
-    }
-  };
+    const handleEmailChange = (text: string) => {
+        setMail(text);
+        setErrorEmail(validateEmail(text).msj);
+    };
 
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[!@#$%^&*(),.?":{}|<>]).{8,}$/;
-    if (!passwordRegex.test(password)) {
-      setErrorPassword('La contraseña debe tener al menos 8 caracteres y un carácter especial');
-    } else {
-      setErrorPassword('');
-    }
-  };
+    const handleNameChange = (text: string) => {
+        setName(text);
+        setErrorName(text ? '' : 'El nombre de usuario no puede estar vacío');
+    };
 
-  const validateConfirmPassword = (confirmPass: string) => {
-    if (confirmPass !== password) {
-      setErrorConfirmPassword('Las contraseñas no coinciden');
-    } else {
-      setErrorConfirmPassword('');
-    }
-  };
+    const handlePasswordChange = (text: string) => {
+        setPassword1(text);
+        setErrorPassword(validatePassword(text).msj);
+        validatePasswordConfirm(text, password2);
+    };
 
-  const handleNameChange = (text: string) => {
-    setName(text);
-    validateName(text);
-  };
+    const handlePasswordConfirmChange = (text: string) => {
+        setPassword2(text);
+        validatePasswordConfirm(password1, text);
+    };
 
-  const handleEmailChange = (text: string) => {
-    setMail(text);
-    validateEmail(text);
-  };
+    async function signup() {
+        const isEmailValid = validateEmail(mail).status;
+        const isNameValid = name !== '';
+        const isPasswordValid = validatePassword(password1).status;
+        const isPasswordConfirmValid = validatePasswordConfirm(password1, password2);
 
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    validatePassword(text);
-  };
+        if (isEmailValid && isNameValid && isPasswordValid && isPasswordConfirmValid) {
+            const user = { mail: mail, name: name, password: password1 };
+            try {
+                const response = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/signup`, {
+                    method: 'POST',
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(user),
+                });
+                if (!response.ok) {
+                    throw new Error('Error al registrarse');
+                } else {
+                    const datos_usuario: User = await response.json();
+                    context.login_app(datos_usuario);
+                    router.replace('/tabs/');
+                }
+            } catch (error) {
+                alert("Error: " + error);
+            }
+        } else {
+            alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
+        }
 
-  const handleConfirmPasswordChange = (text: string) => {
-    setConfirmPassword(text);
-    validateConfirmPassword(text);
-  };
-
-  async function signup() {
-    if (errorName || errorEmail || errorPassword || errorConfirmPassword) {
-      alert('Por favor, corrija los errores antes de continuar.');
-      return;
-    }
-
-    const user = { name, email: mail, password };
-
-    try {
-      const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/signup`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(user),
-      });
-
-      if (!rsp.ok) {
-        if (rsp.status == 400) throw new Error('Error en el registro. Por favor, inténtelo de nuevo.');
-        throw new Error();
-      } else {
-        const datos_usuario: User = await rsp.json();
-        login_app(datos_usuario);
-        router.replace('/tabs/');
-      }
-    } catch (error) {
-      alert(error);
     }
   }
 
@@ -158,7 +133,7 @@ export default function Signup() {
                 secureTextEntry={true}
                 textContentType="newPassword"
                 onChangeText={handlePasswordChange}
-                value={password}
+                value={password1}
                 placeholder="Contraseña"
                 placeholderTextColor="#999"
               />
@@ -171,13 +146,13 @@ export default function Signup() {
                 style={styles.input}
                 secureTextEntry={true}
                 textContentType="newPassword"
-                onChangeText={handleConfirmPasswordChange}
-                value={confirmPassword}
+                onChangeText={handlePasswordConfirmChange}
+                value={password2}
                 placeholder="Confirmar Contraseña"
                 placeholderTextColor="#999"
               />
             </View>
-            {errorConfirmPassword ? <Text style={styles.errorText}>{errorConfirmPassword}</Text> : null}
+            {errorPasswordConfirm ? <Text style={styles.errorText}>{errorPasswordConfirm}</Text> : null}
 
             <Pressable onPress={signup} style={styles.signupButton}>
               <Text style={styles.signupButtonText}>Registrarse</Text>
@@ -194,6 +169,7 @@ export default function Signup() {
       </KeyboardAvoidingView>
     </ImageBackground>
   );
+
 }
 
 const styles = StyleSheet.create({
