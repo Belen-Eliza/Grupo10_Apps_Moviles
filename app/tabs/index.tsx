@@ -45,7 +45,7 @@ export default function Index() {
         exito=true;
       }
       else  alert("El nombre no puede estar vacío");
-      handler_name("");
+      handler_name(undefined);
       setErrorName("");
     }
 
@@ -55,7 +55,7 @@ export default function Index() {
          exito=true;
         }
       else  alert("Formato inválido de mail");
-      handler_mail("");
+      handler_mail(undefined);
       setErrorEmail("")
     }
     if (pass!=undefined) {
@@ -64,7 +64,7 @@ export default function Index() {
         exito=true;
       }
       else alert("Contraseña inválida");
-      handler_password("");
+      handler_password(undefined);
       setErrorPassword("")
     }
     setTimeout( ()=> user.actualizar_info(user.id),200);

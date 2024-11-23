@@ -171,6 +171,7 @@ export default function Gastos_por_Fecha() {
             bezier={true}
             yAxisLabel="$"
             fromZero={true}
+            
         />
     )}
 </ScrollView>
