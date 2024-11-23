@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import {
   ImageBackground,
@@ -11,6 +10,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { Redirect } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
@@ -26,6 +26,7 @@ export default function Index() {
   const [pass,handler_password]=useState<string>()
   const [errorEmail, setErrorEmail] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
+  const [errorName,setErrorName] = useState('');
 
   const cancelar = ()=>{
     handler_name(undefined);
@@ -33,51 +34,60 @@ export default function Index() {
     handler_password(undefined);
     setErrorEmail("");
     setErrorPassword("");
+    setErrorName("");
     setModalVisible(false);
   }
   const confirmar = ()=>{
+    let exito = false;
     if (nombre!=undefined ) {
       if (nombre !== '')  {
-        user.cambiarNombre(nombre);
-        
+        user.cambiarNombre(nombre); 
+        exito=true;
       }
-      else {
-        alert("El nombre no puede estar vacío");
-        handler_name(user.nombre)
-      }
+      else  alert("El nombre no puede estar vacío");
+      handler_name("");
+      setErrorName("");
     }
 
     if (mail!=undefined) {
-      if (validateEmail(mail).status) user.cambiar_mail(mail);
-      else {
-        alert("Formato inválido");
-        handler_mail(user.mail);
-        setErrorEmail("")
-      }
+      if (validateEmail(mail).status) {
+         user.cambiar_mail(mail);
+         exito=true;
+        }
+      else  alert("Formato inválido de mail");
+      handler_mail("");
+      setErrorEmail("")
     }
     if (pass!=undefined) {
-      if (validatePassword(pass).status) user.cambiar_password(pass);
-      else {
-        alert("Contraseña inválida");
-        handler_password("");
-        setErrorPassword("")
+      if (validatePassword(pass).status) {
+        user.cambiar_password(pass);
+        exito=true;
       }
+      else alert("Contraseña inválida");
+      handler_password("");
+      setErrorPassword("")
     }
     setTimeout( ()=> user.actualizar_info(user.id),200);
-    setModalVisible(false)
-    alert("Cambios aplicados");
+    setModalVisible(false);
+    if (exito) alert("Cambios aplicados");
   }
   const handleEmailChange = (text: string) => {
     setErrorEmail(validateEmail(text).msj);
     handler_mail(text);
   };
-
   const handlePasswordChange = (text: string) => {
     setErrorPassword(validatePassword(text).msj);
     handler_password(text);
-      
   };
-   if (!user.isLoggedIn) {
+  const handleNameChange=(text:string)=>{
+    if (text == '')  {
+      setErrorName("El nombre no puede estar vacío");
+    }
+    handler_name(text)
+  }
+
+
+  if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
   
@@ -116,7 +126,6 @@ export default function Index() {
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
             style={styles.modalContainer}
           >
-             <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
             <ScrollView contentContainerStyle={styles.modalContent} automaticallyAdjustKeyboardInsets={true}>
               <View style={styles.modalForm}>
                 <Text style={styles.modalTitle}>Editar Perfil</Text>
@@ -126,15 +135,12 @@ export default function Index() {
                   <TextInput
                     style={styles.input}
                     value={nombre}
-                    onChangeText={(text) => {
-                      setNombre(text);
-                      validateNombre(text);
-                    }}
+                    onChangeText={handleNameChange}
                     placeholder="Nuevo nombre"
                     placeholderTextColor="#999"
                   />
                 </View>
-                {errorNombre ? <Text style={styles.errorText}>{errorNombre}</Text> : null}
+                {errorName ? <Text style={styles.errorText}>{errorName}</Text> : null}
 
                 <View style={styles.inputContainer}>
                   <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -249,6 +255,7 @@ const styles = StyleSheet.create({
   modalContent: {
     flexGrow: 1,
     justifyContent: 'center',
+    minWidth: Dimensions.get("window").width*0.7
   },
   modalForm: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',

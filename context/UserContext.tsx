@@ -60,7 +60,6 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
 
   const cambiar_password = async (password_nuevo: string) => {
     try {
-        const nuevo_user ={id:id,password:password_nuevo}
         const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
             {method: "PATCH",
             headers:{"Content-Type":"application/json"},
