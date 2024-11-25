@@ -164,7 +164,33 @@ export const estilos = StyleSheet.create({
         padding: 8,
         backgroundColor: "white",
         marginVertical:10 
-    }
+    },
+    cancelButton: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#007AFF',
+        padding: 15,
+        alignItems: 'center',
+        marginTop: 10,
+      },
+      cancelButtonText: {
+        color: '#007AFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
+      confirmButton: {
+        backgroundColor: '#007AFF',
+        borderRadius: 10,
+        padding: 15,
+        alignItems: 'center',
+        marginTop: 20,
+      },
+      confirmButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
 });
 
 export const colores = StyleSheet.create({
@@ -183,7 +209,8 @@ export const colores = StyleSheet.create({
     menu: {
         backgroundColor: "#aeffff",
         borderRadius: 10
-    }
+    },
+    
 })
 
 

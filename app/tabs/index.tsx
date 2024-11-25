@@ -167,8 +167,8 @@ export default function Index() {
                 </View>
                 {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
-                <Pressable style={styles.confirmButton} onPress={confirmar}>
-                  <Text style={styles.confirmButtonText}>Confirmar</Text>
+                <Pressable style={estilos.confirmButton} onPress={confirmar}>
+                  <Text style={estilos.confirmButtonText}>Confirmar</Text>
                 </Pressable>
 
                 <Pressable style={styles.cancelButton} onPress={cancelar}>
@@ -293,18 +293,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
   },
-  confirmButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  confirmButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  
   cancelButton: {
     backgroundColor: '#fff',
     borderRadius: 10,
