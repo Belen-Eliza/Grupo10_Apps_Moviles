@@ -90,7 +90,7 @@ export default function Presupuesto() {
     return (
         <View style={[estilos.mainView,{alignItems:"center"}]}>
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
-            <Text style={estilos.titulo}>Agregar presupuesto</Text>
+            <Text style={[estilos.subtitulo,estilos.poco_margen]}>Monto</Text>
             <TextInput style={[estilos.textInput,estilos.poco_margen]} keyboardType="decimal-pad" onChangeText={handler_monto}  placeholder='Ingresar valor'></TextInput>
                 
             <Text style={estilos.subtitulo}>Cuotas</Text>

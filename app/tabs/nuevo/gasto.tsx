@@ -98,7 +98,6 @@ export default function Gasto() {
 
   return (
     <View style={[{ flex: 1 }, estilos.centrado]}>
-      <Text style={estilos.titulo}>Agregar gasto</Text>
       
       <TextInput
         style={[estilos.textInput, estilos.margen]}
