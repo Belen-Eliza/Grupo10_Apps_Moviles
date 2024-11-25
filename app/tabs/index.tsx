@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  ImageBackground,
   Pressable,
   Text,
   TextInput,
@@ -92,7 +91,7 @@ export default function Index() {
   }
   
   return (
-    <ImageBackground source={require('@/assets/images/fondo.jpg')} style={styles.background}>
+    <View style={[styles.background,estilos.mainView,estilos.backgroundColor]}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>
@@ -180,7 +179,7 @@ export default function Index() {
           </KeyboardAvoidingView>
         </Modal>
       </View>
-    </ImageBackground>
+    </View>
 
   );
 }
@@ -190,6 +189,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    
   },
   container: {
     flex: 1,
@@ -202,12 +202,12 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 24,
-    color: '#333',
+    color: 'white',
   },
   nameText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: '#409fff',
   },
   balanceContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',

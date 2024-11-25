@@ -70,7 +70,8 @@ export default function Login() {
 
 
   return (
-    <ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
+    //<ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
+    <View style={styles.background}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}
@@ -121,7 +122,8 @@ export default function Login() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ImageBackground>
+      </View>
+    //</ImageBackground>
   );
 }
 
@@ -130,6 +132,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    backgroundColor: "#004993"
   },
   container: {
     flex: 1,

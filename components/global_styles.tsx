@@ -7,6 +7,9 @@ export const estilos = StyleSheet.create({
         width: "100%",
         
     },
+    backgroundColor: {
+        backgroundColor: "#004993",
+    },
     overlay:{
         ...StyleSheet.absoluteFillObject,
         backgroundColor: "rgba(240, 240, 240, 0.8)", 
