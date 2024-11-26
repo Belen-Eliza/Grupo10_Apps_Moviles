@@ -52,12 +52,10 @@ export default function Historial() {
         console.log(error)
       }
       }
-      
+      const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
       switch (seleccion) {
         case 0:
-
           (async ()=>{
-            const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos);
           }) ();
           break;
@@ -75,7 +73,7 @@ export default function Historial() {
           break;
         case 4:
           (async ()=>{
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}/${cate_id}`,setGastos)
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
           }) ();
           break;
       }    
@@ -159,10 +157,14 @@ export default function Historial() {
 
     <Modal animationType="slide" transparent={false} visible={CateModalVisible} onRequestClose={cancelar}>
       <View style={[estilos.mainView,estilos.centrado]}>
-      <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
+     
         <Text style={estilos.titulo}>Seleccionar Categoría</Text>
         <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cate_id} set_cat_id={setCateId}></CategoryPicker>
-        <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={filtrar_por_cate}><Text >Confirmar</Text></Pressable>
+        
+        <Pressable style={[estilos.confirmButton,{width:250}]} onPress={filtrar_por_cate}><Text style={estilos.confirmButtonText}>Confirmar</Text></Pressable>
+        <Pressable style={[estilos.cancelButton,{width:250}]} onPress={cancelar}>
+          <Text style={estilos.cancelButtonText}>Cancelar</Text>
+        </Pressable>
       </View>
     </Modal>
     </>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  ImageBackground,
   Pressable,
   Text,
   TextInput,
@@ -51,10 +50,9 @@ export default function Index() {
 
     if (mail!=undefined) {
       if (validateEmail(mail).status) {
-         user.cambiar_mail(mail);
-         exito=true;
-        }
-      else  alert("Formato inválido de mail");
+        user.cambiar_mail(mail);
+        exito=true;
+      } else  alert("Formato inválido de mail");
       handler_mail(undefined);
       setErrorEmail("")
     }
@@ -92,8 +90,8 @@ export default function Index() {
   }
   
   return (
-    <ImageBackground source={require('@/assets/images/fondo.jpg')} style={styles.background}>
-      <View style={styles.container}>
+    <View style={[estilos.mainView,colores.fondo2,estilos.background2]}>
+      <View style={[styles.container,]}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>
           <Text style={styles.nameText}>{user.nombre}</Text>
@@ -168,8 +166,8 @@ export default function Index() {
                 </View>
                 {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
-                <Pressable style={styles.confirmButton} onPress={confirmar}>
-                  <Text style={styles.confirmButtonText}>Confirmar</Text>
+                <Pressable style={estilos.confirmButton} onPress={confirmar}>
+                  <Text style={estilos.confirmButtonText}>Confirmar</Text>
                 </Pressable>
 
                 <Pressable style={styles.cancelButton} onPress={cancelar}>
@@ -180,7 +178,7 @@ export default function Index() {
           </KeyboardAvoidingView>
         </Modal>
       </View>
-    </ImageBackground>
+    </View>
 
   );
 }
@@ -190,6 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
+    
   },
   container: {
     flex: 1,
@@ -202,12 +201,12 @@ const styles = StyleSheet.create({
   },
   welcomeText: {
     fontSize: 24,
-    color: '#333',
+    color: 'white',
   },
   nameText: {
     fontSize: 32,
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: '#409fff',
   },
   balanceContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
@@ -293,18 +292,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
   },
-  confirmButton: {
-    backgroundColor: '#007AFF',
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  confirmButtonText: {
-    color: '#fff',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
+  
   cancelButton: {
     backgroundColor: '#fff',
     borderRadius: 10,

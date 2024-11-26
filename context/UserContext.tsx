@@ -44,15 +44,16 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
 
   const cambiar_mail = async (mail_nuevo: string) => {
     try {
-        const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
-            {method: "PATCH",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({new_mail:mail_nuevo})
-            }
-        )
-        if (!rsp.ok){
-          throw new Error
-        }
+      const rsp=await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/edit_profile/${id}`,
+          {method: "PATCH",
+          headers:{"Content-Type":"application/json"},
+          body:JSON.stringify({new_mail:mail_nuevo})
+          }
+      )
+      if (!rsp.ok){
+        if (rsp.status==409) alert("Ya existe un usuario con ese mail")
+        throw new Error
+      }
     } catch (e){
         console.log(e)
     }

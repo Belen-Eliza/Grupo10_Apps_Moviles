@@ -6,15 +6,15 @@ export default function RootLayout() {
     <UserContextProvider>
     <Stack screenOptions={{
       headerStyle: {
-        backgroundColor: '#83cefc',
+        backgroundColor: "white"
       },
-      headerTintColor: 'black',
+      headerTintColor: 'blue',
       headerTitleStyle: {
         fontWeight: 'bold',
       },
     }}>
-      <Stack.Screen name='index' options={{title:"Login"}}/>
-      <Stack.Screen name='signup' options={{title:"Crear cuenta"}}/>
+      <Stack.Screen name='index' options={{title:"Login",headerShown: false}}/>
+      <Stack.Screen name='signup' options={{title:"Crear cuenta",headerShown: false}}/>
       <Stack.Screen name='tabs' options={{headerShown: false}}/>
     </Stack>
     </UserContextProvider>

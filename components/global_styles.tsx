@@ -7,12 +7,13 @@ export const estilos = StyleSheet.create({
         width: "100%",
         
     },
+   
     overlay:{
         ...StyleSheet.absoluteFillObject,
         backgroundColor: "rgba(240, 240, 240, 0.8)", 
         opacity:0.6
     },
-    estilo1: {
+    flex1: {
         flex: 1
     },
     a: {
@@ -21,6 +22,11 @@ export const estilos = StyleSheet.create({
       },
       aActive: {
         color: '#003d66',
+      },
+      linkText: {
+        color: '#007AFF',
+        fontSize: 14,
+        fontWeight: 'bold',
       },
       mainButton: {
         flexDirection: "row",
@@ -112,6 +118,11 @@ export const estilos = StyleSheet.create({
         alignItems: 'center',
         resizeMode: 'cover',
     },
+    background2 :{
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     formContainer: {
         width: '80%',
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -126,8 +137,9 @@ export const estilos = StyleSheet.create({
         marginTop: 10,
     },
     errorText: {
-        color: 'red',
-        marginTop: 5,
+        color: '#ff3b30',
+        fontSize: 12,
+        marginBottom: 10,
     },
     centeredContainer: {
         flex: 1,
@@ -147,6 +159,24 @@ export const estilos = StyleSheet.create({
         marginBottom: 10,
         backgroundColor: "#00c8c8",
     },
+    button: {
+        backgroundColor: '#007AFF',
+        borderRadius: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 15,
+        marginBottom: 15,
+        minWidth: "90%"
+    },
+    buttonIcon: {
+    marginRight: 10,
+    },
+    buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    },
     list_element:{
         borderBottomColor: "black",
         borderBottomWidth: 2,
@@ -161,12 +191,41 @@ export const estilos = StyleSheet.create({
         padding: 8,
         backgroundColor: "white",
         marginVertical:10 
-    }
+    },
+    cancelButton: {
+        backgroundColor: '#fff',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: '#007AFF',
+        padding: 15,
+        alignItems: 'center',
+        marginTop: 10,
+      },
+      cancelButtonText: {
+        color: '#007AFF',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
+      confirmButton: {
+        backgroundColor: '#007AFF',
+        borderRadius: 10,
+        padding: 15,
+        alignItems: 'center',
+        marginTop: 20,
+      },
+      confirmButtonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+      },
 });
 
 export const colores = StyleSheet.create({
     fondo: {
         backgroundColor: "white",
+    },
+    fondo2: {
+        backgroundColor: "#004993",
     },
     botones: {
         backgroundColor: "lightblue",
@@ -176,11 +235,15 @@ export const colores = StyleSheet.create({
         
 
     },
+    button: {
+        backgroundColor: '#007AFF',
+    },
 
     menu: {
         backgroundColor: "#aeffff",
         borderRadius: 10
-    }
+    },
+    
 })
 
 

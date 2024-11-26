@@ -74,14 +74,15 @@ export default function Signup() {
                     body: JSON.stringify(user),
                 });
                 if (!response.ok) {
-                    throw new Error('Error al registrarse');
+                  if (response.status==409) throw new Error('El usuario ya existe');
+                  throw new Error('Error al registrarse');
                 } else {
                     const datos_usuario: User = await response.json();
                     context.login_app(datos_usuario);
                     router.replace('/tabs/');
                 }
             } catch (error) {
-                alert("Error: " + error);
+                alert( error);
             }
         } else {
             alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
@@ -91,10 +92,10 @@ export default function Signup() {
   
 
   return (
-    <ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
+    <View style={[estilos.background2,colores.fondo2]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
+        style={estilos.flex1}
       >
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
@@ -110,7 +111,7 @@ export default function Signup() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorName ? <Text style={styles.errorText}>{errorName}</Text> : null}
+            {errorName ? <Text style={estilos.errorText}>{errorName}</Text> : null}
 
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -124,7 +125,7 @@ export default function Signup() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
+            {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
 
             <View style={styles.inputContainer}>
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -138,7 +139,7 @@ export default function Signup() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
+            {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
             <View style={styles.inputContainer}>
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -152,7 +153,7 @@ export default function Signup() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorPasswordConfirm ? <Text style={styles.errorText}>{errorPasswordConfirm}</Text> : null}
+            {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
 
             <Pressable onPress={signup} style={styles.signupButton}>
               <Text style={styles.signupButtonText}>Registrarse</Text>
@@ -161,26 +162,18 @@ export default function Signup() {
             <View style={styles.loginContainer}>
               <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
               <Link href="/" style={styles.loginLink}>
-                <Text style={styles.loginLinkText}>Inicia sesión aquí</Text>
+                <Text style={estilos.linkText}>Inicia sesión aquí</Text>
               </Link>
             </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </ImageBackground>
+    </View>
   );
 
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-  },
-  container: {
-    flex: 1,
-  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -224,11 +217,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  errorText: {
-    color: '#ff3b30',
-    fontSize: 12,
-    marginBottom: 10,
-  },
+ 
   signupButton: {
     backgroundColor: '#007AFF',
     borderRadius: 10,
@@ -254,10 +243,6 @@ const styles = StyleSheet.create({
   loginLink: {
     marginLeft: 5,
   },
-  loginLinkText: {
-    color: '#007AFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+ 
 });
 

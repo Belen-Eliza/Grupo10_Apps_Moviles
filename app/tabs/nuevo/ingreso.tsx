@@ -12,7 +12,7 @@ import Animated, {
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
 function es_valido(ingreso:Ingreso){
-  return ingreso.category_id!=0 && ingreso.monto!=0 //descripción opcional
+  return ingreso.category_id!=0 && ingreso.monto!=0 && ingreso.descripcion!=""
 }
 
 export default function Ahorro() {
@@ -79,7 +79,6 @@ export default function Ahorro() {
 
   return (
     <View style={[{ flex: 1 }, estilos.centrado]}>
-      <Text style={estilos.titulo}>Agregar ingreso</Text>
 
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput

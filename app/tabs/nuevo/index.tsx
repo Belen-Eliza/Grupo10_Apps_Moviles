@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {ImageBackground, Pressable, Text, View, StyleSheet, FlatList, StatusBar } from "react-native";
-import { estilos } from "@/components/global_styles";
+import { colores, estilos } from "@/components/global_styles";
 import { Link } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons"; 
+import { Ionicons, MaterialIcons } from "@expo/vector-icons"; 
 import { useUserContext } from "@/context/UserContext";
 import { Ingreso,Gasto } from "@/components/tipos";
 
@@ -51,10 +51,10 @@ export default function Index() {
   );
 
   return (
-    <ImageBackground source={require('@/assets/images/fondo.jpg')} style={estilos.background}>
+    <View style={[estilos.background,colores.fondo2]}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
-      <Text style={styles.sectionTitle}>Últimos ingresos </Text>
-      <Text>(Desde el ultimo login)</Text>
+      <Text style={[styles.sectionTitle,{color: "white"}]}>Últimos ingresos </Text>
+      <Text style={{color:"white"}}>(Desde el ultimo login)</Text>
       <FlatList
         horizontal={true}
         data={movimientosRecientes}
@@ -64,27 +64,31 @@ export default function Index() {
       />
 
       <View style={styles.buttonsContainer}>
-        <View style={styles.buttonRow}>
+        {/* <View style={styles.buttonRow}> */}
           <Link href="/tabs/nuevo/gasto" asChild>
-            <Pressable style={styles.button}>
-              <Text style={styles.buttonText}>Agregar Gasto</Text>
+            <Pressable style={estilos.button}>
+            <Ionicons name="cart-outline" size={24} color="#fff" style={estilos.buttonIcon} />
+              
+              <Text style={estilos.buttonText}>Agregar Gasto</Text>
             </Pressable>
           </Link>
           <Link href="/tabs/nuevo/ingreso" asChild>
-            <Pressable style={styles.button}>
-              <Text style={styles.buttonText}>Agregar Ingreso</Text>
+            <Pressable style={estilos.button}>
+             <Ionicons name="cash-outline" size={24} color="#fff" style={estilos.buttonIcon} />
+              <Text style={estilos.buttonText}>Agregar Ingreso</Text>
             </Pressable>
           </Link>
-        </View>
+       {/*  </View> */}
 
         <Link href="/tabs/nuevo/presupuesto" asChild>
-          <Pressable style={styles.button}>
-            <Text style={styles.buttonText}>Agregar Presupuesto</Text>
+          <Pressable style={estilos.button}>
+            <Ionicons name="briefcase-outline" size={24} color="#fff" style={estilos.buttonIcon} />
+            <Text style={estilos.buttonText}>Agregar Presupuesto</Text>
           </Pressable>
         </Link>
       </View>
     </View>
-    </ImageBackground>
+    </View>
   );
 }
 
