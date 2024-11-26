@@ -52,12 +52,10 @@ export default function Historial() {
         console.log(error)
       }
       }
-      
+      const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
       switch (seleccion) {
         case 0:
-
           (async ()=>{
-            const fechas = {fecha_desde:fecha_desde.toISOString(),fecha_hasta:fecha_hasta.toISOString()}
             query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos);
           }) ();
           break;
@@ -75,7 +73,7 @@ export default function Historial() {
           break;
         case 4:
           (async ()=>{
-            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_categoria/${context.id}/${cate_id}`,setGastos)
+            query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`,setGastos)
           }) ();
           break;
       }    
