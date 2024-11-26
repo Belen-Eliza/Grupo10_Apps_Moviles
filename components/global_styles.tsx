@@ -159,6 +159,24 @@ export const estilos = StyleSheet.create({
         marginBottom: 10,
         backgroundColor: "#00c8c8",
     },
+    button: {
+        backgroundColor: '#007AFF',
+        borderRadius: 10,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 15,
+        marginBottom: 15,
+        minWidth: "90%"
+    },
+    buttonIcon: {
+    marginRight: 10,
+    },
+    buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    },
     list_element:{
         borderBottomColor: "black",
         borderBottomWidth: 2,
@@ -216,6 +234,9 @@ export const colores = StyleSheet.create({
         borderRadius: 5,
         
 
+    },
+    button: {
+        backgroundColor: '#007AFF',
     },
 
     menu: {
