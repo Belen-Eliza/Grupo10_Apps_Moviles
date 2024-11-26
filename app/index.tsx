@@ -1,5 +1,4 @@
 import {
-  ImageBackground,
   Pressable,
   Text,
   TextInput,
@@ -70,11 +69,11 @@ export default function Login() {
 
 
   return (
-    //<ImageBackground source={require('../assets/images/fondo.jpg')} style={styles.background}>
-    <View style={styles.background}>
+    
+    <View style={[estilos.background2, colores.fondo2]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}
+        style={estilos.flex1}
       >
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
@@ -92,7 +91,7 @@ export default function Login() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
+            {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
 
             <View style={styles.inputContainer}>
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -106,7 +105,7 @@ export default function Login() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
+            {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
             <Pressable onPress={login} style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Ingresar</Text>
@@ -115,7 +114,7 @@ export default function Login() {
             <View style={styles.signupContainer}>
               <Text style={styles.signupText}>¿No tienes un usuario? </Text>
               <Link href="/signup" style={styles.signupLink}>
-                <Text style={styles.signupLinkText}>Regístrate aquí</Text>
+                <Text style={estilos.linkText}>Regístrate aquí</Text>
               </Link>
 
             </View>
@@ -123,20 +122,12 @@ export default function Login() {
         </ScrollView>
       </KeyboardAvoidingView>
       </View>
-    //</ImageBackground>
+    
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
-    backgroundColor: "#004993"
-  },
-  container: {
-    flex: 1,
-  },
+  
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',
@@ -180,11 +171,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  errorText: {
-    color: '#ff3b30',
-    fontSize: 12,
-    marginBottom: 10,
-  },
+ 
   loginButton: {
     backgroundColor: '#007AFF',
     borderRadius: 10,
@@ -210,10 +197,6 @@ const styles = StyleSheet.create({
   signupLink: {
     marginLeft: 5,
   },
-  signupLinkText: {
-    color: '#007AFF',
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
+
 });
 

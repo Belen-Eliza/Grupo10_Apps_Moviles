@@ -7,15 +7,13 @@ export const estilos = StyleSheet.create({
         width: "100%",
         
     },
-    backgroundColor: {
-        backgroundColor: "#004993",
-    },
+   
     overlay:{
         ...StyleSheet.absoluteFillObject,
         backgroundColor: "rgba(240, 240, 240, 0.8)", 
         opacity:0.6
     },
-    estilo1: {
+    flex1: {
         flex: 1
     },
     a: {
@@ -24,6 +22,11 @@ export const estilos = StyleSheet.create({
       },
       aActive: {
         color: '#003d66',
+      },
+      linkText: {
+        color: '#007AFF',
+        fontSize: 14,
+        fontWeight: 'bold',
       },
       mainButton: {
         flexDirection: "row",
@@ -115,6 +118,11 @@ export const estilos = StyleSheet.create({
         alignItems: 'center',
         resizeMode: 'cover',
     },
+    background2 :{
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
     formContainer: {
         width: '80%',
         backgroundColor: 'rgba(255, 255, 255, 0.8)',
@@ -129,8 +137,9 @@ export const estilos = StyleSheet.create({
         marginTop: 10,
     },
     errorText: {
-        color: 'red',
-        marginTop: 5,
+        color: '#ff3b30',
+        fontSize: 12,
+        marginBottom: 10,
     },
     centeredContainer: {
         flex: 1,
@@ -196,6 +205,9 @@ export const estilos = StyleSheet.create({
 export const colores = StyleSheet.create({
     fondo: {
         backgroundColor: "white",
+    },
+    fondo2: {
+        backgroundColor: "#004993",
     },
     botones: {
         backgroundColor: "lightblue",
