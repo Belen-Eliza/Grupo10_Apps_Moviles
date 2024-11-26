@@ -1,32 +1,49 @@
 import React, { useState, useEffect } from "react";
-import {ImageBackground, Pressable, Text, View, StyleSheet, FlatList, StatusBar } from "react-native";
-import { colores, estilos } from "@/components/global_styles";
+import { View, Text, StyleSheet, FlatList, Pressable, SafeAreaView } from "react-native";
 import { Link } from "expo-router";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons"; 
+import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
-import { Ingreso,Gasto } from "@/components/tipos";
 
-export default function Index() {
+interface Ingreso {
+  id: number;
+  monto: number;
+}
+
+interface Movimiento {
+  id: string;
+  type: string;
+  monto: number;
+}
+
+interface ItemProps {
+  type: string;
+  monto: number;
+}
+
+interface ActionButtonProps {
+  icon: keyof typeof MaterialIcons.glyphMap;
+  label: string;
+  href: string;
+}
+
+export default function Dashboard() {
   const context = useUserContext();
-  const [datosGastos, setDatosGastos] = useState<Gasto[]>([]); 
   const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-
         const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, {
           method: "GET",
           headers: { "Content-Type": "application/json" },
         });
 
-
         if (rspIngresos.ok) {
-          const ingresosData = await rspIngresos.json();
-          setDatosIngresos(ingresosData); 
+          const ingresosData: Ingreso[] = await rspIngresos.json();
+          setDatosIngresos(ingresosData);
         }
       } catch (e) {
-        console.log(e);
+        console.error(e);
         alert("Hubo un error al obtener los datos.");
       }
     };
@@ -34,107 +51,128 @@ export default function Index() {
     fetchData();
   }, [context.id]);
 
-  const movimientosRecientes = [
-    ...datosIngresos.slice(-10).map((ingreso) => ({
-      id: `ingreso-${ingreso.id}`,
-      type: "Ingreso",
-      monto: ingreso.monto,
-    })),
-  ];
+  const movimientosRecientes: Movimiento[] = datosIngresos.slice(-5).map((ingreso) => ({
+    id: `ingreso-${ingreso.id}`,
+    type: "Ingreso",
+    monto: ingreso.monto,
+  }));
 
-  movimientosRecientes.sort((a, b) => b.id.localeCompare(a.id));
-
-  const Item = ({ type, monto }:{type:string,monto:number}) => (
+  const Item: React.FC<ItemProps> = ({ type, monto }) => (
     <View style={styles.item}>
-      <Text style={styles.title}>{type}: {monto}</Text>
+      <MaterialIcons name="attach-money" size={24} color="#4CAF50" />
+      <View>
+        <Text style={styles.itemType}>{type}</Text>
+        <Text style={styles.itemAmount}>${monto.toFixed(2)}</Text>
+      </View>
     </View>
   );
 
+  const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, href }) => (
+    <Link href={href} asChild>
+      <Pressable style={styles.actionButton}>
+        <MaterialIcons name={icon} size={24} color="#FFFFFF" />
+        <Text style={styles.actionButtonText}>{label}</Text>
+      </Pressable>
+    </Link>
+  );
+
   return (
-    <View style={[estilos.background,colores.fondo2]}>
-    <View style={[{ flex: 1 }, estilos.centrado]}>
-      <Text style={[styles.sectionTitle,{color: "white"}]}>Últimos ingresos </Text>
-      <Text style={{color:"white"}}>(Desde el ultimo login)</Text>
-      <FlatList
-        horizontal={true}
-        data={movimientosRecientes}
-        renderItem={({ item }) => <Item type={item.type} monto={item.monto} />}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20 }}
-      />
-
-      <View style={styles.buttonsContainer}>
-        {/* <View style={styles.buttonRow}> */}
-          <Link href="/tabs/nuevo/gasto" asChild>
-            <Pressable style={estilos.button}>
-            <Ionicons name="cart-outline" size={24} color="#fff" style={estilos.buttonIcon} />
-              
-              <Text style={estilos.buttonText}>Agregar Gasto</Text>
-            </Pressable>
-          </Link>
-          <Link href="/tabs/nuevo/ingreso" asChild>
-            <Pressable style={estilos.button}>
-             <Ionicons name="cash-outline" size={24} color="#fff" style={estilos.buttonIcon} />
-              <Text style={estilos.buttonText}>Agregar Ingreso</Text>
-            </Pressable>
-          </Link>
-       {/*  </View> */}
-
-        <Link href="/tabs/nuevo/presupuesto" asChild>
-          <Pressable style={estilos.button}>
-            <Ionicons name="briefcase-outline" size={24} color="#fff" style={estilos.buttonIcon} />
-            <Text style={estilos.buttonText}>Agregar Presupuesto</Text>
-          </Pressable>
-        </Link>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Dashboard</Text>
       </View>
-    </View>
-    </View>
+      
+      <View style={styles.recentTransactions}>
+        <Text style={styles.sectionTitle}>Movimientos Recientes</Text>
+        <FlatList<Movimiento>
+          data={movimientosRecientes}
+          renderItem={({ item }) => <Item type={item.type} monto={item.monto} />}
+          keyExtractor={(item) => item.id}
+          style={styles.list}
+        />
+      </View>
+
+      <View style={styles.actionsContainer}>
+        <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
+        <View style={styles.actionButtonsColumn}>
+          <ActionButton icon="add" label="Agregar Gasto" href="/tabs/nuevo/gasto" />
+          <ActionButton icon="savings" label="Agregar Ahorro" href="/tabs/nuevo/ingreso" />
+          <ActionButton icon="account-balance" label="Agregar Presupuesto" href="/tabs/nuevo/presupuesto" />
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  item: {
-    maxHeight: 60,
-    backgroundColor: '#f9c2ff',
-    padding: 20,
-    marginVertical: 8,
-    marginHorizontal: 8,
-    borderRadius: 10,
+  container: {
+    flex: 1,
+    backgroundColor: "#F5F7FA",
   },
-  title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  header: {
+    backgroundColor: "#3F51B5",
+    padding: 20,
+    alignItems: "center",
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: "#FFFFFF",
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    marginLeft: 16,
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 10,
+    color: "#333",
   },
-  buttonsContainer: {
+  recentTransactions: {
     flex: 1,
-    justifyContent: 'center',
-    width: '80%',
-    alignItems: 'center',
+    padding: 20,
   },
-  buttonRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
+  list: {
+    flex: 1,
+  },
+  item: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#FFFFFF",
+    padding: 15,
+    marginBottom: 10,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  itemType: {
+    fontSize: 16,
+    fontWeight: "500",
+    color: "#333",
+  },
+  itemAmount: {
+    fontSize: 14,
+    color: "#666",
+  },
+  actionsContainer: {
+    padding: 20,
+  },
+  actionButtonsColumn: {
+    alignItems: "stretch",
+  },
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#3F51B5",
+    borderRadius: 8,
+    padding: 15,
     marginBottom: 10,
   },
-  button: {
-    backgroundColor: '#6200ea',
-    padding: 15,
-    borderRadius: 5,
-    flex: 1,
-    marginHorizontal: 5,
-    minWidth: 150,
-    maxHeight:50,
-  },
-  buttonText: {
-    color: 'white',
+  actionButtonText: {
+    color: "#FFFFFF",
+    marginLeft: 10,
     fontSize: 16,
-    textAlign: 'center',
+    fontWeight: "500",
   },
 });
+
