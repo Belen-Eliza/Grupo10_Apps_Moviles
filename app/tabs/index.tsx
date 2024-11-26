@@ -50,10 +50,9 @@ export default function Index() {
 
     if (mail!=undefined) {
       if (validateEmail(mail).status) {
-         user.cambiar_mail(mail);
-         exito=true;
-        }
-      else  alert("Formato inválido de mail");
+        user.cambiar_mail(mail);
+        exito=true;
+      } else  alert("Formato inválido de mail");
       handler_mail(undefined);
       setErrorEmail("")
     }

@@ -74,14 +74,15 @@ export default function Signup() {
                     body: JSON.stringify(user),
                 });
                 if (!response.ok) {
-                    throw new Error('Error al registrarse');
+                  if (response.status==409) throw new Error('El usuario ya existe');
+                  throw new Error('Error al registrarse');
                 } else {
                     const datos_usuario: User = await response.json();
                     context.login_app(datos_usuario);
                     router.replace('/tabs/');
                 }
             } catch (error) {
-                alert("Error: " + error);
+                alert( error);
             }
         } else {
             alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
