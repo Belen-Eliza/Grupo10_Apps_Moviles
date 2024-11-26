@@ -112,7 +112,7 @@ export default function Historial() {
   
   return (<>
    
-    <Alternar activo={seleccion} callback={setSeleccion} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Presupuestos",params_callback:2}]}></Alternar>
+    <Alternar activo={seleccion==4 ? 0: seleccion} callback={setSeleccion} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Presupuestos",params_callback:2}]}></Alternar>
     
     <View style={{ flexGrow: 1,alignItems:"center",minWidth:"100%",minHeight:"70%",flex:8, 
       display: seleccion==0 || seleccion==4? "flex":"none"

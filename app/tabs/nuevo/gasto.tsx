@@ -98,7 +98,7 @@ export default function Gasto() {
 
   return (
     <View style={[{ flex: 1 }, estilos.centrado]}>
-      
+      <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
         keyboardType="decimal-pad"
