@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList, Pressable, SafeAreaView } from "react-native";
-import { Link } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 
@@ -30,7 +30,7 @@ export default function Dashboard() {
   const context = useUserContext();
   const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     const fetchData = async () => {
       try {
         const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, {
@@ -49,7 +49,33 @@ export default function Dashboard() {
     };
 
     fetchData();
-  }, [context.id]);
+  }, [context.id]); */
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchData = async () => {
+        try {
+          const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+  
+          if (rspIngresos.ok) {
+            const ingresosData: Ingreso[] = await rspIngresos.json();
+            setDatosIngresos(ingresosData.reverse());
+            
+          }
+        } catch (e) {
+          console.error(e);
+          alert("Hubo un error al obtener los datos.");
+        }
+      };
+  
+      fetchData();
+      return () => {
+        
+      };
+    }, [context.id])
+  );
 
   const movimientosRecientes: Movimiento[] = datosIngresos.slice(-5).map((ingreso) => ({
     id: `ingreso-${ingreso.id}`,
@@ -96,7 +122,7 @@ export default function Dashboard() {
         <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
         <View style={styles.actionButtonsColumn}>
           <ActionButton icon="add" label="Agregar Gasto" href="/tabs/nuevo/gasto" />
-          <ActionButton icon="savings" label="Agregar Ahorro" href="/tabs/nuevo/ingreso" />
+          <ActionButton icon="savings" label="Agregar Ingreso" href="/tabs/nuevo/ingreso" />
           <ActionButton icon="account-balance" label="Agregar Presupuesto" href="/tabs/nuevo/presupuesto" />
         </View>
       </View>
