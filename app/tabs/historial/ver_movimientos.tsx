@@ -8,6 +8,7 @@ import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
+import { estilos } from "@/components/global_styles";
 
 type Category = { id: number; name: string; description: string }
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category }
@@ -184,11 +185,11 @@ export default function Historial() {
               selected_cat_id={cate_id}
               set_cat_id={setCateId}
             />
-            <Pressable style={styles.confirmButton} onPress={filtrar_por_cate}>
-              <Text style={styles.buttonText}>Confirmar</Text>
+            <Pressable style={estilos.confirmButton} onPress={filtrar_por_cate}>
+              <Text style={estilos.confirmButtonText}>Confirmar</Text>
             </Pressable>
-            <Pressable style={styles.cancelButton} onPress={cancelar}>
-              <Text style={styles.buttonText}>Cancelar</Text>
+            <Pressable style={estilos.cancelButton} onPress={cancelar}>
+              <Text style={estilos.cancelButtonText}>Cancelar</Text>
             </Pressable>
           </View>
         </View>

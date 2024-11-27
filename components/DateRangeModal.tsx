@@ -98,12 +98,13 @@ function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<Reac
         return (
         <Modal animationType="slide" transparent={false} visible={props.visible}>
             <View style={[estilos.mainView,estilos.centrado]}>
-            <Pressable onPress={cancelar} style={{alignSelf:"flex-end",padding:10,borderColor:"black",borderWidth:5}}></Pressable>{/* reemplazar por iconButton cuando esté terminado */}
+
                 <Text style={estilos.titulo}>Desde:</Text>
                 <DateTimePicker style={estilos.margen} value={props.fecha_desde} onChange={onChangeDesde} mode="date" />
                 <Text style={estilos.titulo}>Hasta:</Text>
                 <DateTimePicker style={estilos.margen} onChange={onChangeHasta} value={props.fecha_hasta} mode="date" maximumDate={new Date()}/>
-                <Pressable style={[estilos.tarjeta,estilos.centrado,colores.botones]} onPress={confirmar}><Text >Confirmar</Text></Pressable>
+                <Pressable style={[estilos.confirmButton,{width:250}]} onPress={confirmar}><Text style={estilos.confirmButtonText}>Confirmar</Text></Pressable>
+                <Pressable style={[estilos.cancelButton,{width:250}]} onPress={cancelar}><Text style={estilos.cancelButtonText}>Cancelar</Text></Pressable>
             </View>
         </Modal>)
     }

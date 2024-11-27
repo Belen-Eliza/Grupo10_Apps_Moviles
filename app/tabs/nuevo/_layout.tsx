@@ -11,7 +11,7 @@ export default function Layout(){
               fontWeight: 'bold',
             },
           }}>
-            <Stack.Screen name='index' options={{title: "Add"}}/>
+            <Stack.Screen name='index' options={{title: "Add",headerShown:false}}/>
             <Stack.Screen name='ingreso' options={{presentation:"card", title:"Agregar ingreso"}}/>
             <Stack.Screen name='gasto' options={{presentation:"card", title:"Agregar gasto"}}/>
             <Stack.Screen name='presupuesto' options={{presentation:"card", title:"Crear presupuesto"}}/>

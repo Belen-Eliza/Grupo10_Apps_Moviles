@@ -137,9 +137,16 @@ export default function Gastos_por_Fecha() {
       barPercentage: 0.8,
       useShadowColorFromDataset: false,
       // Configuración para evitar el solapamiento de las etiquetas en X
+    
+      propsForLabels: {
+        fontSize: 10, // Reduce font size
+      },
       propsForVerticalLabels: {
-        rotation: -45
-      }
+        rotation: -45,
+        fontSize: 10, // Reduce font size
+        dx: -20, // Shift labels left
+        dy: 10, // Shift labels down
+      },
     };
 
     const openDatePicker = () => setModalVisible(true);
