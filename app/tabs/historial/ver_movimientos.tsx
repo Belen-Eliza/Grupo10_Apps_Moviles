@@ -102,12 +102,13 @@ export default function Historial() {
     setFechaHasta(new Date());
     setCateId(0);
     setSeleccion(0);
+
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <Alternar
-        activo={seleccion}
+        activo={seleccion==4 ? 0: seleccion}
         callback={setSeleccion}
         datos={[
           { texto: "Gastos", params_callback: 0 },
@@ -195,7 +196,7 @@ export default function Historial() {
         </View>
       </Modal>
     </SafeAreaView>
-  );
+ );
 }
 
 const styles = StyleSheet.create({
