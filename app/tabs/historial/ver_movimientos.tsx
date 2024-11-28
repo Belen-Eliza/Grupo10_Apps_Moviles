@@ -70,7 +70,7 @@ export default function Historial() {
       }
 
       return () => {
-        // Cleanup function if needed
+        limpiar_filtros()
       };
     }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_id])
   );
