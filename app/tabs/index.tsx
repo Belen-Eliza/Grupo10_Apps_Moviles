@@ -90,7 +90,7 @@ export default function Index() {
   }
   
   return (
-    <View style={[estilos.mainView,colores.fondo2,estilos.background2]}>
+    <View style={[estilos.mainView,colores.fondo_azul,estilos.background2]}>
       <View style={[styles.container,]}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>

@@ -224,7 +224,7 @@ export const colores = StyleSheet.create({
     fondo: {
         backgroundColor: "white",
     },
-    fondo2: {
+    fondo_azul: {
         backgroundColor: "#004993",
     },
     botones: {

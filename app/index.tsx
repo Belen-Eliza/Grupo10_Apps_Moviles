@@ -70,7 +70,7 @@ export default function Login() {
 
   return (
     
-    <View style={[estilos.background2, colores.fondo2]}>
+    <View style={[estilos.background2, colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={estilos.flex1}
