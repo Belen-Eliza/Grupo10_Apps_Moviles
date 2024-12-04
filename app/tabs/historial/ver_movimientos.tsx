@@ -11,6 +11,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto } from "@/components/tipos";
+import { comparar_fechas } from "@/components/DateRangeModal";
 
 type Ingreso = { id: number; monto: number; description: string; category: Category; fecha: Date }
 type Filtro = {nombre:string,isSet:boolean}
@@ -20,7 +21,11 @@ const today = () => {
   fecha.setHours(23, 59);
   return fecha;
 };
-
+const semana_pasada = ()=>{
+  let fecha = new Date();
+  fecha.setTime(fecha.getTime()-7*24*60*60*1000);
+  return fecha
+}
 
 export default function Historial() {
   const context = useUserContext();
@@ -30,7 +35,7 @@ export default function Historial() {
   const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos, 4 filtrar gastos por categoria
   const [DateModalVisible, setDateModalVisible] = useState(false);
   const [CateModalVisible, setCatModalVisible] = useState(false);
-  const [fecha_desde, setFechaDesde] = useState(new Date(0));
+  const [fecha_desde, setFechaDesde] = useState(semana_pasada());
   const [fecha_hasta, setFechaHasta] = useState(today());
   const [cate_id, setCateId] = useState(0);
   const [openPicker, setOpen] = useState(false);
@@ -57,12 +62,23 @@ export default function Historial() {
           console.log(error);
         }
       };
-
+      
       const fechas = { fecha_desde: fecha_desde.toISOString(), fecha_hasta: fecha_hasta.toISOString() };
       switch (seleccion) {
         case 0:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
-          setFiltrosUsados
+          if (!comparar_fechas(fecha_desde,new Date(0))){
+            setFiltrosUsados(prev=>{
+              prev[0].isSet=true
+              return prev
+            })
+          }
+          if (!comparar_fechas(fecha_hasta,new Date())){
+            setFiltrosUsados(prev=>{
+              prev[1].isSet=true
+              return prev
+            })
+          }
           break;
         case 1:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, setIngresos);
@@ -119,13 +135,14 @@ export default function Historial() {
 
   const reset_fecha_desde = ()=>{
     setFechaDesde(new Date(0));
+    setSeleccion(0);
     setFiltrosUsados(prev=>{
       prev[0].isSet=false;
       return prev
     })
   }
   const reset_fecha_hasta = ()=>{
-    setFechaHasta(new Date(0));
+    setFechaHasta(new Date());
     setFiltrosUsados(prev=>{
       prev[1].isSet=false;
       return prev

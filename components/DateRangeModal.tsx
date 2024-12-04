@@ -116,5 +116,8 @@ const styles = StyleSheet.create({
       justifyContent: "space-around",
     }
   });
+function comparar_fechas(fecha1:Date, fecha2:Date){
+  return fecha1.getDate()==fecha2.getDate() && fecha1.getFullYear()==fecha2.getFullYear() &&fecha1.getMonth()==fecha2.getMonth()
+}
 
-export {DateRangeModal}
+export {DateRangeModal, comparar_fechas}
