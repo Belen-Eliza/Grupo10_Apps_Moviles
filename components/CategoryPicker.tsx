@@ -44,4 +44,16 @@ function CategoryIngresoPicker (props:{openPicker:boolean,setOpen:React.Dispatch
     )
 }
 
-export {CategoryPicker, CategoryIngresoPicker}
+function traer_categorias (setCategorias:React.Dispatch<React.SetStateAction<Category[]>>){
+  
+  (async ()=>{
+    fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
+      method:'GET',
+      headers:{"Content-Type":"application/json"}})
+    .then(rsp => rsp.json())
+    .then(info =>setCategorias(info))
+  })();
+  
+}
+
+export {CategoryPicker, CategoryIngresoPicker,traer_categorias}

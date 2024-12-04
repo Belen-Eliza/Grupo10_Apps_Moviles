@@ -3,24 +3,24 @@ import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-na
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
-import { CategoryPicker } from "@/components/CategoryPicker";
+import { CategoryPicker, traer_categorias } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
+import { Category, Gasto, Presupuesto } from "@/components/tipos";
 
-type Category = { id: number; name: string; description: string }
-type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category }
 type Ingreso = { id: number; monto: number; description: string; category: Category; fecha: Date }
-type Presupuesto = { id: number; descripcion: string; montoTotal: number; fecha_objetivo: Date }
+type Filtro = {nombre:string,isSet:boolean}
 
 const today = () => {
   let fecha = new Date();
   fecha.setHours(23, 59);
   return fecha;
 };
+
 
 export default function Historial() {
   const context = useUserContext();
@@ -34,8 +34,10 @@ export default function Historial() {
   const [fecha_hasta, setFechaHasta] = useState(today());
   const [cate_id, setCateId] = useState(0);
   const [openPicker, setOpen] = useState(false);
-  
+  const [filtros_usados,setFiltrosUsados] = useState<Filtro[]>([{nombre:"Desde",isSet:false},{nombre:"Hasta",isSet:false},{nombre:"Categoría",isSet:false}])
+  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
   const navigation = useNavigation();
+  traer_categorias(setCategorias);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -60,6 +62,7 @@ export default function Historial() {
       switch (seleccion) {
         case 0:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
+          setFiltrosUsados
           break;
         case 1:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, setIngresos);
@@ -69,6 +72,10 @@ export default function Historial() {
           break;
         case 4:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
+          setFiltrosUsados(prev=>{
+            prev[2].isSet=true
+            return prev
+          })
           break;
       }
       
@@ -107,8 +114,31 @@ export default function Historial() {
     setFechaHasta(new Date());
     setCateId(0);
     setSeleccion(0);
-
+    setFiltrosUsados([{nombre:"Desde",isSet:false},{nombre:"Hasta",isSet:false},{nombre:"Categoría",isSet:false}]);
   };
+
+  const reset_fecha_desde = ()=>{
+    setFechaDesde(new Date(0));
+    setFiltrosUsados(prev=>{
+      prev[0].isSet=false;
+      return prev
+    })
+  }
+  const reset_fecha_hasta = ()=>{
+    setFechaHasta(new Date(0));
+    setFiltrosUsados(prev=>{
+      prev[1].isSet=false;
+      return prev
+    })
+  }
+  const reset_cate = ()=>{
+    setCateId(0);
+    setSeleccion(0);
+    setFiltrosUsados(prev=>{
+      prev[2].isSet=false;
+      return prev
+    })
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -141,7 +171,9 @@ export default function Historial() {
               </Pressable>
             </View>
             <View style={styles.filterButtonsContainer}>
-              <Filtro_aplicado texto="filtro de algo" callback={cancelar}/>
+              <Filtro_aplicado texto={filtros_usados[0].nombre+": "+fecha_desde.toDateString()} callback={reset_fecha_desde} isVisible={filtros_usados[0].isSet}/>
+              <Filtro_aplicado texto={filtros_usados[1].nombre+": "+fecha_hasta.toDateString()} callback={reset_fecha_hasta} isVisible={filtros_usados[1].isSet}/>
+              <Filtro_aplicado texto={filtros_usados[2].nombre+": "+ todas_categorias.find(value=>value.id==cate_id)?.name} callback={reset_cate} isVisible={filtros_usados[2].isSet}/>
             </View>
           </View>
           <FlashList

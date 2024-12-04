@@ -69,9 +69,16 @@ function Alternar(props:{activo:number,callback:Function,datos:{texto:string,par
     )
 }
 
-function Filtro_aplicado(props:{texto:string, callback:Function}){
+function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolean}){
     return (
-        <Pressable onPress={()=>props.callback()} style={[{backgroundColor:"lightgray", borderRadius:20,padding:8,flexDirection:"row",marginTop:10},estilos.centrado]}>
+        <Pressable onPress={()=>props.callback()} style={[estilos.centrado,
+                                                        {backgroundColor:"lightgray", 
+                                                        borderRadius:20,
+                                                        padding:8,
+                                                        flexDirection:"row",
+                                                        marginTop:10,
+                                                        display: props.isVisible ? "flex" : "none"
+                                                        }]}>
             <Entypo name="circle-with-cross" size={24} color="white"  />
             <Text style={{paddingLeft:3}}>{props.texto}</Text>
         </Pressable>
