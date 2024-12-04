@@ -6,7 +6,7 @@ import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/rend
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
-import { Alternar } from "@/components/botones";
+import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
@@ -139,6 +139,9 @@ export default function Historial() {
                 <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
                 <Text style={styles.filterButtonText}>Limpiar</Text>
               </Pressable>
+            </View>
+            <View style={styles.filterButtonsContainer}>
+              <Filtro_aplicado texto="filtro de algo" callback={cancelar}/>
             </View>
           </View>
           <FlashList
