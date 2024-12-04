@@ -9,6 +9,7 @@ import { router, useFocusEffect } from "expo-router";
 import { Alternar } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
+import { useNavigation } from '@react-navigation/native';
 
 type Category = { id: number; name: string; description: string }
 type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category }
@@ -33,6 +34,8 @@ export default function Historial() {
   const [fecha_hasta, setFechaHasta] = useState(today());
   const [cate_id, setCateId] = useState(0);
   const [openPicker, setOpen] = useState(false);
+  
+  const navigation = useNavigation();
 
   useFocusEffect(
     React.useCallback(() => {
@@ -68,11 +71,13 @@ export default function Historial() {
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
           break;
       }
+      
+      const limpiar = navigation.addListener('blur', () => {
+        limpiar_filtros();
+      });
 
-      return () => {
-        limpiar_filtros()
-      };
-    }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_id])
+      return limpiar
+    }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_id,navigation])
   );
 
   const ver_ingreso = (ingreso: Ingreso) => {
@@ -285,3 +290,4 @@ const styles = StyleSheet.create({
   },
 });
 
+//Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
