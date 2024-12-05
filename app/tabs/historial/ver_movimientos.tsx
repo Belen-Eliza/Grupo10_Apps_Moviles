@@ -12,6 +12,7 @@ import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto } from "@/components/tipos";
 import { comparar_fechas } from "@/components/DateRangeModal";
+import {LoadingCircle} from "@/components/loading"
 
 type Ingreso = { id: number; monto: number; description: string; category: Category; fecha: Date }
 type Filtro = {nombre:string,isSet:boolean}
@@ -41,7 +42,9 @@ export default function Historial() {
   const [openPicker, setOpen] = useState(false);
   const [filtros_usados,setFiltrosUsados] = useState<Filtro[]>([{nombre:"Desde",isSet:false},{nombre:"Hasta",isSet:false},{nombre:"Categoría",isSet:false}])
   const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
+  const [isFetching,setFetching] = useState(true);
   const navigation = useNavigation();
+  
   traer_categorias(setCategorias);
 
   useFocusEffect(
@@ -54,9 +57,14 @@ export default function Historial() {
           });
           if (!rsp.ok) {
             if (rsp.status != 400) throw new Error(rsp.status.toString() + ", en Historial");
+            else {
+              callback([])
+              setFetching(false);
+            }
           } else {
             const info = await rsp.json();
             callback(info);
+            setFetching(false);
           }
         } catch (error) {
           console.log(error);
@@ -64,6 +72,7 @@ export default function Historial() {
       };
       
       const fechas = { fecha_desde: fecha_desde.toISOString(), fecha_hasta: fecha_hasta.toISOString() };
+      setFetching(true);
       switch (seleccion) {
         case 0:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
@@ -81,7 +90,7 @@ export default function Historial() {
           }
           break;
         case 1:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, setIngresos);
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setIngresos);
           break;
         case 2:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`, setPresupuestos);
@@ -135,7 +144,6 @@ export default function Historial() {
 
   const reset_fecha_desde = ()=>{
     setFechaDesde(new Date(0));
-    setSeleccion(0);
     setFiltrosUsados(prev=>{
       prev[0].isSet=false;
       return prev
@@ -168,62 +176,62 @@ export default function Historial() {
           { texto: "Presupuestos", params_callback: 2 }
         ]}
       />
-
-      {(seleccion === 0 || seleccion === 4) && (
-        <View style={styles.content}>
-          <View style={styles.filterContainer}>
-            <Text style={styles.filterTitle}>Filtrar por:</Text>
-            <View style={styles.filterButtonsContainer}>
-              <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
-                <MaterialIcons name="event" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Fecha</Text>
-              </Pressable>
-              <Pressable onPress={() => setCatModalVisible(true)} style={styles.filterButton}>
-                <MaterialIcons name="category" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Categoría</Text>
-              </Pressable>
-              <Pressable onPress={limpiar_filtros} style={styles.filterButton}>
-                <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Limpiar</Text>
-              </Pressable>
-            </View>
-            <View style={styles.filterButtonsContainer}>
-              <Filtro_aplicado texto={filtros_usados[0].nombre+": "+fecha_desde.toDateString()} callback={reset_fecha_desde} isVisible={filtros_usados[0].isSet}/>
-              <Filtro_aplicado texto={filtros_usados[1].nombre+": "+fecha_hasta.toDateString()} callback={reset_fecha_hasta} isVisible={filtros_usados[1].isSet}/>
-              <Filtro_aplicado texto={filtros_usados[2].nombre+": "+ todas_categorias.find(value=>value.id==cate_id)?.name} callback={reset_cate} isVisible={filtros_usados[2].isSet}/>
-            </View>
-          </View>
+      <View style={styles.content}>
+      
+      {(seleccion!=2) && (
+        <View style={styles.filterContainer}>
+        <Text style={styles.filterTitle}>Filtrar por:</Text>
+        <View style={styles.filterButtonsContainer}>
+          <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
+            <MaterialIcons name="event" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Fecha</Text>
+          </Pressable>
+          <Pressable onPress={() => setCatModalVisible(true)} style={styles.filterButton}>
+            <MaterialIcons name="category" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Categoría</Text>
+          </Pressable>
+          <Pressable onPress={limpiar_filtros} style={styles.filterButton}>
+            <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Limpiar</Text>
+          </Pressable>
+        </View>
+        <View style={styles.filterButtonsContainer}>
+          <Filtro_aplicado texto={filtros_usados[0].nombre+": "+fecha_desde.toDateString()} callback={reset_fecha_desde} isVisible={filtros_usados[0].isSet}/>
+          <Filtro_aplicado texto={filtros_usados[1].nombre+": "+fecha_hasta.toDateString()} callback={reset_fecha_hasta} isVisible={filtros_usados[1].isSet}/>
+          <Filtro_aplicado texto={filtros_usados[2].nombre+": "+ todas_categorias.find(value=>value.id==cate_id)?.name} callback={reset_cate} isVisible={filtros_usados[2].isSet}/>
+        </View>
+      </View>
+      )}
+      {isFetching && (
+        <LoadingCircle/>
+        )}
+      {(seleccion===0 || seleccion===4 ) && (
           <FlashList
             data={gastos}
             renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item, ver_gasto)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay gastos registrados</Text>}
           />
-        </View>
       )}
 
       {seleccion === 1 && (
-        <View style={styles.content}>
           <FlashList
             data={ingresos}
             renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item, ver_ingreso)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay ingresos registrados</Text>}
           />
-        </View>
       )}
 
       {seleccion === 2 && (
-        <View style={styles.content}>
           <FlashList
             data={presupuestos}
             renderItem={({ item }: ListRenderItemInfo<Presupuesto>) => renderPresupuesto(item, ver_presupuesto)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay presupuestos registrados</Text>}
           />
-        </View>
       )}
-
+      </View>
       <DateRangeModal
         visible={DateModalVisible}
         setVisible={setDateModalVisible}
