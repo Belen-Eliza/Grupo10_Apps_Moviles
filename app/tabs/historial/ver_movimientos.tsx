@@ -141,6 +141,9 @@ export default function Historial() {
     setSeleccion(0);
     setFiltrosUsados([{nombre:"Desde",isSet:false},{nombre:"Hasta",isSet:false},{nombre:"Categoría",isSet:false}]);
   };
+  const hay_filtros=()=>{
+    return filtros_usados[0].isSet || filtros_usados[1].isSet || filtros_usados[2].isSet
+  }
 
   const reset_fecha_desde = ()=>{
     setFechaDesde(new Date(0));
@@ -190,7 +193,7 @@ export default function Historial() {
             <MaterialIcons name="category" size={24} color="#FFFFFF" />
             <Text style={styles.filterButtonText}>Categoría</Text>
           </Pressable>
-          <Pressable onPress={limpiar_filtros} style={styles.filterButton}>
+          <Pressable onPress={hay_filtros() ? limpiar_filtros: ()=>{}} style={[styles.filterButton,{backgroundColor: hay_filtros() ? "#3F51B5":"lightgray"}]}>
             <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
             <Text style={styles.filterButtonText}>Limpiar</Text>
           </Pressable>
@@ -350,4 +353,3 @@ const styles = StyleSheet.create({
   },
 });
 
-//Warning: Maximum update depth exceeded. This can happen when a component calls setState inside useEffect, but useEffect either doesn't have a dependency array, or one of the dependencies changes on every render.
