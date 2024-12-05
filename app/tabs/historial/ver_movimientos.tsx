@@ -198,7 +198,7 @@ export default function Historial() {
             <Text style={styles.filterButtonText}>Limpiar</Text>
           </Pressable>
         </View>
-        <View style={styles.filterButtonsContainer}>
+        <View style={[styles.filterButtonsContainer,{flexWrap:"wrap"}]}>
           <Filtro_aplicado texto={filtros_usados[0].nombre+": "+fecha_desde.toDateString()} callback={reset_fecha_desde} isVisible={filtros_usados[0].isSet}/>
           <Filtro_aplicado texto={filtros_usados[1].nombre+": "+fecha_hasta.toDateString()} callback={reset_fecha_hasta} isVisible={filtros_usados[1].isSet}/>
           <Filtro_aplicado texto={filtros_usados[2].nombre+": "+ todas_categorias.find(value=>value.id==cate_id)?.name} callback={reset_cate} isVisible={filtros_usados[2].isSet}/>
