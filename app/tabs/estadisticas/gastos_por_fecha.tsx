@@ -1,32 +1,34 @@
 import { useUserContext } from "@/context/UserContext";
-import { useState, } from "react";
+import { useEffect, useState, } from "react";
 import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
-import { DateRangeModal } from '@/components/DateRangeModal';
+import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar } from "@/components/botones";
+import { useNavigation } from '@react-navigation/native';
+import { today,semana_pasada,mes_pasado,year_start } from "@/components/dias";
 
 type Datos = { fecha: Date; _sum: {monto: number} };
-
-const today =()=>{
-  let fecha = new Date();
-  fecha.setHours(23,59);
-  return fecha
-}
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
 
     const [datosGastos, setDatosGastos] = useState<Datos[]>([]);
     const [datosIngresos, setDatosIngresos] = useState<Datos[]>([]);
-    const [fechaDesde, setFechaDesde] = useState(new Date(0));
+    const [fechaDesde, setFechaDesde] = useState(semana_pasada());
     const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
+    const [simplePickerVisible,setVisible] = useState(false);
+    const [rango_simple,setRangoSimple] = useState(0);
     const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
 
+    const navigation = useNavigation();
+
     const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
+    const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fechaDesde];
+    
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
@@ -63,10 +65,13 @@ export default function Gastos_por_Fecha() {
             };
     
             fetchData();
-          return () => {
-            false
-          };
-        }, [context.id, fechaDesde, fechaHasta])
+            const limpiar = navigation.addListener('blur', () => {
+                setFechaDesde(new Date(0));
+                setFechaHasta(today());
+              });
+        
+              return limpiar
+        }, [context.id, fechaDesde, fechaHasta,rango_simple,navigation])
       );
 
     const screenWidth = Dimensions.get("window").width;
@@ -149,17 +154,28 @@ export default function Gastos_por_Fecha() {
       },
     };
 
-    const openDatePicker = () => setModalVisible(true);
+    const onChangeRango=(selection:{label:string,value:number})=>{
+        if (selection.value==4) {
+            setModalVisible(true);
+            console.log("hi")
+        } else {
+            setFechaDesde(fechas_rango_simple[selection.value]);
+            setFechaHasta(today());
+        }
+    }
 
     return (
         <>
-            <ScrollView contentContainerStyle={estilos.mainView}>
-    <Pressable style={[estilos.tarjeta, estilos.centrado]} onPress={openDatePicker}>
-        <Text>Filtrar por fecha</Text>
-    </Pressable>
-
-    {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
+    <View style={estilos.mainView}>
+        <View style={[estilos.filterContainer, {elevation:5,margin:5,marginHorizontal:15}]}>
+            <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
+            <View style={estilos.filterButtonsContainer}>
+                <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
+            </View>
+        </View>
     
+    <View style={{zIndex:-1}}>
+    {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
     <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
     {/* Mostrar el gráfico correspondiente */}
@@ -181,7 +197,8 @@ export default function Gastos_por_Fecha() {
             
         />
     )}
-</ScrollView>
+    </View>
+</View>
 
             <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fechaDesde} fecha_hasta={fechaHasta}
             setDesde={setFechaDesde} setHasta={setFechaHasta}            

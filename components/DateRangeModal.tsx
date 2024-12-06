@@ -2,6 +2,7 @@ import { estilos,colores } from "@/components/global_styles";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
 import { Text, View, Pressable, Modal, Platform, StyleSheet } from "react-native";
 import { useState } from "react";
+import DropDownPicker from "react-native-dropdown-picker";
 
 function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,
   fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,
@@ -11,11 +12,13 @@ function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<Reac
 
     const onChangeDesde=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
         let currentDate = new Date(0);
+        //console.log("desde:",selectedDate)
         if (selectedDate!=undefined) currentDate=selectedDate
         setNuevoDesde(currentDate);
       };
       const onChangeHasta=(event:DateTimePickerEvent, selectedDate:Date|undefined) => {
         let currentDate = new Date();
+        //console.log("hasta:",selectedDate)
         if (selectedDate!=undefined) currentDate=selectedDate
         setNuevoHasta(currentDate);
       };
@@ -120,4 +123,13 @@ function comparar_fechas(fecha1:Date, fecha2:Date){
   return fecha1.getDate()==fecha2.getDate() && fecha1.getFullYear()==fecha2.getFullYear() &&fecha1.getMonth()==fecha2.getMonth()
 }
 
-export {DateRangeModal, comparar_fechas}
+function SelectorFechaSimple(props:{open:boolean,setOpen:React.Dispatch<React.SetStateAction<boolean>>,selected_id: number,set_selection_id:React.Dispatch<React.SetStateAction<number>>,onChange:Function}) {
+  const opciones = ["Últimos 7 días","Último mes","Este año","Todos","Avanzado"];
+  return (
+    <DropDownPicker style={[{maxWidth:"60%",elevation:2,zIndex:999},estilos.textInput,estilos.margen,estilos.centrado]} open={props.open} 
+          value={props.selected_id} items={opciones.map((each,index)=>{return {value:index,label:each}})} 
+          itemKey="value" setOpen={props.setOpen} setValue={props.set_selection_id} onSelectItem={(v)=>props.onChange(v)} />
+  )
+}
+
+export {DateRangeModal, comparar_fechas, SelectorFechaSimple}
