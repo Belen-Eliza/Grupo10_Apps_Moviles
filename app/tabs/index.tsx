@@ -260,8 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 20,
-    width: '90%',
-    maxWidth: 400,
+    width: Dimensions.get("window").width*0.9,
     alignSelf: 'center',
   },
   modalTitle: {

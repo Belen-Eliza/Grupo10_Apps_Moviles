@@ -3,7 +3,7 @@ import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-na
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
-import { CategoryPicker, traer_categorias } from "@/components/CategoryPicker";
+import { CategoryPicker, CategoryIngresoPicker, traer_categorias } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
@@ -13,20 +13,10 @@ import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto } from "@/components/tipos";
 import { comparar_fechas } from "@/components/DateRangeModal";
 import {LoadingCircle} from "@/components/loading"
+import { today, semana_pasada } from "@/components/dias";
 
 type Ingreso = { id: number; monto: number; description: string; category: Category; fecha: Date }
 type Filtro = {nombre:string,isSet:boolean}
-
-const today = () => {
-  let fecha = new Date();
-  fecha.setHours(23, 59);
-  return fecha;
-};
-const semana_pasada = ()=>{
-  let fecha = new Date();
-  fecha.setTime(fecha.getTime()-7*24*60*60*1000);
-  return fecha
-}
 
 export default function Historial() {
   const context = useUserContext();

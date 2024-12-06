@@ -1,14 +1,15 @@
 import { useUserContext } from "@/context/UserContext";
-import { useEffect, useState, } from "react";
-import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
+import { useState, } from "react";
+import { Text, View, Dimensions } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
 import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
-import { Alternar } from "@/components/botones";
+import { Alternar ,Filtro_aplicado} from "@/components/botones";
 import { useNavigation } from '@react-navigation/native';
 import { today,semana_pasada,mes_pasado,year_start } from "@/components/dias";
+import {LoadingCircle} from "@/components/loading"
 
 type Datos = { fecha: Date; _sum: {monto: number} };
 
@@ -23,6 +24,7 @@ export default function Gastos_por_Fecha() {
     const [simplePickerVisible,setVisible] = useState(false);
     const [rango_simple,setRangoSimple] = useState(0);
     const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
+    const [isFetching,setFetching] = useState(true);
 
     const navigation = useNavigation();
 
@@ -32,7 +34,10 @@ export default function Gastos_por_Fecha() {
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
+                setFetching(true);
                 const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
+                // Wait 2 seconds
+                await new Promise((resolve) => setTimeout(resolve, 2000));
                 try {
                     const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
                         method: "GET",
@@ -41,9 +46,12 @@ export default function Gastos_por_Fecha() {
                     if (rspGastos.ok) {
                         const gastosData = await rspGastos.json();
                         setDatosGastos(agrupar_por_fecha(gastosData));
-                        
+                        setFetching(false);
                     } else {
-                        console.error("Error al obtener datos de gastos");
+                        if (rspGastos.status==400) {
+                            setDatosGastos([]);
+                            setFetching(false);
+                        }else console.error("Error al obtener datos de gastos");
                     }
     
                     const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
@@ -53,14 +61,16 @@ export default function Gastos_por_Fecha() {
                     if (rspIngresos.ok) {
                         const ingresosData = await rspIngresos.json();
                         setDatosIngresos(agrupar_por_fecha(ingresosData));
-                        
+                        setFetching(false);
                     } else {
-                        console.error("Error al obtener datos de ingresos");
+                        if (rspIngresos.status==400){
+                            setDatosIngresos([]);
+                            setFetching(false);
+                        }
+                        else  console.error("Error al obtener datos de ingresos");
                     }
                 } catch (e) {
                     console.log(e);
-                    alert("No hay datos en ese rango");
-    
                 }
             };
     
@@ -68,7 +78,8 @@ export default function Gastos_por_Fecha() {
             const limpiar = navigation.addListener('blur', () => {
                 setFechaDesde(new Date(0));
                 setFechaHasta(today());
-              });
+                setRangoSimple(3);
+            });
         
               return limpiar
         }, [context.id, fechaDesde, fechaHasta,rango_simple,navigation])
@@ -157,11 +168,18 @@ export default function Gastos_por_Fecha() {
     const onChangeRango=(selection:{label:string,value:number})=>{
         if (selection.value==4) {
             setModalVisible(true);
-            console.log("hi")
         } else {
             setFechaDesde(fechas_rango_simple[selection.value]);
             setFechaHasta(today());
         }
+    }
+    const reset_fecha_desde = ()=>{
+        setFechaDesde(new Date(0));
+        
+    }
+    const reset_fecha_hasta = ()=>{
+    setFechaHasta(new Date());
+    
     }
 
     return (
@@ -172,19 +190,25 @@ export default function Gastos_por_Fecha() {
             <View style={estilos.filterButtonsContainer}>
                 <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
             </View>
+            <View style={[estilos.filterButtonsContainer,{flexWrap:"wrap"}]}>
+                <Filtro_aplicado texto={"Desde: "+fechaDesde.toDateString()} callback={reset_fecha_desde} isVisible={rango_simple==4}/>
+                <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={rango_simple==4}/>
+            </View>
         </View>
-    
     <View style={{zIndex:-1}}>
+   
     {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
     <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
+    {isFetching && ( <LoadingCircle/> )}
+
     {/* Mostrar el gráfico correspondiente */}
     {chartType === 0 && datosGastos.length === 0 ? (
-        <Text>No hay gastos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.centrado}>No hay gastos en el rango de fechas seleccionado.</Text>
     ) : chartType === 1 && datosIngresos.length === 0 ? (
-        <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.centrado}>No hay ingresos en el rango de fechas seleccionado.</Text>
     ) : chartType === 2 && combinedData.length === 0 ? (
-        <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
+        <Text style={estilos.centrado}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
     ) : (
         <LineChart
             data={chartType === 2 ? dataBalance : chartType === 1 ? dataIngresos : dataGastos}

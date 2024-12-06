@@ -1,4 +1,4 @@
-import { ActivityIndicator, View } from "react-native";
+import { ActivityIndicator, View ,Text} from "react-native";
 
 function LoadingCircle (){
     return (
