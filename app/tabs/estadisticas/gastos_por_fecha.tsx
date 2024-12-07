@@ -23,6 +23,7 @@ export default function Gastos_por_Fecha() {
     const [modalVisible, setModalVisible] = useState(false);
     const [simplePickerVisible,setVisible] = useState(false);
     const [rango_simple,setRangoSimple] = useState(0);
+    const [usa_filtro_avanzado,setUsaFiltroAvanzado] = useState({desde:false,hasta:false})
     const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
     const [isFetching,setFetching] = useState(true);
 
@@ -34,19 +35,18 @@ export default function Gastos_por_Fecha() {
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
-                setFetching(true);
                 const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
                 // Wait 2 seconds
-                await new Promise((resolve) => setTimeout(resolve, 2000));
+                //await new Promise((resolve) => setTimeout(resolve, 2000));
                 try {
                     const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                     });
+                    
                     if (rspGastos.ok) {
                         const gastosData = await rspGastos.json();
                         setDatosGastos(agrupar_por_fecha(gastosData));
-                        setFetching(false);
                     } else {
                         if (rspGastos.status==400) {
                             setDatosGastos([]);
@@ -61,11 +61,9 @@ export default function Gastos_por_Fecha() {
                     if (rspIngresos.ok) {
                         const ingresosData = await rspIngresos.json();
                         setDatosIngresos(agrupar_por_fecha(ingresosData));
-                        setFetching(false);
                     } else {
                         if (rspIngresos.status==400){
                             setDatosIngresos([]);
-                            setFetching(false);
                         }
                         else  console.error("Error al obtener datos de ingresos");
                     }
@@ -73,8 +71,8 @@ export default function Gastos_por_Fecha() {
                     console.log(e);
                 }
             };
-    
-            fetchData();
+            setFetching(true);
+            fetchData().then(()=>{setFetching(false)});
             const limpiar = navigation.addListener('blur', () => {
                 setFechaDesde(new Date(0));
                 setFechaHasta(today());
@@ -86,7 +84,7 @@ export default function Gastos_por_Fecha() {
       );
 
     const screenWidth = Dimensions.get("window").width;
-    const screenHeight = Dimensions.get("window").height * 0.5; 
+    const screenHeight = Dimensions.get("window").height *(usa_filtro_avanzado.desde && usa_filtro_avanzado.hasta ?  0.47 : usa_filtro_avanzado.desde || usa_filtro_avanzado.hasta ?  0.5 : 0.55); 
     
     const dataGastos = {
         
@@ -168,6 +166,11 @@ export default function Gastos_por_Fecha() {
     const onChangeRango=(selection:{label:string,value:number})=>{
         if (selection.value==4) {
             setModalVisible(true);
+            setUsaFiltroAvanzado(prev=>{
+                prev.desde=true;
+                prev.hasta=true;
+                return prev
+            })
         } else {
             setFechaDesde(fechas_rango_simple[selection.value]);
             setFechaHasta(today());
@@ -175,24 +178,32 @@ export default function Gastos_por_Fecha() {
     }
     const reset_fecha_desde = ()=>{
         setFechaDesde(new Date(0));
-        
+        setUsaFiltroAvanzado(prev=>{
+            prev.desde=false;
+            return prev
+        });
+        if (!usa_filtro_avanzado.hasta)  setRangoSimple(3)
     }
     const reset_fecha_hasta = ()=>{
-    setFechaHasta(new Date());
-    
+        setFechaHasta(new Date());
+        setUsaFiltroAvanzado(prev=>{
+            prev.hasta=false;
+            return prev
+        });
+        if (!usa_filtro_avanzado.desde ) setRangoSimple(3)
     }
 
     return (
         <>
     <View style={estilos.mainView}>
-        <View style={[estilos.filterContainer, {elevation:5,margin:5,marginHorizontal:15}]}>
+        <View style={[estilos.filterContainer, {elevation:5,margin:5,marginHorizontal:15,paddingBottom:8}]}>
             <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
             <View style={estilos.filterButtonsContainer}>
                 <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
             </View>
             <View style={[estilos.filterButtonsContainer,{flexWrap:"wrap"}]}>
-                <Filtro_aplicado texto={"Desde: "+fechaDesde.toDateString()} callback={reset_fecha_desde} isVisible={rango_simple==4}/>
-                <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={rango_simple==4}/>
+                <Filtro_aplicado texto={"Desde: "+fechaDesde.toDateString()} callback={reset_fecha_desde} isVisible={usa_filtro_avanzado.desde}/>
+                <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={usa_filtro_avanzado.hasta}/>
             </View>
         </View>
     <View style={{zIndex:-1}}>

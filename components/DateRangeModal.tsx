@@ -126,7 +126,7 @@ function comparar_fechas(fecha1:Date, fecha2:Date){
 function SelectorFechaSimple(props:{open:boolean,setOpen:React.Dispatch<React.SetStateAction<boolean>>,selected_id: number,set_selection_id:React.Dispatch<React.SetStateAction<number>>,onChange:Function}) {
   const opciones = ["Últimos 7 días","Último mes","Este año","Todos","Avanzado"];
   return (
-    <DropDownPicker style={[{maxWidth:"60%",elevation:2,zIndex:999},estilos.textInput,estilos.margen,estilos.centrado]} open={props.open} 
+    <DropDownPicker style={[{maxWidth:"60%",elevation:2,zIndex:999,marginBottom:30},estilos.textInput,estilos.centrado]} open={props.open} 
           value={props.selected_id} items={opciones.map((each,index)=>{return {value:index,label:each}})} 
           itemKey="value" setOpen={props.setOpen} setValue={props.set_selection_id} onSelectItem={(v)=>props.onChange(v)} />
   )
