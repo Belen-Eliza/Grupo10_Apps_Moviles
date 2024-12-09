@@ -12,7 +12,7 @@ Su funcionalidad incluye: separar ingresos y egresos según rubro, período o pr
 https://github.com/Belen-Eliza/Backend---App 
 
 
-##Dependencias
+## Dependencias
 * Picker: https://docs.expo.dev/versions/latest/sdk/picker/
 * Flashlist: https://shopify.github.io/flash-list/#install
 * react-native-chart-kit: https://www.npmjs.com/package/react-native-chart-kit
