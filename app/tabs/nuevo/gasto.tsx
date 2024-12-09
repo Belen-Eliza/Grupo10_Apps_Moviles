@@ -1,4 +1,3 @@
-
 import { Pressable, Text, TextInput, View } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useState } from "react";

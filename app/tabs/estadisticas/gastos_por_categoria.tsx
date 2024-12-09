@@ -60,7 +60,7 @@ export default function Gastos_por_Categoria() {
         <PieChart
           data={datos}
           width={Dimensions.get("window").width}
-          height={400}
+          height={Dimensions.get("window").height/2}
           chartConfig={chartConfig}
           accessor={"cant"}
           backgroundColor={"transparent"}

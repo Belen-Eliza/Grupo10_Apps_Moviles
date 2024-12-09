@@ -3,36 +3,39 @@ import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-na
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
-import { CategoryPicker } from "@/components/CategoryPicker";
+import { CategoryPicker, CategoryIngresoPicker, traer_categorias, traer_categorias_ingresos } from "@/components/CategoryPicker";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
-import { Alternar } from "@/components/botones";
+import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
-
-type Category = { id: number; name: string; description: string }
-type Gasto = { id: number; monto: number; cant_cuotas: number; fecha: Date; category: Category }
-type Ingreso = { id: number; monto: number; description: string; category: Category; fecha: Date }
-type Presupuesto = { id: number; descripcion: string; montoTotal: number; fecha_objetivo: Date }
-
-const today = () => {
-  let fecha = new Date();
-  fecha.setHours(23, 59);
-  return fecha;
-};
+import { useNavigation } from '@react-navigation/native';
+import { Category, Gasto, Presupuesto, Ingreso } from "@/components/tipos";
+import { comparar_fechas } from "@/components/DateRangeModal";
+import {LoadingCircle} from "@/components/loading"
+import { today, semana_pasada } from "@/components/dias";
 
 export default function Historial() {
   const context = useUserContext();
   const [gastos, setGastos] = useState<Gasto[]>([]);
   const [ingresos, setIngresos] = useState<Ingreso[]>([]);
   const [presupuestos, setPresupuestos] = useState<Presupuesto[]>([]);
-  const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos, 4 filtrar gastos por categoria
+  const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos
   const [DateModalVisible, setDateModalVisible] = useState(false);
   const [CateModalVisible, setCatModalVisible] = useState(false);
-  const [fecha_desde, setFechaDesde] = useState(new Date(0));
+  const [fecha_desde, setFechaDesde] = useState(semana_pasada());
   const [fecha_hasta, setFechaHasta] = useState(today());
-  const [cate_id, setCateId] = useState(0);
+  const [cate_gasto_id, setCateId] = useState(0);
+  const [cate_ingreso_id, setCateIngresoId] = useState(0);
   const [openPicker, setOpen] = useState(false);
+  const [filtros_usados,setFiltrosUsados] = useState({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false});
+  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
+  const [categorias_ingresos,setCategoriasIngresos] =useState<Category[]>([{id:0,name:"",description:""}])
+  const [isFetching,setFetching] = useState(true);
+  const navigation = useNavigation();
+  
+  traer_categorias(setCategorias);
+  traer_categorias_ingresos(setCategoriasIngresos);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -44,35 +47,55 @@ export default function Historial() {
           });
           if (!rsp.ok) {
             if (rsp.status != 400) throw new Error(rsp.status.toString() + ", en Historial");
+            else {
+              callback([])
+              setFetching(false);
+            }
           } else {
             const info = await rsp.json();
             callback(info);
+            setFetching(false);
           }
         } catch (error) {
           console.log(error);
         }
       };
-
+      
       const fechas = { fecha_desde: fecha_desde.toISOString(), fecha_hasta: fecha_hasta.toISOString() };
+      setFetching(true);
+      if (!comparar_fechas(fecha_desde,new Date(0))){
+        setFiltrosUsados(prev=>{
+          prev.fecha_desde=true;
+          return prev
+        })
+      }
+      if (!comparar_fechas(fecha_hasta,new Date())){
+        setFiltrosUsados(prev=>{
+          prev.fecha_hasta=true;
+          return prev
+        })
+      }
       switch (seleccion) {
         case 0:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
+          
+          if (cate_gasto_id==0) query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
+          else query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_gasto_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
           break;
         case 1:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, setIngresos);
+          if (cate_ingreso_id==0) query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setIngresos);
+          else query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_cate/${context.id}/${cate_ingreso_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setIngresos);
           break;
         case 2:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`, setPresupuestos);
           break;
-        case 4:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
-          break;
       }
+      
+      const limpiar = navigation.addListener('blur', () => {
+        limpiar_filtros();
+      });
 
-      return () => {
-        // Cleanup function if needed
-      };
-    }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_id])
+      return limpiar
+    }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_gasto_id,cate_ingreso_id,navigation])
   );
 
   const ver_ingreso = (ingreso: Ingreso) => {
@@ -89,7 +112,17 @@ export default function Historial() {
 
   const filtrar_por_cate = () => {
     setCatModalVisible(false);
-    setSeleccion(4);
+    if (seleccion==0) {
+      setFiltrosUsados(prev=>{
+      prev.categoria_gasto=true;
+      return prev
+    })}
+    else {
+      setFiltrosUsados(prev=>{
+        prev.categoria_ingreso=true;
+        return prev
+      })
+    }
   };
 
   const cancelar = () => {
@@ -101,10 +134,47 @@ export default function Historial() {
     setFechaDesde(new Date(0));
     setFechaHasta(new Date());
     setCateId(0);
-    setSeleccion(0);
-
+    setCateIngresoId(0);
+    setFiltrosUsados({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false})
   };
+  const hay_filtros=()=>{
+    const usa_fechas =filtros_usados.fecha_desde || filtros_usados.fecha_hasta;
+    if (seleccion==0){
+      return usa_fechas || filtros_usados.categoria_gasto
+    }
+    return usa_fechas || filtros_usados.categoria_ingreso
+  }
 
+  const reset_fecha_desde = ()=>{
+    setFechaDesde(new Date(0));
+    setFiltrosUsados(prev=>{
+      prev.fecha_desde=false;
+      return prev
+    })
+  }
+
+  const reset_fecha_hasta = ()=>{
+    setFechaHasta(new Date());
+    setFiltrosUsados(prev=>{
+      prev.fecha_hasta=false;
+      return prev
+    })
+  }
+  const reset_cate_gasto = ()=>{
+    setCateId(0);
+    setFiltrosUsados(prev=>{
+      prev.categoria_gasto=false;
+      return prev
+    })
+  }
+
+  const reset_cate_ingreso = ()=>{
+    setCateIngresoId(0);
+    setFiltrosUsados(prev=>{
+      prev.categoria_ingreso=false;
+      return prev
+    })
+  }
   return (
     <SafeAreaView style={styles.container}>
       <Alternar
@@ -116,57 +186,63 @@ export default function Historial() {
           { texto: "Presupuestos", params_callback: 2 }
         ]}
       />
-
-      {(seleccion === 0 || seleccion === 4) && (
-        <View style={styles.content}>
-          <View style={styles.filterContainer}>
-            <Text style={styles.filterTitle}>Filtrar por:</Text>
-            <View style={styles.filterButtonsContainer}>
-              <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
-                <MaterialIcons name="event" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Fecha</Text>
-              </Pressable>
-              <Pressable onPress={() => setCatModalVisible(true)} style={styles.filterButton}>
-                <MaterialIcons name="category" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Categoría</Text>
-              </Pressable>
-              <Pressable onPress={limpiar_filtros} style={styles.filterButton}>
-                <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
-                <Text style={styles.filterButtonText}>Limpiar</Text>
-              </Pressable>
-            </View>
-          </View>
+      <View style={styles.content}>
+      
+      {(seleccion!=2) && (
+        <View style={styles.filterContainer}>
+        <Text style={styles.filterTitle}>Filtrar por:</Text>
+        <View style={styles.filterButtonsContainer}>
+          <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
+            <MaterialIcons name="event" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Fecha</Text>
+          </Pressable>
+          <Pressable onPress={() => setCatModalVisible(true)} style={styles.filterButton}>
+            <MaterialIcons name="category" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Categoría</Text>
+          </Pressable>
+          <Pressable onPress={hay_filtros() ? limpiar_filtros: ()=>{}} style={[styles.filterButton,{backgroundColor: hay_filtros() ? "#3F51B5":"lightgray"}]}>
+            <MaterialIcons name="clear-all" size={24} color="#FFFFFF" />
+            <Text style={styles.filterButtonText}>Limpiar</Text>
+          </Pressable>
+        </View>
+        <View style={[styles.filterButtonsContainer,{flexWrap:"wrap"}]}>
+          <Filtro_aplicado texto={"Desde: "+fecha_desde.toDateString()} callback={reset_fecha_desde} isVisible={filtros_usados.fecha_desde}/>
+          <Filtro_aplicado texto={"Hasta: "+fecha_hasta.toDateString()} callback={reset_fecha_hasta} isVisible={filtros_usados.fecha_hasta}/>
+          <Filtro_aplicado texto={"Categoría: "+ todas_categorias.find(value=>value.id==cate_gasto_id)?.name} callback={reset_cate_gasto} isVisible={filtros_usados.categoria_gasto && seleccion==0}/>
+          <Filtro_aplicado texto={"Categoría: "+ categorias_ingresos.find(value=>value.id==cate_ingreso_id)?.name} callback={reset_cate_ingreso} isVisible={filtros_usados.categoria_ingreso && seleccion==1}/>
+        </View>
+      </View>
+      )}
+      {isFetching && (
+        <LoadingCircle/>
+        )}
+      {(seleccion===0 || seleccion===4 ) && (
           <FlashList
             data={gastos}
             renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item, ver_gasto)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay gastos registrados</Text>}
           />
-        </View>
       )}
 
       {seleccion === 1 && (
-        <View style={styles.content}>
           <FlashList
             data={ingresos}
             renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item, ver_ingreso)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay ingresos registrados</Text>}
           />
-        </View>
       )}
 
       {seleccion === 2 && (
-        <View style={styles.content}>
           <FlashList
             data={presupuestos}
             renderItem={({ item }: ListRenderItemInfo<Presupuesto>) => renderPresupuesto(item, ver_presupuesto)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={styles.emptyListText}>No hay presupuestos registrados</Text>}
           />
-        </View>
       )}
-
+      </View>
       <DateRangeModal
         visible={DateModalVisible}
         setVisible={setDateModalVisible}
@@ -180,12 +256,23 @@ export default function Historial() {
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Seleccionar Categoría</Text>
-            <CategoryPicker
+            {seleccion===0 && (
+              <CategoryPicker
               openPicker={openPicker}
               setOpen={setOpen}
-              selected_cat_id={cate_id}
+              selected_cat_id={cate_gasto_id}
               set_cat_id={setCateId}
-            />
+              />
+            )}
+            {seleccion===1 && (
+              <CategoryIngresoPicker
+              openPicker={openPicker}
+              setOpen={setOpen}
+              selected_cat_id={cate_ingreso_id}
+              set_cat_id={setCateIngresoId}
+              />
+            )}
+           
             <Pressable style={estilos.confirmButton} onPress={filtrar_por_cate}>
               <Text style={estilos.confirmButtonText}>Confirmar</Text>
             </Pressable>

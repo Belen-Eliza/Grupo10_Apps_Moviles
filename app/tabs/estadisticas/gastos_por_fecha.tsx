@@ -1,47 +1,57 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, } from "react";
-import { Text, View, Pressable, Dimensions, ScrollView } from "react-native";
+import { Text, View, Dimensions } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
-import { DateRangeModal } from '@/components/DateRangeModal';
+import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal';
 import { useFocusEffect } from '@react-navigation/native';
-import { Alternar } from "@/components/botones";
+import { Alternar ,Filtro_aplicado} from "@/components/botones";
+import { useNavigation } from '@react-navigation/native';
+import { today,semana_pasada,mes_pasado,year_start } from "@/components/dias";
+import {LoadingCircle} from "@/components/loading"
 
 type Datos = { fecha: Date; _sum: {monto: number} };
-
-const today =()=>{
-  let fecha = new Date();
-  fecha.setHours(23,59);
-  return fecha
-}
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
 
     const [datosGastos, setDatosGastos] = useState<Datos[]>([]);
     const [datosIngresos, setDatosIngresos] = useState<Datos[]>([]);
-    const [fechaDesde, setFechaDesde] = useState(new Date(0));
+    const [fechaDesde, setFechaDesde] = useState(semana_pasada());
     const [fechaHasta, setFechaHasta] = useState(today());
     const [modalVisible, setModalVisible] = useState(false);
+    const [simplePickerVisible,setVisible] = useState(false);
+    const [rango_simple,setRangoSimple] = useState(0);
+    const [usa_filtro_avanzado,setUsaFiltroAvanzado] = useState({desde:false,hasta:false})
     const [chartType, setChartType] = useState(0); //0 gastos, 1 ingresos, 2 balance
+    const [isFetching,setFetching] = useState(true);
+
+    const navigation = useNavigation();
 
     const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
+    const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fechaDesde];
+    
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
                 const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
+                // Wait 2 seconds
+                //await new Promise((resolve) => setTimeout(resolve, 2000));
                 try {
                     const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
                         method: "GET",
                         headers: { "Content-Type": "application/json" },
                     });
+                    
                     if (rspGastos.ok) {
                         const gastosData = await rspGastos.json();
                         setDatosGastos(agrupar_por_fecha(gastosData));
-                        
                     } else {
-                        console.error("Error al obtener datos de gastos");
+                        if (rspGastos.status==400) {
+                            setDatosGastos([]);
+                            setFetching(false);
+                        }else console.error("Error al obtener datos de gastos");
                     }
     
                     const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
@@ -51,26 +61,30 @@ export default function Gastos_por_Fecha() {
                     if (rspIngresos.ok) {
                         const ingresosData = await rspIngresos.json();
                         setDatosIngresos(agrupar_por_fecha(ingresosData));
-                        
                     } else {
-                        console.error("Error al obtener datos de ingresos");
+                        if (rspIngresos.status==400){
+                            setDatosIngresos([]);
+                        }
+                        else  console.error("Error al obtener datos de ingresos");
                     }
                 } catch (e) {
                     console.log(e);
-                    alert("No hay datos en ese rango");
-    
                 }
             };
-    
-            fetchData();
-          return () => {
-            false
-          };
-        }, [context.id, fechaDesde, fechaHasta])
+            setFetching(true);
+            fetchData().then(()=>{setFetching(false)});
+            const limpiar = navigation.addListener('blur', () => {
+                setFechaDesde(new Date(0));
+                setFechaHasta(today());
+                setRangoSimple(3);
+            });
+        
+              return limpiar
+        }, [context.id, fechaDesde, fechaHasta,rango_simple,navigation])
       );
 
     const screenWidth = Dimensions.get("window").width;
-    const screenHeight = Dimensions.get("window").height * 0.5; 
+    const screenHeight = Dimensions.get("window").height *(usa_filtro_avanzado.desde && usa_filtro_avanzado.hasta ?  0.4 : usa_filtro_avanzado.desde || usa_filtro_avanzado.hasta ?  0.45 : 0.5); 
     
     const dataGastos = {
         
@@ -149,26 +163,68 @@ export default function Gastos_por_Fecha() {
       },
     };
 
-    const openDatePicker = () => setModalVisible(true);
+    const onChangeRango=(selection:{label:string,value:number})=>{
+        if (selection.value==4) {
+            setModalVisible(true);
+            setUsaFiltroAvanzado(prev=>{
+                prev.desde=true;
+                prev.hasta=true;
+                return prev
+            })
+        } else {
+            setFechaDesde(fechas_rango_simple[selection.value]);
+            setFechaHasta(today());
+            setUsaFiltroAvanzado(prev=>{
+                prev.desde=false;
+                prev.hasta=false;
+                return prev
+            })
+        }
+    }
+    const reset_fecha_desde = ()=>{
+        setFechaDesde(new Date(0));
+        setUsaFiltroAvanzado(prev=>{
+            prev.desde=false;
+            return prev
+        });
+        if (!usa_filtro_avanzado.hasta)  setRangoSimple(3)
+    }
+    const reset_fecha_hasta = ()=>{
+        setFechaHasta(new Date());
+        setUsaFiltroAvanzado(prev=>{
+            prev.hasta=false;
+            return prev
+        });
+        if (!usa_filtro_avanzado.desde ) setRangoSimple(3)
+    }
 
     return (
         <>
-            <ScrollView contentContainerStyle={estilos.mainView}>
-    <Pressable style={[estilos.tarjeta, estilos.centrado]} onPress={openDatePicker}>
-        <Text>Filtrar por fecha</Text>
-    </Pressable>
-
+    <View style={estilos.mainView}>
+        <View style={[estilos.filterContainer, {elevation:5,margin:5,marginHorizontal:15,paddingBottom:8}]}>
+            <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
+            <View style={estilos.filterButtonsContainer}>
+                <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
+            </View>
+            <View style={[estilos.filterButtonsContainer,{flexWrap:"wrap",zIndex:-1}]}>
+                <Filtro_aplicado texto={"Desde: "+fechaDesde.toDateString()} callback={reset_fecha_desde} isVisible={usa_filtro_avanzado.desde}/>
+                <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={usa_filtro_avanzado.hasta}/>
+            </View>
+        </View>
+    <View style={{zIndex:-1}}>
+   
     {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
-    
     <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
+    {isFetching && ( <LoadingCircle/> )}
+
     {/* Mostrar el gráfico correspondiente */}
     {chartType === 0 && datosGastos.length === 0 ? (
-        <Text>No hay gastos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.centrado}>No hay gastos en el rango de fechas seleccionado.</Text>
     ) : chartType === 1 && datosIngresos.length === 0 ? (
-        <Text>No hay ingresos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.centrado}>No hay ingresos en el rango de fechas seleccionado.</Text>
     ) : chartType === 2 && combinedData.length === 0 ? (
-        <Text>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
+        <Text style={estilos.centrado}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
     ) : (
         <LineChart
             data={chartType === 2 ? dataBalance : chartType === 1 ? dataIngresos : dataGastos}
@@ -178,10 +234,10 @@ export default function Gastos_por_Fecha() {
             bezier={true}
             yAxisLabel="$"
             fromZero={true}
-            
         />
     )}
-</ScrollView>
+    </View>
+</View>
 
             <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fechaDesde} fecha_hasta={fechaHasta}
             setDesde={setFechaDesde} setHasta={setFechaHasta}            

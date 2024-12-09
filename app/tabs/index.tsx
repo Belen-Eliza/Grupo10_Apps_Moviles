@@ -90,7 +90,7 @@ export default function Index() {
   }
   
   return (
-    <View style={[estilos.mainView,colores.fondo2,estilos.background2]}>
+    <View style={[estilos.mainView,colores.fondo_azul,estilos.background2]}>
       <View style={[styles.container,]}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>
@@ -260,8 +260,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
     borderRadius: 20,
     padding: 20,
-    width: '90%',
-    maxWidth: 400,
+    width: Dimensions.get("window").width*0.9,
     alignSelf: 'center',
   },
   modalTitle: {

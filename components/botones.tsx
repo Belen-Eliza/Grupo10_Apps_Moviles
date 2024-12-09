@@ -1,7 +1,8 @@
 import { View, Pressable, Text, StyleSheet } from "react-native";
 import { estilos,colores,botonesEstado } from "@/components/global_styles";
-
-import Ionicons from '@expo/vector-icons/Ionicons'
+import { MaterialIcons } from "@expo/vector-icons";
+import Ionicons from '@expo/vector-icons/Ionicons';
+import Entypo from '@expo/vector-icons/Entypo';
 
 function Boton(props: { texto: string, callback :Function}){
     
@@ -68,5 +69,21 @@ function Alternar(props:{activo:number,callback:Function,datos:{texto:string,par
     )
 }
 
+function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolean}){
+    return (
+        <Pressable onPress={()=>props.callback()} style={[estilos.centrado,
+                                                        {backgroundColor:"lightgray", 
+                                                        borderRadius:20,
+                                                        padding:8,
+                                                        flexDirection:"row",
+                                                        marginTop:10,
+                                                        display: props.isVisible ? "flex" : "none"
+                                                        }]}>
+            <Entypo name="circle-with-cross" size={24} color="white"  />
+            <Text style={{paddingLeft:3}}>{props.texto}</Text>
+        </Pressable>
+    )
+}
 
-export  {Boton,IconButton,Alternar};
+
+export  {Boton,IconButton,Alternar,Filtro_aplicado};
