@@ -65,7 +65,6 @@ export default function Historial() {
       setFetching(true);
       switch (seleccion) {
         case 0:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
           if (!comparar_fechas(fecha_desde,new Date(0))){
             setFiltrosUsados(prev=>{
               prev[0].isSet=true
@@ -78,19 +77,14 @@ export default function Historial() {
               return prev
             })
           }
+          if (cate_id==0) query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
+          else query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
           break;
         case 1:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/historial/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setIngresos);
           break;
         case 2:
           query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`, setPresupuestos);
-          break;
-        case 4:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/filtrar/${context.id}/${cate_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setGastos);
-          setFiltrosUsados(prev=>{
-            prev[2].isSet=true
-            return prev
-          })
           break;
       }
       
@@ -116,7 +110,10 @@ export default function Historial() {
 
   const filtrar_por_cate = () => {
     setCatModalVisible(false);
-    setSeleccion(4);
+    setFiltrosUsados(prev=>{
+      prev[2].isSet=true
+      return prev
+    })
   };
 
   const cancelar = () => {
@@ -142,6 +139,7 @@ export default function Historial() {
       return prev
     })
   }
+  
   const reset_fecha_hasta = ()=>{
     setFechaHasta(new Date());
     setFiltrosUsados(prev=>{

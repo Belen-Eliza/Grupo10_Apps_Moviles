@@ -84,7 +84,7 @@ export default function Gastos_por_Fecha() {
       );
 
     const screenWidth = Dimensions.get("window").width;
-    const screenHeight = Dimensions.get("window").height *(usa_filtro_avanzado.desde && usa_filtro_avanzado.hasta ?  0.47 : usa_filtro_avanzado.desde || usa_filtro_avanzado.hasta ?  0.5 : 0.55); 
+    const screenHeight = Dimensions.get("window").height *(usa_filtro_avanzado.desde && usa_filtro_avanzado.hasta ?  0.4 : usa_filtro_avanzado.desde || usa_filtro_avanzado.hasta ?  0.45 : 0.5); 
     
     const dataGastos = {
         
@@ -174,6 +174,11 @@ export default function Gastos_por_Fecha() {
         } else {
             setFechaDesde(fechas_rango_simple[selection.value]);
             setFechaHasta(today());
+            setUsaFiltroAvanzado(prev=>{
+                prev.desde=false;
+                prev.hasta=false;
+                return prev
+            })
         }
     }
     const reset_fecha_desde = ()=>{
@@ -201,7 +206,7 @@ export default function Gastos_por_Fecha() {
             <View style={estilos.filterButtonsContainer}>
                 <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
             </View>
-            <View style={[estilos.filterButtonsContainer,{flexWrap:"wrap"}]}>
+            <View style={[estilos.filterButtonsContainer,{flexWrap:"wrap",zIndex:-1}]}>
                 <Filtro_aplicado texto={"Desde: "+fechaDesde.toDateString()} callback={reset_fecha_desde} isVisible={usa_filtro_avanzado.desde}/>
                 <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={usa_filtro_avanzado.hasta}/>
             </View>
@@ -229,7 +234,6 @@ export default function Gastos_por_Fecha() {
             bezier={true}
             yAxisLabel="$"
             fromZero={true}
-            
         />
     )}
     </View>
