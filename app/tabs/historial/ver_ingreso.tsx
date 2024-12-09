@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, Pressable, Modal } from "react-native";
+import { Text, View } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import { Link,router,useLocalSearchParams } from "expo-router";
 import { Ingreso } from "@/components/tipos";
@@ -36,6 +36,7 @@ export default function DetalleIngreso(){
         <View style={[estilos.mainView,estilos.centrado]}>
             {ingreso==undefined? <Text style={{alignSelf:"center"}}>Cargando</Text>:
                 <>
+                <Text style={estilos.subtitulo}>Fecha: {(new Date(ingreso.fecha)).toDateString()}</Text>
                 <Text style={estilos.subtitulo}>Monto: {ingreso.monto}</Text>
                 <Text style={estilos.subtitulo}>Categoria: {ingreso.category.name+" - "+ingreso.category.description}</Text>
                 <Text style={estilos.subtitulo}>Descripcion: {ingreso.description} </Text>

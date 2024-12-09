@@ -45,15 +45,25 @@ function CategoryIngresoPicker (props:{openPicker:boolean,setOpen:React.Dispatch
 }
 
 function traer_categorias (setCategorias:React.Dispatch<React.SetStateAction<Category[]>>){
-  
+  useEffect(()=>{
+    (async ()=>{
+      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
+        method:'GET',
+        headers:{"Content-Type":"application/json"}})
+      .then(rsp => rsp.json())
+      .then(info =>setCategorias(info))
+    })();},[])
+}
+function traer_categorias_ingresos (setCategorias:React.Dispatch<React.SetStateAction<Category[]>>){
+  useEffect(()=>{
   (async ()=>{
-    fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
+    fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_ingresos`,{
       method:'GET',
       headers:{"Content-Type":"application/json"}})
     .then(rsp => rsp.json())
     .then(info =>setCategorias(info))
-  })();
+  })();},[])
   
 }
 
-export {CategoryPicker, CategoryIngresoPicker,traer_categorias}
+export {CategoryPicker, CategoryIngresoPicker,traer_categorias,traer_categorias_ingresos}
