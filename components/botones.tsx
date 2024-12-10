@@ -1,4 +1,4 @@
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import { View, Pressable, Text, StyleSheet,Keyboard } from "react-native";
 import { estilos,colores,botonesEstado } from "@/components/global_styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -85,5 +85,16 @@ function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolea
     )
 }
 
+function dismiss_keyboard(props:{setVisible:React.Dispatch<React.SetStateAction<boolean>>}){
+    return( 
+    <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} onPress={()=>{
+        Keyboard.dismiss();
+        props.setVisible(false);
+        }} >
+        <Text style={estilos.confirmButtonText}>Listo</Text>
+    </Pressable>
+    )
+}
 
-export  {Boton,IconButton,Alternar,Filtro_aplicado};
+
+export  {Boton,IconButton,Alternar,Filtro_aplicado,dismiss_keyboard};

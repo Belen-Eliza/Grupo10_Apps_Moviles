@@ -1,10 +1,10 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
-import Toast from 'react-native-root-toast'
+import my_alert from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import Animated, {
@@ -29,20 +29,29 @@ export default function Gasto() {
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0);
   const context = useUserContext();
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+
+    return () => {
+      showSubscription.remove();
+    };
+  }, []);
+
+  const handleKeyboardShow = (event: any) => {
+    setIsKeyboardVisible(true);
+  };
+
+  const handleKeyboardHide = (event: any) => {
+    setIsKeyboardVisible(false);
+  };
   
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
-    if (Number.isNaN(aux)) {
-      Toast.show("El valor ingresado debe ser un número", {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-    });
-    } else {
+    if (Number.isNaN(aux)) my_alert("El valor ingresado debe ser un número");
+    else {
       setGasto(pre => {
         pre.monto = aux;
         return pre;
@@ -62,16 +71,7 @@ export default function Gasto() {
     gasto.category_id = cat;
     gasto.user_id = context.id;
 
-    if (!es_valido(gasto)){
-      Toast.show("Complete todos los campos para continuar", {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-    });
-    }
+    if (!es_valido(gasto)) my_alert("Complete todos los campos para continuar");
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
@@ -111,7 +111,10 @@ export default function Gasto() {
 
   return (
     <RootSiblingParent>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+    
     <View style={[{ flex: 1 }, estilos.centrado]}>
+    
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
@@ -123,13 +126,14 @@ export default function Gasto() {
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
-        keyboardType="numbers-and-punctuation"
+        keyboardType="number-pad"
         onChangeText={handler_Cuotas}
         placeholder='Ingresar cuotas'
       />
-
+{isKeyboardVisible && <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} onPress={()=>{Keyboard.dismiss();setIsKeyboardVisible(false)}} ><Text style={estilos.confirmButtonText}>Listo</Text></Pressable>}
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryPicker>
+      
 
       <Pressable
         onPressIn={handlePressIn}
@@ -141,6 +145,8 @@ export default function Gasto() {
         </Animated.View>
       </Pressable>
     </View>
+    
+    </TouchableWithoutFeedback>
     </RootSiblingParent>
   );
 }

@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Pressable } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
@@ -9,7 +9,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import Toast from 'react-native-root-toast'
+import my_alert from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
@@ -25,9 +25,8 @@ export default function Ahorro() {
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
-    if (Number.isNaN(monto)) {
-      alert("El valor ingresado debe ser un número");
-    } else {
+    if (Number.isNaN(monto))  my_alert("El valor ingresado debe ser un número");
+    else {
       setIngreso(pre => ({ ...pre, monto }));
     }
   };
@@ -38,16 +37,7 @@ export default function Ahorro() {
 
   const confirmar = async () => {
     ingreso.category_id = cat;
-    if (!es_valido(ingreso)){
-      Toast.show("Complete los campos vacíos para continuar", {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.BOTTOM,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-    });
-    }
+    if (!es_valido(ingreso)) my_alert("Complete los campos vacíos para continuar")
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
@@ -68,7 +58,6 @@ export default function Ahorro() {
       }
     }
   };
-
   
   const scale = useSharedValue(1);
 

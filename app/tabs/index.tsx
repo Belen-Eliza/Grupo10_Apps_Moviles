@@ -16,7 +16,7 @@ import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
 import { validatePassword,validateEmail } from "@/components/validations";
-import Toast from 'react-native-root-toast'
+import my_alert from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 
@@ -32,14 +32,7 @@ export default function Index() {
 
   const {msg=false} = useLocalSearchParams();
   if (msg){
-    Toast.show(msg.toString(), {
-      duration: Toast.durations.LONG,
-      position: Toast.positions.BOTTOM,
-      shadow: true,
-      animation: true,
-      hideOnPress: true,
-      delay: 0,
-  });
+    my_alert(msg.toString());
   }
 
   const cancelar = ()=>{
