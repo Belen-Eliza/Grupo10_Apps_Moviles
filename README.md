@@ -19,3 +19,6 @@ https://github.com/Belen-Eliza/Backend---App
 * Dropdown Picker: https://hossein-zare.github.io/react-native-dropdown-picker-website/docs
 * react-native-safe-area-context: https://www.npmjs.com/package/react-native-safe-area-context
 * DateTimePicker: https://www.npmjs.com/package/@react-native-community/datetimepicker
+* Toast: https://docs.expo.dev/ui-programming/react-native-toast/
+  npm install react-native-root-toast
+* 
