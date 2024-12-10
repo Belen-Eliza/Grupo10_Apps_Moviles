@@ -9,6 +9,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import Toast from 'react-native-root-toast'
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
 function es_valido(ingreso:Ingreso){
@@ -37,7 +39,14 @@ export default function Ahorro() {
   const confirmar = async () => {
     ingreso.category_id = cat;
     if (!es_valido(ingreso)){
-      alert("Complete los campos vacíos para continuar");
+      Toast.show("Complete los campos vacíos para continuar", {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+    });
     }
     else {
       try {
@@ -51,11 +60,11 @@ export default function Ahorro() {
           throw new Error("Error en la operación");
         }
         context.actualizar_info(context.id);
-        alert("Operación exitosa");
         router.dismiss();
-        router.replace("/tabs");
+        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});
       } catch (e) {
-        alert(e);
+        router.dismiss();
+        router.replace({pathname:"/tabs",params:{msg:"Error en la operación"}});
       }
     }
   };
@@ -78,6 +87,7 @@ export default function Ahorro() {
   };
 
   return (
+    <RootSiblingParent>
     <View style={[{ flex: 1 }, estilos.centrado]}>
 
       <Text style={estilos.subtitulo}>Monto</Text>
@@ -110,5 +120,6 @@ export default function Ahorro() {
         </Animated.View>
       </Pressable>
     </View>
+    </RootSiblingParent>
   );
 }

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
+import Toast from 'react-native-root-toast'
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 import Animated, {
   useAnimatedStyle,
@@ -32,8 +34,14 @@ export default function Gasto() {
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
     if (Number.isNaN(aux)) {
-
-      alert("El valor ingresado debe ser un número");
+      Toast.show("El valor ingresado debe ser un número", {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+    });
     } else {
       setGasto(pre => {
         pre.monto = aux;
@@ -55,7 +63,14 @@ export default function Gasto() {
     gasto.user_id = context.id;
 
     if (!es_valido(gasto)){
-      alert("Complete todos los campos para continuar");
+      Toast.show("Complete todos los campos para continuar", {
+        duration: Toast.durations.LONG,
+        position: Toast.positions.BOTTOM,
+        shadow: true,
+        animation: true,
+        hideOnPress: true,
+        delay: 0,
+    });
     }
     else {
       try {
@@ -70,9 +85,8 @@ export default function Gasto() {
         }
 
         context.actualizar_info(context.id);
-        alert("Operación exitosa");
         router.dismiss();
-        router.replace("/tabs");
+        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});
       } catch (e) {
         alert(e);
       }
@@ -96,6 +110,7 @@ export default function Gasto() {
   };
 
   return (
+    <RootSiblingParent>
     <View style={[{ flex: 1 }, estilos.centrado]}>
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
@@ -126,5 +141,6 @@ export default function Gasto() {
         </Animated.View>
       </Pressable>
     </View>
+    </RootSiblingParent>
   );
 }

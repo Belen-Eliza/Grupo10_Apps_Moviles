@@ -11,11 +11,14 @@ import {
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { Redirect } from 'expo-router';
+import { Redirect, useLocalSearchParams } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
 import { validatePassword,validateEmail } from "@/components/validations";
+import Toast from 'react-native-root-toast'
+import { RootSiblingParent } from 'react-native-root-siblings';
+
 
 export default function Index() {
   const user = useUserContext();
@@ -26,6 +29,18 @@ export default function Index() {
   const [errorEmail, setErrorEmail] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
   const [errorName,setErrorName] = useState('');
+
+  const {msg=false} = useLocalSearchParams();
+  if (msg){
+    Toast.show(msg.toString(), {
+      duration: Toast.durations.LONG,
+      position: Toast.positions.BOTTOM,
+      shadow: true,
+      animation: true,
+      hideOnPress: true,
+      delay: 0,
+  });
+  }
 
   const cancelar = ()=>{
     handler_name(undefined);
@@ -84,12 +99,12 @@ export default function Index() {
     handler_name(text)
   }
 
-
   if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
   
   return (
+    <RootSiblingParent>
     <View style={[estilos.mainView,colores.fondo_azul,estilos.background2]}>
       <View style={[styles.container,]}>
         <View style={styles.header}>
@@ -179,7 +194,7 @@ export default function Index() {
         </Modal>
       </View>
     </View>
-
+    </RootSiblingParent>
   );
 }
 
