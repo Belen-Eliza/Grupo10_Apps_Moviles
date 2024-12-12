@@ -3,6 +3,8 @@ import { View, Text, StyleSheet, FlatList, Pressable, SafeAreaView } from "react
 import { Link, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
+import { error_alert} from '@/components/my_alert';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 interface Ingreso {
   id: number;
@@ -30,26 +32,6 @@ export default function Dashboard() {
   const context = useUserContext();
   const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
 
-  /* useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, {
-          method: "GET",
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (rspIngresos.ok) {
-          const ingresosData: Ingreso[] = await rspIngresos.json();
-          setDatosIngresos(ingresosData);
-        }
-      } catch (e) {
-        console.error(e);
-        alert("Hubo un error al obtener los datos.");
-      }
-    };
-
-    fetchData();
-  }, [context.id]); */
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
@@ -66,7 +48,7 @@ export default function Dashboard() {
           }
         } catch (e) {
           console.error(e);
-          alert("Hubo un error al obtener los datos.");
+          error_alert("Hubo un error al obtener los datos.");
         }
       };
   
@@ -103,6 +85,7 @@ export default function Dashboard() {
   );
 
   return (
+    <RootSiblingParent>
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
@@ -127,6 +110,7 @@ export default function Dashboard() {
         </View>
       </View>
     </SafeAreaView>
+    </RootSiblingParent>
   );
 }
 

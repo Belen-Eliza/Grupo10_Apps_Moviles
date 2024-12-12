@@ -9,7 +9,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import my_alert from '@/components/my_alert';
+import{error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
@@ -25,7 +25,7 @@ export default function Ahorro() {
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
-    if (Number.isNaN(monto))  my_alert("El valor ingresado debe ser un número");
+    if (Number.isNaN(monto))  error_alert("El valor ingresado debe ser un número");
     else {
       setIngreso(pre => ({ ...pre, monto }));
     }
@@ -37,7 +37,7 @@ export default function Ahorro() {
 
   const confirmar = async () => {
     ingreso.category_id = cat;
-    if (!es_valido(ingreso)) my_alert("Complete los campos vacíos para continuar")
+    if (!es_valido(ingreso)) error_alert("Complete los campos vacíos para continuar")
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
@@ -53,8 +53,8 @@ export default function Ahorro() {
         router.dismiss();
         router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});
       } catch (e) {
-        router.dismiss();
-        router.replace({pathname:"/tabs",params:{msg:"Error en la operación"}});
+        error_alert(String(e));
+        console.log(e)
       }
     }
   };

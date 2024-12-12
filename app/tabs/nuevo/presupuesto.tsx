@@ -4,6 +4,14 @@ import { useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
+import { error_alert} from '@/components/my_alert';
+import { RootSiblingParent } from 'react-native-root-siblings';
+
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+  } from 'react-native-reanimated';
 
 type Presupuesto = { descripcion: string, montoTotal : number,cant_cuotas : number, 
                     fecha_objetivo: string, total_acumulado: number,user_id: number}
@@ -24,7 +32,7 @@ export default function Presupuesto() {
     const handler_monto = (input:string)=>{
         let aux=Number(input.replace(",","."));
         if( Number.isNaN(aux)){
-        alert("El valor ingresado debe ser un número");
+        error_alert("El valor ingresado debe ser un número");
         } else {
             setPresupuesto(pre=>{
                 pre.montoTotal=aux;
@@ -34,7 +42,7 @@ export default function Presupuesto() {
     const handler_cuotas = (input:string)=>{
         let aux=Number(input.replace(",","."));
         if( Number.isNaN(aux)){
-        alert("El valor ingresado debe ser un número");
+        error_alert("El valor ingresado debe ser un número");
         } else {
             setPresupuesto(pre=>{
                 pre.cant_cuotas=aux;
@@ -59,12 +67,28 @@ export default function Presupuesto() {
         showMode("date");
     };
 
+    const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withSpring(1.1, { damping: 5 }); 
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 5 }); 
+  };
+
     const confirmar = async ()=>{
         presupuesto.fecha_objetivo=fecha.toISOString()
         presupuesto.user_id=context.id;
         presupuesto.total_acumulado=0;
         if (!es_valido(presupuesto) || fecha<=(new Date())){
-            alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
+            error_alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
         }
         else {
             try {
@@ -76,11 +100,12 @@ export default function Presupuesto() {
                 if (!rsp.ok){
                     throw new Error
                 }
-                alert("Operación exitosa");
+                
                 router.dismiss();
-                router.replace("/tabs");}
+                router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});}
             catch (e){
-                alert(e)
+                error_alert(String(e));
+                console.log(e)
             } 
         }
          
@@ -88,6 +113,7 @@ export default function Presupuesto() {
 
 
     return (
+        <RootSiblingParent>
         <View style={[estilos.mainView,{alignItems:"center"}]}>
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
             <Text style={[estilos.subtitulo,estilos.poco_margen]}>Monto</Text>
@@ -118,9 +144,19 @@ export default function Presupuesto() {
             }
             
 
-            <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
+            {/* <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable> */}
+            <Pressable
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                onPress={confirmar}
+            >
+                <Animated.View style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }, animatedStyle]}>
+                <Text style={estilos.subtitulo}>Confirmar</Text>
+                </Animated.View>
+            </Pressable>
         </ScrollView>
         </View>
+        </RootSiblingParent>
     );
 }
 

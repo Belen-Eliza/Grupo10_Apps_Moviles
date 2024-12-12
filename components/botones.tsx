@@ -87,10 +87,11 @@ function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolea
 
 function dismiss_keyboard(props:{setVisible:React.Dispatch<React.SetStateAction<boolean>>}){
     return( 
-    <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} onPress={()=>{
+    <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} 
+    onPress={()=>{
         Keyboard.dismiss();
         props.setVisible(false);
-        }} >
+     }} >
         <Text style={estilos.confirmButtonText}>Listo</Text>
     </Pressable>
     )

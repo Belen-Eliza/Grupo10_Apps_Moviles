@@ -16,7 +16,7 @@ import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
 import { validatePassword,validateEmail } from "@/components/validations";
-import my_alert from '@/components/my_alert';
+import {success_alert,error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 
@@ -30,9 +30,10 @@ export default function Index() {
   const [errorPassword, setErrorPassword] = useState('');
   const [errorName,setErrorName] = useState('');
 
-  const {msg=false} = useLocalSearchParams();
+  const {msg=false,error=false} = useLocalSearchParams();
   if (msg){
-    my_alert(msg.toString());
+    if (!error) success_alert(msg.toString());
+    else  error_alert(msg.toString())
   }
 
   const cancelar = ()=>{
@@ -51,7 +52,7 @@ export default function Index() {
         user.cambiarNombre(nombre); 
         exito=true;
       }
-      else  alert("El nombre no puede estar vacío");
+      else  error_alert("El nombre no puede estar vacío");
       handler_name(undefined);
       setErrorName("");
     }
@@ -60,7 +61,7 @@ export default function Index() {
       if (validateEmail(mail).status) {
         user.cambiar_mail(mail);
         exito=true;
-      } else  alert("Formato inválido de mail");
+      } else  error_alert("Formato inválido de mail");
       handler_mail(undefined);
       setErrorEmail("")
     }
@@ -69,13 +70,13 @@ export default function Index() {
         user.cambiar_password(pass);
         exito=true;
       }
-      else alert("Contraseña inválida");
+      else error_alert("Contraseña inválida");
       handler_password(undefined);
       setErrorPassword("")
     }
     setTimeout( ()=> user.actualizar_info(user.id),200);
     setModalVisible(false);
-    if (exito) alert("Cambios aplicados");
+    if (exito) success_alert("Cambios aplicados");
   }
   const handleEmailChange = (text: string) => {
     setErrorEmail(validateEmail(text).msj);
@@ -99,7 +100,7 @@ export default function Index() {
   return (
     <RootSiblingParent>
     <View style={[estilos.mainView,colores.fondo_azul,estilos.background2]}>
-      <View style={[styles.container,]}>
+      <View style={[styles.container,{marginTop:"20%"}]}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>
           <Text style={styles.nameText}>{user.nombre}</Text>

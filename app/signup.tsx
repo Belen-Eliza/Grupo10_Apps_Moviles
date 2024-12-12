@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import {
-  ImageBackground,
   Pressable,
   Text,
   TextInput,
@@ -16,6 +15,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
 import { estilos, colores } from "@/components/global_styles";
+import{error_alert} from '@/components/my_alert';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 export default function Signup() {
     const context = useUserContext();
@@ -82,16 +83,17 @@ export default function Signup() {
                     router.replace('/tabs/');
                 }
             } catch (error) {
-                alert( error);
+              error_alert(String(error));
             }
         } else {
-            alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
+            error_alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
         }
 
     }
   
 
   return (
+    <RootSiblingParent>
     <View style={[estilos.background2,colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -169,6 +171,7 @@ export default function Signup() {
         </ScrollView>
       </KeyboardAvoidingView>
     </View>
+    </RootSiblingParent>
   );
 
 }

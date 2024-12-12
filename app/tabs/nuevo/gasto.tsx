@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
-import my_alert from '@/components/my_alert';
+import { error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 
 import Animated, {
@@ -50,7 +50,7 @@ export default function Gasto() {
   
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
-    if (Number.isNaN(aux)) my_alert("El valor ingresado debe ser un número");
+    if (Number.isNaN(aux)) error_alert("El valor ingresado debe ser un número");
     else {
       setGasto(pre => {
         pre.monto = aux;
@@ -71,7 +71,7 @@ export default function Gasto() {
     gasto.category_id = cat;
     gasto.user_id = context.id;
 
-    if (!es_valido(gasto)) my_alert("Complete todos los campos para continuar");
+    if (!es_valido(gasto)) error_alert("Complete todos los campos para continuar");
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
@@ -86,9 +86,10 @@ export default function Gasto() {
 
         context.actualizar_info(context.id);
         router.dismiss();
-        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});
+        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}}); 
       } catch (e) {
-        alert(e);
+        error_alert(String(e));
+        console.log(e)
       }
     }
   };

@@ -8,9 +8,8 @@ import React from "react";
 export default function DetalleGasto(){
     const { gasto_id = 0} = useLocalSearchParams();
     if (gasto_id==0) {
-        alert("Valor inválido");
         router.dismiss();
-        router.replace("/tabs");
+        router.replace({pathname:"/tabs",params:{msg:"Valor inválido",error:"yes"}});
     }
 
     const [gasto,setGasto]=useState<Gasto>();

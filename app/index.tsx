@@ -15,7 +15,8 @@ import { estilos, colores } from "@/components/global_styles";
 import { useState } from "react";
 import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
-
+import{error_alert} from '@/components/my_alert';
+import { RootSiblingParent } from 'react-native-root-siblings';
 
 export default function Login() {
   const [mail, setMail] = useState('');
@@ -58,10 +59,10 @@ export default function Login() {
                     router.replace("/tabs/");
                 }
             } catch (error) {
-                alert(error);
+                error_alert(String(error));
             }
         } else {
-            alert('Corrija los errores resaltados en pantalla para ingresar');
+            error_alert('Corrija los errores resaltados en pantalla para ingresar');
         }
 
     }
@@ -69,7 +70,7 @@ export default function Login() {
 
 
   return (
-    
+    <RootSiblingParent>
     <View style={[estilos.background2, colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -122,7 +123,7 @@ export default function Login() {
         </ScrollView>
       </KeyboardAvoidingView>
       </View>
-    
+      </RootSiblingParent>
   );
 }
 
