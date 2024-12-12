@@ -85,17 +85,17 @@ function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolea
     )
 }
 
-function dismiss_keyboard(props:{setVisible:React.Dispatch<React.SetStateAction<boolean>>}){
+function Dismiss_keyboard(props:{pos_y:number,setVisible:React.Dispatch<React.SetStateAction<boolean>>}){
     return( 
-    <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} 
+    <Pressable style={[{padding:10,borderRadius:10,alignSelf:"flex-end", position:"absolute",top:props.pos_y}]} 
     onPress={()=>{
         Keyboard.dismiss();
         props.setVisible(false);
      }} >
-        <Text style={estilos.confirmButtonText}>Listo</Text>
+        <MaterialIcons name="keyboard-hide" size={30} color="gray" />
     </Pressable>
     )
 }
 
 
-export  {Boton,IconButton,Alternar,Filtro_aplicado,dismiss_keyboard};
+export  {Boton,IconButton,Alternar,Filtro_aplicado,Dismiss_keyboard};

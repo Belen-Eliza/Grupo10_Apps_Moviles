@@ -1,4 +1,4 @@
-import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback} from "react-native";
+import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback, Dimensions} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
@@ -6,6 +6,7 @@ import { useUserContext } from "@/context/UserContext";
 import { router } from "expo-router";
 import { error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { Dismiss_keyboard } from "@/components/botones";
 
 import Animated, {
   useAnimatedStyle,
@@ -30,6 +31,7 @@ export default function Gasto() {
   const [cat, setCat] = useState(0);
   const context = useUserContext();
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight,setKeyboardHeight] = useState(300);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
@@ -42,6 +44,7 @@ export default function Gasto() {
 
   const handleKeyboardShow = (event: any) => {
     setIsKeyboardVisible(true);
+    setKeyboardHeight(event.endCoordinates.height)
   };
 
   const handleKeyboardHide = (event: any) => {
@@ -71,6 +74,7 @@ export default function Gasto() {
     gasto.category_id = cat;
     gasto.user_id = context.id;
 
+    
     if (!es_valido(gasto)) error_alert("Complete todos los campos para continuar");
     else {
       try {
@@ -113,9 +117,8 @@ export default function Gasto() {
   return (
     <RootSiblingParent>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    
     <View style={[{ flex: 1 }, estilos.centrado]}>
-    
+    {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
@@ -131,7 +134,7 @@ export default function Gasto() {
         onChangeText={handler_Cuotas}
         placeholder='Ingresar cuotas'
       />
-{isKeyboardVisible && <Pressable style={[colores.button,{padding:10,borderRadius:10,alignSelf:"flex-end"}]} onPress={()=>{Keyboard.dismiss();setIsKeyboardVisible(false)}} ><Text style={estilos.confirmButtonText}>Listo</Text></Pressable>}
+      
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryPicker>
       
