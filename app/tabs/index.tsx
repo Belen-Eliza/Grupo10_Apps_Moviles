@@ -16,9 +16,8 @@ import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
 import { validatePassword,validateEmail } from "@/components/validations";
-import {success_alert,error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
-
+import {success_alert,error_alert} from '@/components/my_alert';
 
 export default function Index() {
   const user = useUserContext();
@@ -32,7 +31,7 @@ export default function Index() {
 
   const {msg=false,error=false} = useLocalSearchParams();
   if (msg){
-    if (!error) success_alert(msg.toString());
+    if (!error)  success_alert(msg.toString());
     else  error_alert(msg.toString())
   }
 

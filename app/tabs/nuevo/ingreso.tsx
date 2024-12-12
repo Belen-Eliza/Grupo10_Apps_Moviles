@@ -1,6 +1,6 @@
-import { Text, View, TextInput, Pressable, Keyboard } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard, Dimensions } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 import { router } from "expo-router";
@@ -9,8 +9,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
-import{error_alert} from '@/components/my_alert';
+import{error_alert, success_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { Dismiss_keyboard } from "@/components/botones";
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
 function es_valido(ingreso:Ingreso){
@@ -22,6 +23,26 @@ export default function Ahorro() {
   const [ingreso, setIngreso] = useState<Ingreso>({ monto: 0, descripcion: "", category_id: 0, user_id: context.id });
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0); 
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight,setKeyboardHeight] = useState(300);
+
+  useEffect(() => {
+      const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+      const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+  
+      return () => {
+        showSubscription.remove();
+      };
+    }, []);
+  
+    const handleKeyboardShow = (event: any) => {
+      setIsKeyboardVisible(true);
+      setKeyboardHeight(event.endCoordinates.height)
+    };
+  
+    const handleKeyboardHide = (event: any) => {
+      setIsKeyboardVisible(false);
+    };
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
@@ -78,7 +99,7 @@ export default function Ahorro() {
   return (
     <RootSiblingParent>
     <View style={[{ flex: 1 }, estilos.centrado]}>
-
+    {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
@@ -94,7 +115,6 @@ export default function Ahorro() {
         keyboardType="default"
         onChangeText={handler_descripcion}
       />
-
 
       <Text style={estilos.subtitulo}>Categoría</Text>
       <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>

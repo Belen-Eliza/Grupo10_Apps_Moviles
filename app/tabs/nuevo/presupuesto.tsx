@@ -1,11 +1,12 @@
-import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet } from "react-native";
+import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet, Keyboard, KeyboardAvoidingView, Dimensions } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
 import { error_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
+import { Dismiss_keyboard } from "@/components/botones";
 
 import Animated, {
     useAnimatedStyle,
@@ -22,7 +23,28 @@ function es_valido(presupuesto :Presupuesto){
 export default function Presupuesto() {
     const context =useUserContext();
     const [presupuesto,setPresupuesto] =useState<Presupuesto>({descripcion:"",montoTotal:0,cant_cuotas:0,fecha_objetivo: "",total_acumulado:0,user_id:context.id});
-    const [fecha,setFecha]= useState(new Date())
+    const [fecha,setFecha]= useState(new Date());
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+    const [keyboardHeight,setKeyboardHeight] = useState(300);
+
+    useEffect(() => {
+          const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+          const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+      
+          return () => {
+            showSubscription.remove();
+          };
+        }, []);
+      
+        const handleKeyboardShow = (event: any) => {
+          setIsKeyboardVisible(true);
+          setKeyboardHeight(event.endCoordinates.height)
+        };
+      
+        const handleKeyboardHide = (event: any) => {
+          setIsKeyboardVisible(false);
+        };
+
     const handler_descripcion = (input:string)=>{
         setPresupuesto(pre=>{
             pre.descripcion=input;
@@ -115,7 +137,9 @@ export default function Presupuesto() {
     return (
         <RootSiblingParent>
         <View style={[estilos.mainView,{alignItems:"center"}]}>
+        {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
+            
             <Text style={[estilos.subtitulo,estilos.poco_margen]}>Monto</Text>
             <TextInput style={[estilos.textInput,estilos.poco_margen]} keyboardType="decimal-pad" onChangeText={handler_monto}  placeholder='Ingresar valor'></TextInput>
                 

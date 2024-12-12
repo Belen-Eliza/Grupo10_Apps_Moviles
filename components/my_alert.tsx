@@ -17,7 +17,6 @@ function success_alert(msg:string){
 }
 
 function error_alert(msg:string){
-    
     Toast.show(msg, {
         duration: Toast.durations.LONG,
         position: Toast.positions.TOP,
