@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
-import { error_alert} from '@/components/my_alert';
+import { error_alert, success_alert} from '@/components/my_alert';
 import { RootSiblingParent } from 'react-native-root-siblings';
 import { Dismiss_keyboard } from "@/components/botones";
 
@@ -13,6 +13,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { LoadingCircle } from "@/components/loading";
 
 type Gasto = {
   monto: number;
@@ -32,6 +33,7 @@ export default function Gasto() {
   const context = useUserContext();
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [keyboardHeight,setKeyboardHeight] = useState(300);
+  const [isFetching,setFetching] = useState(false);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
@@ -77,24 +79,28 @@ export default function Gasto() {
     
     if (!es_valido(gasto)) error_alert("Complete todos los campos para continuar");
     else {
-      try {
-        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
-          method: 'POST',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(gasto)
-        });
-
-        if (!rsp.ok) {
-          throw new Error("Error en la operación");
-        }
-
+      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gasto)
+      })
+      .then(v=>{
+        setFetching(false);
         context.actualizar_info(context.id);
+        router.replace({pathname:"/tabs/home/",params:{msg:"Operación exitosa"}})
         router.dismiss();
-        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}}); 
-      } catch (e) {
+        setTimeout(()=>{
+          
+          success_alert("Operación exitosa")
+        },2000)
+        
+      })
+      .catch(e=>{
+        setFetching(false);
         error_alert(String(e));
         console.log(e)
-      }
+      })
+     
     }
   };
 
@@ -118,7 +124,9 @@ export default function Gasto() {
     <RootSiblingParent>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
+
     {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
+
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}

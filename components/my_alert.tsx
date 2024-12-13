@@ -1,10 +1,9 @@
 import Toast from 'react-native-root-toast'
 
 function success_alert(msg:string){
-    
     Toast.show(msg, {
         duration: Toast.durations.LONG,
-        position: Toast.positions.TOP,
+        position: Toast.positions.CENTER,
         shadow: true,
         animation: true,
         hideOnPress: true,
