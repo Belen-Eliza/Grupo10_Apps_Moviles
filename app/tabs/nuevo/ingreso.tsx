@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Pressable, Keyboard, Dimensions } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
@@ -35,14 +35,14 @@ export default function Ahorro() {
       };
     }, []);
   
-    const handleKeyboardShow = (event: any) => {
-      setIsKeyboardVisible(true);
-      setKeyboardHeight(event.endCoordinates.height)
-    };
-  
-    const handleKeyboardHide = (event: any) => {
-      setIsKeyboardVisible(false);
-    };
+  const handleKeyboardShow = (event: any) => {
+    setIsKeyboardVisible(true);
+    setKeyboardHeight(event.endCoordinates.height)
+  };
+
+  const handleKeyboardHide = (event: any) => {
+    setIsKeyboardVisible(false);
+  };
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
@@ -98,6 +98,10 @@ export default function Ahorro() {
 
   return (
     <RootSiblingParent>
+      <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
     {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
@@ -129,6 +133,8 @@ export default function Ahorro() {
         </Animated.View>
       </Pressable>
     </View>
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
     </RootSiblingParent>
   );
 }

@@ -1,4 +1,4 @@
-import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet, Keyboard, KeyboardAvoidingView, Dimensions } from "react-native";
+import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet, Keyboard, KeyboardAvoidingView, Dimensions, TouchableWithoutFeedback } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
@@ -136,6 +136,10 @@ export default function Presupuesto() {
 
     return (
         <RootSiblingParent>
+          <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[estilos.mainView,{alignItems:"center"}]}>
         {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
@@ -167,8 +171,6 @@ export default function Presupuesto() {
                 <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" minimumDate={new Date()}/>
             }
             
-
-            {/* <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable> */}
             <Pressable
                 onPressIn={handlePressIn}
                 onPressOut={handlePressOut}
@@ -180,8 +182,11 @@ export default function Presupuesto() {
             </Pressable>
         </ScrollView>
         </View>
-        </RootSiblingParent>
-    );
+         
+    </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
+    </RootSiblingParent>
+  );
 }
 
 

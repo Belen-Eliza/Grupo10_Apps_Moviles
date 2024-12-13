@@ -15,13 +15,13 @@ import { Link, Redirect, router, useLocalSearchParams } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
-import { validatePassword,validateEmail } from "@/components/validations";
 import { RootSiblingParent } from 'react-native-root-siblings';
 import {success_alert,error_alert} from '@/components/my_alert';
+import { useNavigation } from '@react-navigation/native';
 
 export default function Index() {
   const user = useUserContext();
-  
+  const navigation = useNavigation();
   const {msg=false,error=false} = useLocalSearchParams();
   if (msg){
     console.log(msg)
@@ -34,6 +34,7 @@ export default function Index() {
   if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
+ 
   
   return (
     <RootSiblingParent>

@@ -1,4 +1,4 @@
-import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback, Dimensions} from "react-native";
+import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
@@ -89,10 +89,6 @@ export default function Gasto() {
         context.actualizar_info(context.id);
         router.replace({pathname:"/tabs/home/",params:{msg:"Operación exitosa"}})
         router.dismiss();
-        setTimeout(()=>{
-          
-          success_alert("Operación exitosa")
-        },2000)
         
       })
       .catch(e=>{
@@ -122,6 +118,9 @@ export default function Gasto() {
 
   return (
     <RootSiblingParent>
+      <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
 
@@ -159,6 +158,7 @@ export default function Gasto() {
     </View>
     
     </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
     </RootSiblingParent>
   );
 }
