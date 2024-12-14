@@ -4,7 +4,7 @@ import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert, success_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 
 interface Ingreso {
   id: number;
@@ -92,7 +92,7 @@ export default function Dashboard() {
   );
 
   return (
-    <RootSiblingParent>
+    
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
@@ -116,8 +116,9 @@ export default function Dashboard() {
           <ActionButton icon="account-balance" label="Agregar Presupuesto" href="/tabs/nuevo/presupuesto" />
         </View>
       </View>
+      <Toast/>
     </SafeAreaView>
-    </RootSiblingParent>
+    
   );
 }
 

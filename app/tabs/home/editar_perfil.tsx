@@ -5,18 +5,15 @@ import {
   TextInput,
   View,
   StyleSheet,
-  Modal,
-  KeyboardAvoidingView,
-  Platform,
   ScrollView,
   Dimensions,
 } from 'react-native';
-import { Link, Redirect, router, useLocalSearchParams } from 'expo-router';
+import { Link, router } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
 import { validatePassword,validateEmail } from "@/components/validations";
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 import {success_alert,error_alert} from '@/components/my_alert';
 
 export default function Editar(){
@@ -65,7 +62,10 @@ export default function Editar(){
       setTimeout( ()=> user.actualizar_info(user.id),200);
       setModalVisible(false);
       if (exito) {
-        router.navigate({pathname:"/tabs/home/",params:{msg:"Operación exitosa"}}); 
+        
+        router.navigate({pathname:"/tabs/home/"}); 
+        setTimeout(()=>success_alert("Cambios aplicados"),200)
+        
       }
     }
     
@@ -142,62 +142,7 @@ export default function Editar(){
                 
               </View>
             </ScrollView>
-          {/* <KeyboardAvoidingView
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            style={styles.modalContainer}
-          >
-            <ScrollView contentContainerStyle={styles.modalContent} automaticallyAdjustKeyboardInsets={true}>
-              <View style={styles.modalForm}>
-                <Text style={styles.modalTitle}>Editar Perfil</Text>
-
-                <View style={styles.inputContainer}>
-                  <Ionicons name="person-outline" size={24} color="#666" style={styles.inputIcon} />
-                  <TextInput
-                    style={styles.input}
-                    value={nombre}
-                    onChangeText={handleNameChange}
-                    placeholder="Nuevo nombre"
-                    placeholderTextColor="#999"
-                  />
-                </View>
-                {errorName ? <Text style={styles.errorText}>{errorName}</Text> : null}
-
-                <View style={styles.inputContainer}>
-                  <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
-                  <TextInput
-                    style={styles.input}
-                    value={mail}
-                    onChangeText={handleEmailChange}
-                    placeholder="Nuevo email"
-                    placeholderTextColor="#999"
-                    keyboardType="email-address"
-                  />
-                </View>
-                {errorEmail ? <Text style={styles.errorText}>{errorEmail}</Text> : null}
-
-                <View style={styles.inputContainer}>
-                  <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
-                  <TextInput
-                    style={styles.input}
-                    value={pass}
-                    onChangeText={ handlePasswordChange}
-                    placeholder="Nueva contraseña"
-                    placeholderTextColor="#999"
-                    secureTextEntry={true}
-                  />
-                </View>
-                {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
-
-                <Pressable style={estilos.confirmButton} onPress={confirmar}>
-                  <Text style={estilos.confirmButtonText}>Confirmar</Text>
-                </Pressable>
-
-                <Pressable style={styles.cancelButton} onPress={cancelar}>
-                  <Text style={styles.cancelButtonText}>Cancelar</Text>
-                </Pressable>
-              </View>
-            </ScrollView>
-          </KeyboardAvoidingView> */}
+         <Toast/>
         </View>
     )
 }

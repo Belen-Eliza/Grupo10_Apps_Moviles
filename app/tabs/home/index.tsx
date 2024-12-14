@@ -1,35 +1,15 @@
-import React, { useState } from 'react';
-import {
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  StyleSheet,
-  
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Dimensions,
-} from 'react-native';
-import { Link, Redirect, router, useLocalSearchParams } from 'expo-router';
+import React from 'react';
+import {  Pressable,  Text,  View,  StyleSheet,  Dimensions} from 'react-native';
+import { Link, Redirect } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import{estilos,colores} from "@/components/global_styles"
-import { RootSiblingParent } from 'react-native-root-siblings';
-import {success_alert,error_alert} from '@/components/my_alert';
-import { useNavigation } from '@react-navigation/native';
+import Toast from 'react-native-toast-message';
+
 
 export default function Index() {
   const user = useUserContext();
-  const navigation = useNavigation();
-  const {msg=false,error=false} = useLocalSearchParams();
-  if (msg){
-    console.log(msg)
-    
-    if (!error)   success_alert(msg.toString());
-    else  error_alert(msg.toString())
-  }
-
+  
 
   if (!user.isLoggedIn) {
     return <Redirect href="/" />;
@@ -37,7 +17,7 @@ export default function Index() {
  
   
   return (
-    <RootSiblingParent>
+    
     <View style={[estilos.mainView,colores.fondo_azul,estilos.background2]}>
       <View style={[styles.container,{marginTop:"20%"}]}>
         <View style={styles.header}>
@@ -65,8 +45,9 @@ export default function Index() {
         </View>
 
       </View>
+      <Toast/>
     </View>
-    </RootSiblingParent>
+    
   );
 }
 

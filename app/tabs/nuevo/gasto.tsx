@@ -5,7 +5,7 @@ import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
 import { error_alert, success_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
 
 import Animated, {
@@ -87,9 +87,8 @@ export default function Gasto() {
       .then(v=>{
         setFetching(false);
         context.actualizar_info(context.id);
-        router.replace({pathname:"/tabs/home/",params:{msg:"Operación exitosa"}})
         router.dismiss();
-        
+        setTimeout(()=>success_alert("Gasto creado correctamente"),200)
       })
       .catch(e=>{
         setFetching(false);
@@ -117,7 +116,7 @@ export default function Gasto() {
   };
 
   return (
-    <RootSiblingParent>
+    
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={estilos.flex1}>
@@ -158,7 +157,8 @@ export default function Gasto() {
     </View>
     
     </TouchableWithoutFeedback>
+    <Toast/>
     </KeyboardAvoidingView>
-    </RootSiblingParent>
+    
   );
 }

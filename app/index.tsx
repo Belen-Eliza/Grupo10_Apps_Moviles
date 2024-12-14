@@ -16,7 +16,7 @@ import { useState } from "react";
 import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
 import{error_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 
 export default function Login() {
   const [mail, setMail] = useState('');
@@ -56,7 +56,7 @@ export default function Login() {
                 } else {
                     const datos_usuario: User = await rsp.json();
                     login_app(datos_usuario);
-                    router.replace("/tabs/");
+                    router.replace("/tabs/home");
                 }
             } catch (error) {
                 error_alert(String(error));
@@ -70,7 +70,7 @@ export default function Login() {
 
 
   return (
-    <RootSiblingParent>
+    
     <View style={[estilos.background2, colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -122,8 +122,9 @@ export default function Login() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Toast/>
       </View>
-      </RootSiblingParent>
+      
   );
 }
 

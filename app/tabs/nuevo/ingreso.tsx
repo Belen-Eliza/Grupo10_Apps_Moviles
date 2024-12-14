@@ -10,7 +10,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import{error_alert, success_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
@@ -72,7 +72,7 @@ export default function Ahorro() {
         }
         context.actualizar_info(context.id);
         router.dismiss();
-        router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});
+        setTimeout(()=>success_alert("Ingreso creado correctamente"),200)
       } catch (e) {
         error_alert(String(e));
         console.log(e)
@@ -97,7 +97,7 @@ export default function Ahorro() {
   };
 
   return (
-    <RootSiblingParent>
+    
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={estilos.flex1}>
@@ -134,7 +134,8 @@ export default function Ahorro() {
       </Pressable>
     </View>
     </TouchableWithoutFeedback>
+    <Toast/>
     </KeyboardAvoidingView>
-    </RootSiblingParent>
+    
   );
 }

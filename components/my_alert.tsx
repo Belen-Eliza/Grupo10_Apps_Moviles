@@ -1,32 +1,19 @@
-import Toast from 'react-native-root-toast'
-
+import Toast from 'react-native-toast-message';
 function success_alert(msg:string){
-    Toast.show(msg, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.CENTER,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        backgroundColor: "green",
-        textColor: "white",
-        opacity: 1,
-    });
+    Toast.show({
+        type: 'success',
+        text1: "Operación exitosa",
+        text2: msg
+      });
 
 }
 
 function error_alert(msg:string){
-    Toast.show(msg, {
-        duration: Toast.durations.LONG,
-        position: Toast.positions.TOP,
-        shadow: true,
-        animation: true,
-        hideOnPress: true,
-        delay: 0,
-        backgroundColor: "red",
-        textColor: "white",
-        opacity: 1,
-    });
+    Toast.show({
+        type: 'error',
+        text1: "Error",
+        text2: msg
+      });
 }
 
 export  {success_alert, error_alert }

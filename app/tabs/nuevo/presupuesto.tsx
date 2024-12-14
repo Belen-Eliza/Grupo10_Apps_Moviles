@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
-import { error_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
+import {success_alert,error_alert} from '@/components/my_alert';
 
 import Animated, {
     useAnimatedStyle,
@@ -124,7 +124,7 @@ export default function Presupuesto() {
                 }
                 
                 router.dismiss();
-                router.replace({pathname:"/tabs",params:{msg:"Operación exitosa"}});}
+                setTimeout(()=>success_alert("Presupuesto creado correctamente"),200);}
             catch (e){
                 error_alert(String(e));
                 console.log(e)
@@ -135,11 +135,11 @@ export default function Presupuesto() {
 
 
     return (
-        <RootSiblingParent>
-          <KeyboardAvoidingView
+        
+    <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={estilos.flex1}>
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[estilos.mainView,{alignItems:"center"}]}>
         {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
@@ -184,8 +184,9 @@ export default function Presupuesto() {
         </View>
          
     </TouchableWithoutFeedback>
+    <Toast/>
     </KeyboardAvoidingView>
-    </RootSiblingParent>
+    
   );
 }
 

@@ -16,7 +16,7 @@ import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
 import { estilos, colores } from "@/components/global_styles";
 import{error_alert} from '@/components/my_alert';
-import { RootSiblingParent } from 'react-native-root-siblings';
+import Toast from 'react-native-toast-message';
 
 export default function Signup() {
     const context = useUserContext();
@@ -75,12 +75,12 @@ export default function Signup() {
                     body: JSON.stringify(user),
                 });
                 if (!response.ok) {
-                  if (response.status==409) throw new Error('El usuario ya existe');
+                  if (response.status==409) error_alert('El usuario ya existe');
                   throw new Error('Error al registrarse');
                 } else {
                     const datos_usuario: User = await response.json();
                     context.login_app(datos_usuario);
-                    router.replace('/tabs/');
+                    router.replace('/tabs/home');
                 }
             } catch (error) {
               error_alert(String(error));
@@ -93,7 +93,7 @@ export default function Signup() {
   
 
   return (
-    <RootSiblingParent>
+    
     <View style={[estilos.background2,colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -170,8 +170,9 @@ export default function Signup() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Toast/>
     </View>
-    </RootSiblingParent>
+    
   );
 
 }
