@@ -23,32 +23,35 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [errorEmail, setErrorEmail] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const { login_app } = useUserContext();
 
-    const handleEmailChange = (text: string) => {
-        setMail(text);
-        setErrorEmail(validateEmail(text).msj);
-    };
+  const handleEmailChange = (text: string) => {
+    setMail(text);
+    setErrorEmail(validateEmail(text).msj);
+  };
 
-    const handlePasswordChange = (text: string) => {
-        setPassword(text);
-        setErrorPassword(validatePassword(text).msj);
-    };
+  const handlePasswordChange = (text: string) => {
+    setPassword(text);
+    setErrorPassword(validatePassword(text).msj);
+  };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
 
-    async function login() {
-        const user = { email: mail, password_attempt: password };
-        const isEmailValid = validateEmail(mail).status;
-        const isPasswordValid = validatePassword(password).status;
-        
-        if (isEmailValid && isPasswordValid ) {
+  async function login() {
+    const user = { email: mail, password_attempt: password };
+    const isEmailValid = validateEmail(mail).status;
+    const isPasswordValid = validatePassword(password).status;
 
-            try {
-                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(user),
-                });
+    if (isEmailValid && isPasswordValid) {
+      try {
+        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(user),
+        });
 
                 if (!rsp.ok) {
                     if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
@@ -70,6 +73,7 @@ export default function Login() {
 
 
   return (
+
     
     <View style={[estilos.background2, colores.fondo_azul]}>
       <KeyboardAvoidingView
@@ -79,7 +83,7 @@ export default function Login() {
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
             <Text style={styles.title}>Iniciar Sesión</Text>
-            
+
             <View style={styles.inputContainer}>
               <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
               <TextInput
@@ -98,13 +102,20 @@ export default function Login() {
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword}
                 textContentType="password"
                 onChangeText={handlePasswordChange}
                 value={password}
                 placeholder="Contraseña"
                 placeholderTextColor="#999"
               />
+              <Pressable onPress={togglePasswordVisibility} style={styles.eyeIcon}>
+                <Ionicons
+                  name={showPassword ? "eye-outline" : "eye-off-outline"}
+                  size={24}
+                  color="#666"
+                />
+              </Pressable>
             </View>
             {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
@@ -117,7 +128,6 @@ export default function Login() {
               <Link href="/signup" style={styles.signupLink}>
                 <Text style={estilos.linkText}>Regístrate aquí</Text>
               </Link>
-
             </View>
           </View>
         </ScrollView>
@@ -128,8 +138,11 @@ export default function Login() {
   );
 }
 
+
 const styles = StyleSheet.create({
-  
+  eyeIcon:{
+    //se borro o algo?
+  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',
