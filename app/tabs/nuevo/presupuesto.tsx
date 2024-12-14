@@ -123,7 +123,7 @@ export default function Presupuesto() {
                     throw new Error
                 }
                 
-                router.dismiss();
+                router.back();
                 setTimeout(()=>success_alert("Presupuesto creado correctamente"),200);}
             catch (e){
                 error_alert(String(e));

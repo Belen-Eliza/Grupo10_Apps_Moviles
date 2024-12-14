@@ -87,7 +87,7 @@ export default function Gasto() {
       .then(v=>{
         setFetching(false);
         context.actualizar_info(context.id);
-        router.dismiss();
+        router.back();
         setTimeout(()=>success_alert("Gasto creado correctamente"),200)
       })
       .catch(e=>{

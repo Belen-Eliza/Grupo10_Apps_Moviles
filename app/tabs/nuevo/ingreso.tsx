@@ -71,7 +71,7 @@ export default function Ahorro() {
           throw new Error("Error en la operación");
         }
         context.actualizar_info(context.id);
-        router.dismiss();
+        router.back();
         setTimeout(()=>success_alert("Ingreso creado correctamente"),200)
       } catch (e) {
         error_alert(String(e));
