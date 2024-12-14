@@ -14,20 +14,21 @@ import {
 import { Redirect } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
-import{estilos,colores} from "@/components/global_styles"
-import { validatePassword,validateEmail } from "@/components/validations";
+import { estilos, colores } from "@/components/global_styles";
+import { validatePassword, validateEmail } from "@/components/validations";
 
 export default function Index() {
   const user = useUserContext();
-  const [modalVisible,setModalVisible]= useState(false);
-  const [nombre,handler_name]=useState<string>();
-  const [mail,handler_mail]=useState<string>();
-  const [pass,handler_password]=useState<string>()
+  const [modalVisible, setModalVisible] = useState(false);
+  const [nombre, handler_name] = useState<string>();
+  const [mail, handler_mail] = useState<string>();
+  const [pass, handler_password] = useState<string>();
   const [errorEmail, setErrorEmail] = useState('');
   const [errorPassword, setErrorPassword] = useState('');
-  const [errorName,setErrorName] = useState('');
+  const [errorName, setErrorName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
-  const cancelar = ()=>{
+  const cancelar = () => {
     handler_name(undefined);
     handler_mail(undefined);
     handler_password(undefined);
@@ -35,40 +36,40 @@ export default function Index() {
     setErrorPassword("");
     setErrorName("");
     setModalVisible(false);
-  }
-  const confirmar = ()=>{
+  };
+
+  const confirmar = () => {
     let exito = false;
-    if (nombre!=undefined ) {
-      if (nombre !== '')  {
-        user.cambiarNombre(nombre); 
-        exito=true;
-      }
-      else  alert("El nombre no puede estar vacío");
+    if (nombre != undefined) {
+      if (nombre !== '') {
+        user.cambiarNombre(nombre);
+        exito = true;
+      } else alert("El nombre no puede estar vacío");
       handler_name(undefined);
       setErrorName("");
     }
 
-    if (mail!=undefined) {
+    if (mail != undefined) {
       if (validateEmail(mail).status) {
         user.cambiar_mail(mail);
-        exito=true;
-      } else  alert("Formato inválido de mail");
+        exito = true;
+      } else alert("Formato inválido de mail");
       handler_mail(undefined);
-      setErrorEmail("")
+      setErrorEmail("");
     }
-    if (pass!=undefined) {
+    if (pass != undefined) {
       if (validatePassword(pass).status) {
         user.cambiar_password(pass);
-        exito=true;
-      }
-      else alert("Contraseña inválida");
+        exito = true;
+      } else alert("Contraseña inválida");
       handler_password(undefined);
-      setErrorPassword("")
+      setErrorPassword("");
     }
-    setTimeout( ()=> user.actualizar_info(user.id),200);
+    setTimeout(() => user.actualizar_info(user.id), 200);
     setModalVisible(false);
     if (exito) alert("Cambios aplicados");
-  }
+  };
+
   const handleEmailChange = (text: string) => {
     setErrorEmail(validateEmail(text).msj);
     handler_mail(text);
@@ -77,26 +78,24 @@ export default function Index() {
     setErrorPassword(validatePassword(text).msj);
     handler_password(text);
   };
-  const handleNameChange=(text:string)=>{
-    if (text == '')  {
+  const handleNameChange = (text: string) => {
+    if (text == '') {
       setErrorName("El nombre no puede estar vacío");
     }
-    handler_name(text)
-  }
-
+    handler_name(text);
+  };
 
   if (!user.isLoggedIn) {
     return <Redirect href="/" />;
   }
-  
+
   return (
-    <View style={[estilos.mainView,colores.fondo2,estilos.background2]}>
-      <View style={[styles.container,]}>
+    <View style={[estilos.mainView, colores.fondo2, estilos.background2]}>
+      <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>Bienvenido,</Text>
           <Text style={styles.nameText}>{user.nombre}</Text>
         </View>
-        
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Su balance actual es:</Text>
@@ -104,7 +103,7 @@ export default function Index() {
         </View>
 
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.button} onPress={()=>setModalVisible(true)}>
+          <Pressable style={styles.button} onPress={() => setModalVisible(true)}>
             <Ionicons name="person-outline" size={24} color="#fff" style={styles.buttonIcon} />
             <Text style={styles.buttonText}>Editar perfil</Text>
           </Pressable>
@@ -158,11 +157,18 @@ export default function Index() {
                   <TextInput
                     style={styles.input}
                     value={pass}
-                    onChangeText={ handlePasswordChange}
+                    onChangeText={handlePasswordChange}
                     placeholder="Nueva contraseña"
                     placeholderTextColor="#999"
-                    secureTextEntry={true}
+                    secureTextEntry={!showPassword}
                   />
+                  <Pressable onPress={() => setShowPassword(!showPassword)}>
+                    <Ionicons
+                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                      size={24}
+                      color="#666"
+                    />
+                  </Pressable>
                 </View>
                 {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
@@ -179,7 +185,6 @@ export default function Index() {
         </Modal>
       </View>
     </View>
-
   );
 }
 
@@ -188,7 +193,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: '100%',
-    
   },
   container: {
     flex: 1,
@@ -254,7 +258,7 @@ const styles = StyleSheet.create({
   modalContent: {
     flexGrow: 1,
     justifyContent: 'center',
-    minWidth: Dimensions.get("window").width*0.7
+    minWidth: Dimensions.get("window").width * 0.7,
   },
   modalForm: {
     backgroundColor: 'rgba(255, 255, 255, 0.95)',
@@ -292,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginBottom: 10,
   },
-  
+
   cancelButton: {
     backgroundColor: '#fff',
     borderRadius: 10,
@@ -308,4 +312,3 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
-
