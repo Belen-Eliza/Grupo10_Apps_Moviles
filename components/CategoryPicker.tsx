@@ -15,7 +15,7 @@ function CategoryPicker (props:{openPicker:boolean,setOpen:React.Dispatch<React.
           .then(info =>setCategorias(info))
         })();
     
-      },[])
+      },[process])
 
     return (
         <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={props.openPicker} 
@@ -44,4 +44,26 @@ function CategoryIngresoPicker (props:{openPicker:boolean,setOpen:React.Dispatch
     )
 }
 
-export {CategoryPicker, CategoryIngresoPicker}
+function traer_categorias (setCategorias:React.Dispatch<React.SetStateAction<Category[]>>){
+  useEffect(()=>{
+    (async ()=>{
+      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_gastos`,{
+        method:'GET',
+        headers:{"Content-Type":"application/json"}})
+      .then(rsp => rsp.json())
+      .then(info =>setCategorias(info))
+    })();},[])
+}
+function traer_categorias_ingresos (setCategorias:React.Dispatch<React.SetStateAction<Category[]>>){
+  useEffect(()=>{
+  (async ()=>{
+    fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/de_ingresos`,{
+      method:'GET',
+      headers:{"Content-Type":"application/json"}})
+    .then(rsp => rsp.json())
+    .then(info =>setCategorias(info))
+  })();},[])
+  
+}
+
+export {CategoryPicker, CategoryIngresoPicker,traer_categorias,traer_categorias_ingresos}

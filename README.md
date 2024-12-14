@@ -10,3 +10,15 @@ Su funcionalidad incluye: separar ingresos y egresos según rubro, período o pr
 
 ## Backend
 https://github.com/Belen-Eliza/Backend---App 
+
+
+## Dependencias
+* Picker: https://docs.expo.dev/versions/latest/sdk/picker/
+* Flashlist: https://shopify.github.io/flash-list/#install
+* react-native-chart-kit: https://www.npmjs.com/package/react-native-chart-kit
+* Dropdown Picker: https://hossein-zare.github.io/react-native-dropdown-picker-website/docs
+* react-native-safe-area-context: https://www.npmjs.com/package/react-native-safe-area-context
+* DateTimePicker: https://www.npmjs.com/package/@react-native-community/datetimepicker
+* Toast: https://docs.expo.dev/ui-programming/react-native-toast/
+  npm install react-native-root-toast
+* 

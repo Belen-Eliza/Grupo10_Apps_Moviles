@@ -90,6 +90,88 @@ export default function Signup() {
         }
     }
 
+
+  return (
+    <View style={[estilos.background2,colores.fondo_azul]}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={estilos.flex1}
+      >
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+          <View style={styles.formContainer}>
+            <Text style={styles.title}>Crear Cuenta</Text>
+            
+            <View style={styles.inputContainer}>
+              <Ionicons name="person-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                onChangeText={handleNameChange}
+                value={name}
+                placeholder="Nombre"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorName ? <Text style={estilos.errorText}>{errorName}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                onChangeText={handleEmailChange}
+                value={mail}
+                placeholder="Correo electrónico"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                textContentType="newPassword"
+                onChangeText={handlePasswordChange}
+                value={password1}
+                placeholder="Contraseña"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
+
+            <View style={styles.inputContainer}>
+              <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
+              <TextInput
+                style={styles.input}
+                secureTextEntry={true}
+                textContentType="newPassword"
+                onChangeText={handlePasswordConfirmChange}
+                value={password2}
+                placeholder="Confirmar Contraseña"
+                placeholderTextColor="#999"
+              />
+            </View>
+            {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
+
+            <Pressable onPress={signup} style={styles.signupButton}>
+              <Text style={styles.signupButtonText}>Registrarse</Text>
+            </Pressable>
+
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>¿Ya tienes una cuenta? </Text>
+              <Link href="/" style={styles.loginLink}>
+                <Text style={estilos.linkText}>Inicia sesión aquí</Text>
+              </Link>
+            </View>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </View>
+  );
+
+
     return (
         <View style={[estilos.background2, colores.fondo2]}>
             <KeyboardAvoidingView

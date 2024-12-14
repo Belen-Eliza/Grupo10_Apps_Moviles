@@ -8,7 +8,7 @@ type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_obj
 
 function renderGasto ( item : Gasto,callback:Function)  {
     return (
-      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.poco_margen,estilos.centrado]}>
         <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
         <Text style={estilos.subtitulo}> {item.category.name}</Text>
         <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
@@ -18,7 +18,7 @@ function renderGasto ( item : Gasto,callback:Function)  {
 
   function renderIngreso ( item : Ingreso,callback:Function)  {
     return (
-      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.poco_margen,estilos.centrado]}>
         <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
         <Text style={[estilos.subtitulo]}>{item.category.name}</Text>
         <Text style={{fontSize:20,color:"#909090"}}>{item.description}</Text>
@@ -27,7 +27,7 @@ function renderGasto ( item : Gasto,callback:Function)  {
 }; 
 function renderPresupuesto (item : Presupuesto,callback:Function)  {
     return (
-      <Pressable onPress={()=>callback(item)}  style={[estilos.list_element,estilos.margen,estilos.centrado]}>
+      <Pressable onPress={()=>callback(item)}  style={[estilos.list_element,estilos.poco_margen,estilos.centrado]}>
         <Text style={estilos.subtitulo}>{item.descripcion}</Text>
         <Text> Para: {new Date(item.fecha_objetivo).toDateString()}</Text>
         <Text>Total: ${item.montoTotal}</Text>

@@ -218,13 +218,29 @@ export const estilos = StyleSheet.create({
         fontSize: 18,
         fontWeight: 'bold',
       },
+      filterContainer: {
+        backgroundColor: "#FFFFFF",
+        padding: 16,
+        borderBottomWidth: 1,
+        borderBottomColor: "#E0E0E0",
+      },
+      filterTitle: {
+        fontSize: 16,
+        fontWeight: "600",
+        marginBottom: 8,
+        color: "#333333",
+      },
+      filterButtonsContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+      },
 });
 
 export const colores = StyleSheet.create({
     fondo: {
         backgroundColor: "white",
     },
-    fondo2: {
+    fondo_azul: {
         backgroundColor: "#004993",
     },
     botones: {
