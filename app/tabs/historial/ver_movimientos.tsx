@@ -4,7 +4,7 @@ import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker, CategoryIngresoPicker, traer_categorias, traer_categorias_ingresos } from "@/components/CategoryPicker";
-import { DateRangeModal, SelectorFechaSimple, comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
+import { DateRangeModal, comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -20,7 +20,6 @@ export default function Historial() {
   const [ingresos, setIngresos] = useState<Ingreso[]>([]);
   const [presupuestos, setPresupuestos] = useState<Presupuesto[]>([]);
   const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos
-  const [DateModalVisible, setDateModalVisible] = useState(false);
   const [selectorSimpleVisible,setSelectorSimpleVisible]= useState(false);
   const [CateModalVisible, setCatModalVisible] = useState(false);
   const [fecha_desde, setFechaDesde] = useState(semana_pasada());
@@ -28,8 +27,6 @@ export default function Historial() {
   const [cate_gasto_id, setCateId] = useState(0);
   const [cate_ingreso_id, setCateIngresoId] = useState(0);
   const [openPicker, setOpen] = useState(false);
-  const [simplePickerVisible,setVisible] = useState(false);
-  const [rango_simple,setRangoSimple] = useState(0);
   const [filtros_usados,setFiltrosUsados] = useState({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false});
   const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
   const [categorias_ingresos,setCategoriasIngresos] =useState<Category[]>([{id:0,name:"",description:""}])
@@ -111,19 +108,7 @@ export default function Historial() {
   const ver_presupuesto = (presupuesto: Presupuesto) => {
     router.navigate({ pathname: "/tabs/historial/ver_presupuesto", params: { presupuesto_id: presupuesto.id } });
   };
-  const onChangeRango=(selection:{label:string,value:number})=>{
-      if (selection.value==4) {
-          setDateModalVisible(true);
-          setSelectorSimpleVisible(false)
-      } else {
-          setFechaDesde(fechas_rango_simple[selection.value]);
-          setFechaHasta(today());
-      }
-  }
-  const cancelRangoSimple = ()=>{
-    setSelectorSimpleVisible(false)
-
-  }
+  
 
   const filtrar_por_cate = () => {
     setCatModalVisible(false);
@@ -258,35 +243,11 @@ export default function Historial() {
           />
       )}
       </View>
-      <DateRangeModal
-        visible={DateModalVisible}
-        setVisible={setDateModalVisible}
-        fecha_desde={fecha_desde}
-        fecha_hasta={fecha_hasta}
-        setDesde={setFechaDesde}
-        setHasta={setFechaHasta}
-      />
 
       <SelectorFechaSimpleModal visible={selectorSimpleVisible} setVisible={setSelectorSimpleVisible} fecha_desde={fecha_desde}
         fecha_hasta={fecha_hasta} setDesde={setFechaDesde} setHasta={setFechaHasta}
       />
-      {/* <Modal animationType="slide" transparent={true} visible={selectorSimpleVisible} onRequestClose={cancelRangoSimple}>
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-              <Text style={estilos.modalTitle}>Seleccionar rango de fechas</Text>
-              <View style={estilos.filterButtonsContainer}>
-                <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} 
-                      set_selection_id={setRangoSimple} onChange={onChangeRango}/>
-              </View>
-              <Pressable style={[estilos.confirmButton,{zIndex:-1}]} onPress={()=>setSelectorSimpleVisible(false)}>
-              <Text style={estilos.confirmButtonText}>Confirmar</Text>
-            </Pressable>
-            <Pressable style={[estilos.cancelButton,{zIndex:-1}]} onPress={cancelRangoSimple}>
-              <Text style={estilos.cancelButtonText}>Cancelar</Text>
-            </Pressable>
-          </View>
-        </View>
-      </Modal> */}
+     
       <Modal animationType="slide" transparent={true} visible={CateModalVisible} onRequestClose={cancelar}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
