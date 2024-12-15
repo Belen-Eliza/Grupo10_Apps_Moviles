@@ -1,15 +1,19 @@
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Pressable, Text, TextInput, View ,Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
+import { error_alert, success_alert} from '@/components/my_alert';
+import Toast from 'react-native-toast-message';
+import { Dismiss_keyboard } from "@/components/botones";
 
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import { LoadingCircle } from "@/components/loading";
 
 type Gasto = {
   monto: number;
@@ -27,14 +31,32 @@ export default function Gasto() {
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0);
   const context = useUserContext();
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight,setKeyboardHeight] = useState(300);
+  const [isFetching,setFetching] = useState(false);
 
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+
+    return () => {
+      showSubscription.remove();
+    };
+  }, []);
+
+  const handleKeyboardShow = (event: any) => {
+    setIsKeyboardVisible(true);
+    setKeyboardHeight(event.endCoordinates.height)
+  };
+
+  const handleKeyboardHide = (event: any) => {
+    setIsKeyboardVisible(false);
+  };
   
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
-    if (Number.isNaN(aux)) {
-
-      alert("El valor ingresado debe ser un número");
-    } else {
+    if (Number.isNaN(aux)) error_alert("El valor ingresado debe ser un número");
+    else {
       setGasto(pre => {
         pre.monto = aux;
         return pre;
@@ -54,28 +76,26 @@ export default function Gasto() {
     gasto.category_id = cat;
     gasto.user_id = context.id;
 
-    if (!es_valido(gasto)){
-      alert("Complete todos los campos para continuar");
-    }
+    
+    if (!es_valido(gasto)) error_alert("Complete todos los campos para continuar");
     else {
-      try {
-        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
-          method: 'POST',
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(gasto)
-        });
-
-        if (!rsp.ok) {
-          throw new Error("Error en la operación");
-        }
-
+      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
+        method: 'POST',
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gasto)
+      })
+      .then(v=>{
+        setFetching(false);
         context.actualizar_info(context.id);
-        alert("Operación exitosa");
-        router.dismiss();
-        router.replace("/tabs");
-      } catch (e) {
-        alert(e);
-      }
+        router.back();
+        setTimeout(()=>success_alert("Gasto creado correctamente"),200)
+      })
+      .catch(e=>{
+        setFetching(false);
+        error_alert(String(e));
+        console.log(e)
+      })
+     
     }
   };
 
@@ -96,7 +116,15 @@ export default function Gasto() {
   };
 
   return (
+    
+      <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
+
+    {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
+
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
@@ -108,13 +136,14 @@ export default function Gasto() {
       <Text style={estilos.subtitulo}>Cuotas</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
-        keyboardType="numbers-and-punctuation"
+        keyboardType="number-pad"
         onChangeText={handler_Cuotas}
         placeholder='Ingresar cuotas'
       />
-
+      
       <Text style={estilos.subtitulo}>Categoría</Text> 
       <CategoryPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryPicker>
+      
 
       <Pressable
         onPressIn={handlePressIn}
@@ -126,5 +155,10 @@ export default function Gasto() {
         </Animated.View>
       </Pressable>
     </View>
+    
+    </TouchableWithoutFeedback>
+    <Toast/>
+    </KeyboardAvoidingView>
+    
   );
 }

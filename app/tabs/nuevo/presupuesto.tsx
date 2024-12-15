@@ -1,9 +1,18 @@
-import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet } from "react-native";
+import {Pressable, Text, TextInput, ScrollView, View, Platform, StyleSheet, Keyboard, KeyboardAvoidingView, Dimensions, TouchableWithoutFeedback } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { router } from "expo-router";
 import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNativeProps } from '@react-native-community/datetimepicker';
+import Toast from 'react-native-toast-message';
+import { Dismiss_keyboard } from "@/components/botones";
+import {success_alert,error_alert} from '@/components/my_alert';
+
+import Animated, {
+    useAnimatedStyle,
+    useSharedValue,
+    withSpring,
+  } from 'react-native-reanimated';
 
 type Presupuesto = { descripcion: string, montoTotal : number,cant_cuotas : number, 
                     fecha_objetivo: string, total_acumulado: number,user_id: number}
@@ -14,7 +23,28 @@ function es_valido(presupuesto :Presupuesto){
 export default function Presupuesto() {
     const context =useUserContext();
     const [presupuesto,setPresupuesto] =useState<Presupuesto>({descripcion:"",montoTotal:0,cant_cuotas:0,fecha_objetivo: "",total_acumulado:0,user_id:context.id});
-    const [fecha,setFecha]= useState(new Date())
+    const [fecha,setFecha]= useState(new Date());
+    const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+    const [keyboardHeight,setKeyboardHeight] = useState(300);
+
+    useEffect(() => {
+          const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+          const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+      
+          return () => {
+            showSubscription.remove();
+          };
+        }, []);
+      
+        const handleKeyboardShow = (event: any) => {
+          setIsKeyboardVisible(true);
+          setKeyboardHeight(event.endCoordinates.height)
+        };
+      
+        const handleKeyboardHide = (event: any) => {
+          setIsKeyboardVisible(false);
+        };
+
     const handler_descripcion = (input:string)=>{
         setPresupuesto(pre=>{
             pre.descripcion=input;
@@ -24,7 +54,7 @@ export default function Presupuesto() {
     const handler_monto = (input:string)=>{
         let aux=Number(input.replace(",","."));
         if( Number.isNaN(aux)){
-        alert("El valor ingresado debe ser un número");
+        error_alert("El valor ingresado debe ser un número");
         } else {
             setPresupuesto(pre=>{
                 pre.montoTotal=aux;
@@ -34,7 +64,7 @@ export default function Presupuesto() {
     const handler_cuotas = (input:string)=>{
         let aux=Number(input.replace(",","."));
         if( Number.isNaN(aux)){
-        alert("El valor ingresado debe ser un número");
+        error_alert("El valor ingresado debe ser un número");
         } else {
             setPresupuesto(pre=>{
                 pre.cant_cuotas=aux;
@@ -59,12 +89,28 @@ export default function Presupuesto() {
         showMode("date");
     };
 
+    const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scale.value }],
+    };
+  });
+
+  const handlePressIn = () => {
+    scale.value = withSpring(1.1, { damping: 5 }); 
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 5 }); 
+  };
+
     const confirmar = async ()=>{
         presupuesto.fecha_objetivo=fecha.toISOString()
         presupuesto.user_id=context.id;
         presupuesto.total_acumulado=0;
         if (!es_valido(presupuesto) || fecha<=(new Date())){
-            alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
+            error_alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
         }
         else {
             try {
@@ -76,11 +122,12 @@ export default function Presupuesto() {
                 if (!rsp.ok){
                     throw new Error
                 }
-                alert("Operación exitosa");
-                router.dismiss();
-                router.replace("/tabs");}
+                
+                router.back();
+                setTimeout(()=>success_alert("Presupuesto creado correctamente"),200);}
             catch (e){
-                alert(e)
+                error_alert(String(e));
+                console.log(e)
             } 
         }
          
@@ -88,8 +135,15 @@ export default function Presupuesto() {
 
 
     return (
+        
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
         <View style={[estilos.mainView,{alignItems:"center"}]}>
+        {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
         <ScrollView contentContainerStyle={[estilos.mainView,{alignItems:"center"}]} automaticallyAdjustKeyboardInsets={true} >
+            
             <Text style={[estilos.subtitulo,estilos.poco_margen]}>Monto</Text>
             <TextInput style={[estilos.textInput,estilos.poco_margen]} keyboardType="decimal-pad" onChangeText={handler_monto}  placeholder='Ingresar valor'></TextInput>
                 
@@ -117,11 +171,23 @@ export default function Presupuesto() {
                 <DateTimePicker style={estilos.margen} value={fecha} onChange={onChangeDate} mode="date" minimumDate={new Date()}/>
             }
             
-
-            <Pressable onPress={confirmar} style={[estilos.tarjeta, estilos.centrado,colores.botones, {maxHeight:50}]}><Text style={estilos.subtitulo}>Confirmar</Text></Pressable>
+            <Pressable
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                onPress={confirmar}
+            >
+                <Animated.View style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }, animatedStyle]}>
+                <Text style={estilos.subtitulo}>Confirmar</Text>
+                </Animated.View>
+            </Pressable>
         </ScrollView>
         </View>
-    );
+         
+    </TouchableWithoutFeedback>
+    <Toast/>
+    </KeyboardAvoidingView>
+    
+  );
 }
 
 

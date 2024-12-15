@@ -1,4 +1,4 @@
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import { View, Pressable, Text, StyleSheet,Keyboard } from "react-native";
 import { estilos,colores,botonesEstado } from "@/components/global_styles";
 import { MaterialIcons } from "@expo/vector-icons";
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -85,5 +85,17 @@ function Filtro_aplicado(props:{texto:string, callback:Function,isVisible:boolea
     )
 }
 
+function Dismiss_keyboard(props:{pos_y:number,setVisible:React.Dispatch<React.SetStateAction<boolean>>}){
+    return( 
+    <Pressable style={[{padding:10,borderRadius:10,alignSelf:"flex-end", position:"absolute",top:props.pos_y}]} 
+    onPress={()=>{
+        Keyboard.dismiss();
+        props.setVisible(false);
+     }} >
+        <MaterialIcons name="keyboard-hide" size={30} color="gray" />
+    </Pressable>
+    )
+}
 
-export  {Boton,IconButton,Alternar,Filtro_aplicado};
+
+export  {Boton,IconButton,Alternar,Filtro_aplicado,Dismiss_keyboard};
