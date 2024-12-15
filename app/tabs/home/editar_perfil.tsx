@@ -83,12 +83,12 @@ export default function Editar(){
       }
       handler_name(text)
     }
-    
+     
     return(
         <View style={estilos.centrado}>
-          <ScrollView contentContainerStyle={[styles.modalContent]} automaticallyAdjustKeyboardInsets={true}>
-              <View style={styles.modalForm}>
-                <Text style={styles.modalTitle}>Editar Perfil</Text>
+          <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
+              <View style={estilos.modalForm}>
+                <Text style={estilos.modalTitle}>Editar Perfil</Text>
 
                 <View style={styles.inputContainer}>
                   <Ionicons name="person-outline" size={24} color="#666" style={styles.inputIcon} />
@@ -221,26 +221,7 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    modalContent: {
-      flexGrow: 1,
-      justifyContent: 'center',
-      minWidth: Dimensions.get("window").width*0.7,
-      opacity:1,
-    },
-    modalForm: {
-      backgroundColor: 'rgb(255, 255, 255)',
-      borderRadius: 20,
-      padding: 20,
-      width: Dimensions.get("window").width*0.9,
-      alignSelf: 'center',
-    },
-    modalTitle: {
-      fontSize: 24,
-      fontWeight: 'bold',
-      color: '#333',
-      marginBottom: 20,
-      textAlign: 'center',
-    },
+    
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',

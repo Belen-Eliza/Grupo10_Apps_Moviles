@@ -3,6 +3,7 @@ import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNati
 import { Text, View, Pressable, Modal, Platform, StyleSheet } from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
+import { today, semana_pasada, mes_pasado, year_start } from "@/components/dias";
 
 function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,
   fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,
@@ -132,4 +133,62 @@ function SelectorFechaSimple(props:{open:boolean,setOpen:React.Dispatch<React.Se
   )
 }
 
-export {DateRangeModal, comparar_fechas, SelectorFechaSimple}
+function SelectorFechaSimpleModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,  
+  fecha_desde: Date, setDesde:React.Dispatch<React.SetStateAction<Date>>,
+  fecha_hasta: Date, setHasta:React.Dispatch<React.SetStateAction<Date>>}){
+    const [nuevo_desde,setNuevoDesde] = useState(props.fecha_desde);
+    const [nuevo_hasta,setNuevoHasta] = useState(props.fecha_hasta);
+    const [simplePickerVisible,setVisible] = useState(false);
+    const [advancedVisible,setAdvancedVisible]=useState(false);
+    const [rango_simple,setRangoSimple] = useState(0);
+
+    const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),props.fecha_desde];
+
+    const onChangeRango=(selection:{label:string,value:number})=>{
+      if (selection.value==4) {
+        setAdvancedVisible(true);
+        props.setVisible(false)
+      } else {
+        setNuevoDesde(fechas_rango_simple[selection.value]);
+        setNuevoHasta(today());
+      }
+    }
+    const confirmar =()=>{
+      props.setDesde(nuevo_desde);
+      props.setHasta(nuevo_hasta);
+      props.setVisible(false);
+    }
+    return(
+      <>
+      <Modal animationType="slide" transparent={true} visible={props.visible} onRequestClose={()=>props.setVisible(false)}>
+        
+        <View style={estilos.modalContainer}>
+          <View style={estilos.whiteModalContent}>
+              <Text style={estilos.modalTitle}>Seleccionar rango de fechas</Text>
+              <View style={estilos.filterButtonsContainer}>
+                <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} 
+                      set_selection_id={setRangoSimple} onChange={onChangeRango}/>
+              </View>
+              <Pressable style={[estilos.confirmButton,{zIndex:-1}]} onPress={confirmar}>
+              <Text style={estilos.confirmButtonText}>Confirmar</Text>
+            </Pressable>
+            <Pressable style={[estilos.cancelButton,{zIndex:-1}]} onPress={()=>props.setVisible(false)}>
+              <Text style={estilos.cancelButtonText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </View>
+        
+      </Modal>
+      <DateRangeModal
+        visible={advancedVisible}
+        setVisible={setAdvancedVisible}
+        fecha_desde={nuevo_desde}
+        fecha_hasta={nuevo_hasta}
+        setDesde={props.setDesde}
+        setHasta={props.setHasta}
+      />
+    </>
+    )
+  }
+
+export {DateRangeModal, comparar_fechas, SelectorFechaSimple, SelectorFechaSimpleModal}

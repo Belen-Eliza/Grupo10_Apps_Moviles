@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-native";
+import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker, CategoryIngresoPicker, traer_categorias, traer_categorias_ingresos } from "@/components/CategoryPicker";
-import { DateRangeModal } from "@/components/DateRangeModal";
+import { DateRangeModal, SelectorFechaSimple, comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto, Ingreso } from "@/components/tipos";
-import { comparar_fechas } from "@/components/DateRangeModal";
 import {LoadingCircle} from "@/components/loading"
-import { today, semana_pasada } from "@/components/dias";
+import { today, semana_pasada, mes_pasado, year_start } from "@/components/dias";
 
 export default function Historial() {
   const context = useUserContext();
@@ -22,12 +21,15 @@ export default function Historial() {
   const [presupuestos, setPresupuestos] = useState<Presupuesto[]>([]);
   const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos
   const [DateModalVisible, setDateModalVisible] = useState(false);
+  const [selectorSimpleVisible,setSelectorSimpleVisible]= useState(false);
   const [CateModalVisible, setCatModalVisible] = useState(false);
   const [fecha_desde, setFechaDesde] = useState(semana_pasada());
   const [fecha_hasta, setFechaHasta] = useState(today());
   const [cate_gasto_id, setCateId] = useState(0);
   const [cate_ingreso_id, setCateIngresoId] = useState(0);
   const [openPicker, setOpen] = useState(false);
+  const [simplePickerVisible,setVisible] = useState(false);
+  const [rango_simple,setRangoSimple] = useState(0);
   const [filtros_usados,setFiltrosUsados] = useState({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false});
   const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
   const [categorias_ingresos,setCategoriasIngresos] =useState<Category[]>([{id:0,name:"",description:""}])
@@ -36,7 +38,7 @@ export default function Historial() {
   
   traer_categorias(setCategorias);
   traer_categorias_ingresos(setCategoriasIngresos);
-
+  const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fecha_desde];
   useFocusEffect(
     React.useCallback(() => {
       const query = async (url: string, callback: Function) => {
@@ -109,6 +111,19 @@ export default function Historial() {
   const ver_presupuesto = (presupuesto: Presupuesto) => {
     router.navigate({ pathname: "/tabs/historial/ver_presupuesto", params: { presupuesto_id: presupuesto.id } });
   };
+  const onChangeRango=(selection:{label:string,value:number})=>{
+      if (selection.value==4) {
+          setDateModalVisible(true);
+          setSelectorSimpleVisible(false)
+      } else {
+          setFechaDesde(fechas_rango_simple[selection.value]);
+          setFechaHasta(today());
+      }
+  }
+  const cancelRangoSimple = ()=>{
+    setSelectorSimpleVisible(false)
+
+  }
 
   const filtrar_por_cate = () => {
     setCatModalVisible(false);
@@ -192,7 +207,7 @@ export default function Historial() {
         <View style={styles.filterContainer}>
         <Text style={styles.filterTitle}>Filtrar por:</Text>
         <View style={styles.filterButtonsContainer}>
-          <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
+          <Pressable onPress={() => setSelectorSimpleVisible(true)} style={styles.filterButton}>
             <MaterialIcons name="event" size={24} color="#FFFFFF" />
             <Text style={styles.filterButtonText}>Fecha</Text>
           </Pressable>
@@ -252,10 +267,30 @@ export default function Historial() {
         setHasta={setFechaHasta}
       />
 
+      <SelectorFechaSimpleModal visible={selectorSimpleVisible} setVisible={setSelectorSimpleVisible} fecha_desde={fecha_desde}
+        fecha_hasta={fecha_hasta} setDesde={setFechaDesde} setHasta={setFechaHasta}
+      />
+      {/* <Modal animationType="slide" transparent={true} visible={selectorSimpleVisible} onRequestClose={cancelRangoSimple}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+              <Text style={estilos.modalTitle}>Seleccionar rango de fechas</Text>
+              <View style={estilos.filterButtonsContainer}>
+                <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} 
+                      set_selection_id={setRangoSimple} onChange={onChangeRango}/>
+              </View>
+              <Pressable style={[estilos.confirmButton,{zIndex:-1}]} onPress={()=>setSelectorSimpleVisible(false)}>
+              <Text style={estilos.confirmButtonText}>Confirmar</Text>
+            </Pressable>
+            <Pressable style={[estilos.cancelButton,{zIndex:-1}]} onPress={cancelRangoSimple}>
+              <Text style={estilos.cancelButtonText}>Cancelar</Text>
+            </Pressable>
+          </View>
+        </View>
+      </Modal> */}
       <Modal animationType="slide" transparent={true} visible={CateModalVisible} onRequestClose={cancelar}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Seleccionar Categoría</Text>
+            <Text style={estilos.modalTitle}>Seleccionar Categoría</Text>
             {seleccion===0 && (
               <CategoryPicker
               openPicker={openPicker}
