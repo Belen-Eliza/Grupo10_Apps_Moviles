@@ -18,13 +18,13 @@ import {success_alert,error_alert} from '@/components/my_alert';
 
 export default function Editar(){
     const user = useUserContext();
-    const [modalVisible,setModalVisible]= useState(false);
     const [nombre,handler_name]=useState<string>();
     const [mail,handler_mail]=useState<string>();
     const [pass,handler_password]=useState<string>()
     const [errorEmail, setErrorEmail] = useState('');
     const [errorPassword, setErrorPassword] = useState('');
     const [errorName,setErrorName] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const cancelar = ()=>{
         handler_name(undefined);
@@ -33,7 +33,6 @@ export default function Editar(){
         setErrorEmail("");
         setErrorPassword("");
         setErrorName("");
-        setModalVisible(false);
     }
 
     const confirmar = ()=>{
@@ -60,7 +59,6 @@ export default function Editar(){
         else error_alert("Contraseña inválida");
       }
       setTimeout( ()=> user.actualizar_info(user.id),200);
-      setModalVisible(false);
       if (exito) {
         
         router.navigate({pathname:"/tabs/home/"}); 
@@ -125,8 +123,15 @@ export default function Editar(){
                     onChangeText={ handlePasswordChange}
                     placeholder="Nueva contraseña"
                     placeholderTextColor="#999"
-                    secureTextEntry={true}
+                    secureTextEntry={!showPassword}
                   />
+                  <Pressable onPress={() => setShowPassword(!showPassword)}>
+                    <Ionicons
+                      name={showPassword ? 'eye-off-outline' : 'eye-outline'}
+                      size={24}
+                      color="#666"
+                    />
+                  </Pressable>
                 </View>
                 {errorPassword ? <Text style={styles.errorText}>{errorPassword}</Text> : null}
 
