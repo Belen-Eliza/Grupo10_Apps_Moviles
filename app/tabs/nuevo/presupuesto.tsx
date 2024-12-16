@@ -90,6 +90,7 @@ export default function Presupuesto() {
     };
 
     const scale = useSharedValue(1);
+    const scaleCancel = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -104,33 +105,44 @@ export default function Presupuesto() {
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 }); 
   };
+  const animatedStyleCancel = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleCancel.value }],
+    };
+  });
+  const handlePressInCancel = () => {
+    scaleCancel.value = withSpring(1.1, { damping: 5 }); 
+  };
+  const handlePressOutCancel = () => {
+    scaleCancel.value = withSpring(1, { damping: 5 }); 
+  };
 
-    const confirmar = async ()=>{
-        presupuesto.fecha_objetivo=fecha.toISOString()
-        presupuesto.user_id=context.id;
-        presupuesto.total_acumulado=0;
-        if (!es_valido(presupuesto) || fecha<=(new Date())){
-            error_alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
-        }
-        else {
-            try {
-                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/`,{
-                    method:'POST',
-                    headers:{"Content-Type":"application/json"},
-                    body:JSON.stringify(presupuesto)})
-            
-                if (!rsp.ok){
-                    throw new Error
-                }
-                
-                router.back();
-                setTimeout(()=>success_alert("Presupuesto creado correctamente"),200);}
-            catch (e){
-                error_alert(String(e));
-                console.log(e)
-            } 
-        }
-         
+  const confirmar = async ()=>{
+      presupuesto.fecha_objetivo=fecha.toISOString()
+      presupuesto.user_id=context.id;
+      presupuesto.total_acumulado=0;
+      if (!es_valido(presupuesto) || fecha<=(new Date())){
+          error_alert("Complete los espacios en blanco o proporcione una fecha objetivo válida");
+      }
+      else {
+          try {
+              const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/`,{
+                  method:'POST',
+                  headers:{"Content-Type":"application/json"},
+                  body:JSON.stringify(presupuesto)})
+          
+              if (!rsp.ok){
+                  throw new Error
+              }
+              
+              router.back();
+              setTimeout(()=>success_alert("Presupuesto creado correctamente"),200);}
+          catch (e){
+              error_alert(String(e));
+              console.log(e)
+          } 
+      }
+        
     }
 
 
@@ -176,9 +188,18 @@ export default function Presupuesto() {
                 onPressOut={handlePressOut}
                 onPress={confirmar}
             >
-                <Animated.View style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }, animatedStyle]}>
-                <Text style={estilos.subtitulo}>Confirmar</Text>
+                <Animated.View style={[estilos.confirmButton, animatedStyle]}>
+                <Text style={estilos.confirmButtonText}>Confirmar</Text>
                 </Animated.View>
+            </Pressable>
+            <Pressable
+              onPressIn={handlePressInCancel}
+              onPressOut={handlePressOutCancel}
+              onPress={()=>router.back()}
+            >
+              <Animated.View style={[estilos.cancelButton, animatedStyleCancel]}>
+                <Text style={estilos.cancelButtonText}>Cancelar</Text>
+              </Animated.View>
             </Pressable>
         </ScrollView>
         </View>

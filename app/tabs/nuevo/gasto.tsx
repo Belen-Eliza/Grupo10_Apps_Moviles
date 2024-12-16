@@ -100,19 +100,33 @@ export default function Gasto() {
   };
 
   const scale = useSharedValue(1);
+  const scaleCancel = useSharedValue(1);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
     };
   });
+  
 
   const handlePressIn = () => {
     scale.value = withSpring(1.1, { damping: 5 }); 
   };
+  
 
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 }); 
+  };
+  const animatedStyleCancel = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleCancel.value }],
+    };
+  });
+  const handlePressInCancel = () => {
+    scaleCancel.value = withSpring(1.1, { damping: 5 }); 
+  };
+  const handlePressOutCancel = () => {
+    scaleCancel.value = withSpring(1, { damping: 5 }); 
   };
 
   return (
@@ -150,8 +164,17 @@ export default function Gasto() {
         onPressOut={handlePressOut}
         onPress={confirmar}
       >
-        <Animated.View style={[estilos.tarjeta, estilos.centrado, colores.botones, { maxHeight: 50 }, animatedStyle]}>
-          <Text style={estilos.subtitulo}>Confirmar</Text>
+        <Animated.View style={[estilos.confirmButton, animatedStyle]}>
+          <Text style={estilos.confirmButtonText}>Confirmar</Text>
+        </Animated.View>
+      </Pressable>
+      <Pressable
+        onPressIn={handlePressInCancel}
+        onPressOut={handlePressOutCancel}
+        onPress={()=>router.back()}
+      >
+        <Animated.View style={[estilos.cancelButton, animatedStyleCancel]}>
+          <Text style={estilos.cancelButtonText}>Cancelar</Text>
         </Animated.View>
       </Pressable>
     </View>
