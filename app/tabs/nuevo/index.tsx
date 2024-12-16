@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, FlatList, Pressable, SafeAreaView, } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Pressable,
+  SafeAreaView,
+} from "react-native";
 import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
-import { error_alert, success_alert} from '@/components/my_alert';
-import Toast from 'react-native-toast-message';
+import { error_alert, success_alert } from "@/components/my_alert";
+import Toast from "react-native-toast-message";
+import Presupuesto from "./presupuesto";
 
-interface Ingreso {
+interface Presupuesto {
   id: number;
-  monto: number;
+  descripcion: string;
+  montoTotal: number;
+  total_acumulado: number;
 }
 
-interface Movimiento {
-  id: string;
-  type: string;
-  monto: number;
-}
-
-interface ItemProps {
-  type: string;
-  monto: number;
-}
+// interface ItemProps {
+//   presupuesto: Presupuesto;
+// }
 
 interface ActionButtonProps {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -30,54 +33,55 @@ interface ActionButtonProps {
 
 export default function Dashboard() {
   const context = useUserContext();
-  const [datosIngresos, setDatosIngresos] = useState<Ingreso[]>([]);
+  const [datosPresupuestos, setDatosPresupuestos] = useState<Presupuesto[]>([]);
 
-  const {msg=false,error=false} = useLocalSearchParams();
-  if (msg){
-    console.log(msg)
-    if (!error)   success_alert(msg.toString());
-    else  error_alert(msg.toString())
+  const { msg = false, error = false } = useLocalSearchParams();
+  if (msg) {
+    console.log(msg);
+    if (!error) success_alert(msg.toString());
+    else error_alert(msg.toString());
   }
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchData = async () => {
         try {
-          const rspIngresos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/${context.id}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
-  
-          if (rspIngresos.ok) {
-            const ingresosData: Ingreso[] = await rspIngresos.json();
-            setDatosIngresos(ingresosData.reverse());
-            
+          const rspPresupuestos = await fetch(
+            `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/user/${context.id}`,
+            {
+              method: "GET",
+              headers: { "Content-Type": "application/json" },
+            }
+          );
+
+          if (rspPresupuestos.ok) {
+            const presupuestosData: Presupuesto[] =
+              await rspPresupuestos.json();
+            setDatosPresupuestos(presupuestosData.reverse());
           }
         } catch (e) {
           console.error(e);
-          error_alert("Hubo un error al obtener los datos.");
+          error_alert("Hubo un error al obtener los datos de presupuestos.");
         }
       };
-  
+
       fetchData();
-      return () => {
-        
-      };
+      return () => {};
     }, [context.id])
   );
 
-  const movimientosRecientes: Movimiento[] = datosIngresos.slice(-5).map((ingreso) => ({
-    id: `ingreso-${ingreso.id}`,
-    type: "Ingreso",
-    monto: ingreso.monto,
-  }));
-
-  const Item: React.FC<ItemProps> = ({ type, monto }) => (
+  const Item: React.FC<Presupuesto> = ({
+    descripcion,
+    montoTotal,
+    total_acumulado,
+  }) => (
     <View style={styles.item}>
-      <MaterialIcons name="attach-money" size={24} color="#4CAF50" />
+      <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
       <View>
-        <Text style={styles.itemType}>{type}</Text>
-        <Text style={styles.itemAmount}>${monto.toFixed(2)}</Text>
+        <Text style={styles.itemType}>{descripcion}</Text>
+        <Text style={styles.itemAmount}>
+          %{(total_acumulado / montoTotal) * 100}
+        </Text>
       </View>
     </View>
   );
@@ -90,38 +94,51 @@ export default function Dashboard() {
       </Pressable>
     </Link>
   );
-
+  console.log(datosPresupuestos);
   return (
-    
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.headerTitle}>Dashboard</Text>
       </View>
-      
+
       <View style={styles.recentTransactions}>
-        <Text style={styles.sectionTitle}>Movimientos Recientes</Text>
-        <FlatList<Movimiento>
-          data={movimientosRecientes}
-          renderItem={({ item }) => <Item type={item.type} monto={item.monto} />}
-          keyExtractor={(item) => item.id}
-          style={styles.list}
-        />
+        <Text style={styles.sectionTitle}>Presupuestos</Text>
+        {datosPresupuestos.length > 0 ? (
+          <FlatList<Presupuesto>
+            data={datosPresupuestos}
+            renderItem={({ item }) => <Item {...item} />}
+            keyExtractor={(item) => item.id.toString()}
+            style={styles.list}
+          />
+        ) : (
+          <Text>No hay presupuestos</Text>
+        )}
       </View>
 
       <View style={styles.actionsContainer}>
         <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
         <View style={styles.actionButtonsColumn}>
-          <ActionButton icon="add" label="Agregar Gasto" href="/tabs/nuevo/gasto" />
-          <ActionButton icon="savings" label="Agregar Ingreso" href="/tabs/nuevo/ingreso" />
-          <ActionButton icon="account-balance" label="Agregar Presupuesto" href="/tabs/nuevo/presupuesto" />
+          <ActionButton
+            icon="add"
+            label="Agregar Gasto"
+            href="/tabs/nuevo/gasto"
+          />
+          <ActionButton
+            icon="savings"
+            label="Agregar Ingreso"
+            href="/tabs/nuevo/ingreso"
+          />
+          <ActionButton
+            icon="account-balance"
+            label="Agregar Presupuesto"
+            href="/tabs/nuevo/presupuesto"
+          />
         </View>
       </View>
-      <Toast/>
+      <Toast />
     </SafeAreaView>
-    
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {
@@ -195,4 +212,3 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
-
