@@ -21,4 +21,4 @@ https://github.com/Belen-Eliza/Backend---App
 * DateTimePicker: https://www.npmjs.com/package/@react-native-community/datetimepicker
 * Toast: [https://docs.expo.dev/ui-programming/react-native-toast/](https://github.com/calintamas/react-native-toast-message/blob/main/docs/quick-start.md)
   npm install --save react-native-toast-message
-* 
+* Async storage: https://react-native-async-storage.github.io/async-storage/docs/install/ npm install @react-native-async-storage/async-storage
