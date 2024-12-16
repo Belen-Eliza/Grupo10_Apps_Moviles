@@ -127,10 +127,12 @@ export default function Gasto() {
       transform: [{ scale: scale.value }],
     };
   });
+  
 
   const handlePressIn = () => {
     scale.value = withSpring(1.1, { damping: 5 });
   };
+  
 
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 });
@@ -146,8 +148,20 @@ export default function Gasto() {
   const handlePressOutCancel = () => {
     scaleCancel.value = withSpring(1, { damping: 5 });
   };
+  const animatedStyleCancel = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleCancel.value }],
+    };
+  });
+  const handlePressInCancel = () => {
+    scaleCancel.value = withSpring(1.1, { damping: 5 }); 
+  };
+  const handlePressOutCancel = () => {
+    scaleCancel.value = withSpring(1, { damping: 5 }); 
+  };
 
   return (
+
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={estilos.flex1}
@@ -206,6 +220,7 @@ export default function Gasto() {
         </View>
       </TouchableWithoutFeedback>
       <Toast />
+
     </KeyboardAvoidingView>
   );
 }

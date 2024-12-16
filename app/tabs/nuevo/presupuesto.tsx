@@ -135,6 +135,7 @@ export default function Presupuesto() {
 
   const scale = useSharedValue(1);
 
+
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
@@ -148,6 +149,18 @@ export default function Presupuesto() {
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 });
   };
+  const animatedStyleCancel = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleCancel.value }],
+    };
+  });
+  const handlePressInCancel = () => {
+    scaleCancel.value = withSpring(1.1, { damping: 5 }); 
+  };
+  const handlePressOutCancel = () => {
+    scaleCancel.value = withSpring(1, { damping: 5 }); 
+  };
+
 
   const confirmar = async () => {
     presupuesto.fecha_objetivo = fecha.toISOString();
@@ -197,6 +210,7 @@ export default function Presupuesto() {
       if (!rspCategoria.ok) {
         throw new Error("Error al crear la categoría asociada");
       }
+
 
       // Si todo está bien, redirigir y mostrar éxito
       router.back();
@@ -279,6 +293,7 @@ export default function Presupuesto() {
               onPressOut={handlePressOut}
               onPress={confirmar}
             >
+
               <Animated.View
                 style={[
                   estilos.tarjeta,
@@ -292,6 +307,7 @@ export default function Presupuesto() {
               </Animated.View>
             </Pressable>
           </ScrollView>
+
         </View>
       </TouchableWithoutFeedback>
       <Toast />
