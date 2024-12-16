@@ -77,13 +77,13 @@ export default function Login() {
 
     }
 
-  }
+  /*
   useEffect(() => {
     AsyncStorage.getItem("user").then((value) => { 
       if (value !== null)
         router.replace("/tabs/");
   } )
-  }, [])
+  }, [])*/
 
   return (
 
