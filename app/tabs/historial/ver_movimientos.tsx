@@ -282,51 +282,53 @@ export default function Historial() {
  );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FA",
   },
   content: {
     flex: 1,
   },
   filterContainer: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#E0E0E0",
+    borderBottomColor: "rgba(0, 122, 255, 0.1)",
   },
   filterTitle: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "600",
-    marginBottom: 8,
-    color: "#333333",
+    marginBottom: 12,
+    color: "#007AFF",
   },
   filterButtonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: 8,
   },
   filterButton: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#3F51B5",
-    paddingVertical: 8,
+    backgroundColor: "#007AFF",
+    paddingVertical: 10,
     paddingHorizontal: 12,
-    borderRadius: 4,
+    borderRadius: 10,
     marginHorizontal: 4,
   },
   filterButtonText: {
     color: "#FFFFFF",
     marginLeft: 8,
     fontSize: 14,
+    fontWeight: "600",
   },
   emptyListText: {
     textAlign: "center",
     marginTop: 20,
     fontSize: 16,
-    color: "#666666",
+    color: "#007AFF",
   },
   modalContainer: {
     flex: 1,
@@ -335,31 +337,37 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 8,
+    backgroundColor: "rgba(255, 255, 255, 0.95)",
+    borderRadius: 20,
     padding: 20,
-    width: "80%",
+    width: "90%",
     alignItems: "center",
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
-    marginBottom: 16,
-    color: "#333333",
+    marginBottom: 20,
+    color: "#007AFF",
   },
   confirmButton: {
-    backgroundColor: "#4CAF50",
+    backgroundColor: "#007AFF",
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 4,
-    marginTop: 16,
+    borderRadius: 10,
+    marginTop: 20,
+    width: "100%",
+    alignItems: "center",
   },
   cancelButton: {
-    backgroundColor: "#F44336",
+    backgroundColor: "transparent",
     paddingVertical: 12,
     paddingHorizontal: 24,
-    borderRadius: 4,
-    marginTop: 8,
+    borderRadius: 10,
+    marginTop: 10,
+    width: "100%",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#007AFF",
   },
   buttonText: {
     color: "#FFFFFF",
@@ -367,4 +375,3 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
 });
-

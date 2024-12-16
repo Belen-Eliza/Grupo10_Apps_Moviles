@@ -122,26 +122,25 @@ export default function Dashboard() {
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F5F7FA",
   },
   header: {
-    backgroundColor: "#3F51B5",
     padding: 20,
     alignItems: "center",
   },
   headerTitle: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#007AFF",
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "600",
-    marginBottom: 10,
-    color: "#333",
+    marginBottom: 15,
+    color: "#007AFF",
   },
   recentTransactions: {
     flex: 1,
@@ -153,15 +152,18 @@ const styles = StyleSheet.create({
   item: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     padding: 15,
     marginBottom: 10,
-    borderRadius: 8,
+    borderRadius: 20,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
     elevation: 3,
+  },
+  itemTextContainer: {
+    marginLeft: 10,
   },
   itemType: {
     fontSize: 16,
@@ -181,16 +183,16 @@ const styles = StyleSheet.create({
   actionButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#3F51B5",
-    borderRadius: 8,
+    backgroundColor: "#007AFF",
+    borderRadius: 10,
     padding: 15,
-    marginBottom: 10,
+    marginBottom: 15,
   },
   actionButtonText: {
     color: "#FFFFFF",
     marginLeft: 10,
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });
 
