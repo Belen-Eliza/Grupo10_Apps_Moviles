@@ -8,11 +8,12 @@ import {
   Platform,
   ScrollView,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { Link, router } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
 import { Ionicons } from '@expo/vector-icons';
 import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { User } from "@/components/tipos";
 import { validateEmail,validatePassword } from "@/components/validations";
 import{error_alert} from '@/components/my_alert';
@@ -65,12 +66,24 @@ export default function Login() {
                 error_alert(String(error));
             }
         } else {
-            error_alert('Corrija los errores resaltados en pantalla para ingresar');
+          const datos_usuario: User = await rsp.json();
+          login_app(datos_usuario);
+          await AsyncStorage.setItem('user', "logged")
+
+          router.replace("/tabs/");
+        
+
         }
 
     }
-  
 
+  }
+  useEffect(() => {
+    AsyncStorage.getItem("user").then((value) => { 
+      if (value !== null)
+        router.replace("/tabs/");
+  } )
+  }, [])
 
   return (
 
