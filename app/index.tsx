@@ -129,6 +129,11 @@ export default function Login() {
                 <Text style={estilos.linkText}>Regístrate aquí</Text>
               </Link>
             </View>
+            <View style={styles.signupContainer}>
+              <Link href="/password-recovery" style={styles.signupLink}>
+                <Text style={estilos.linkText}>¿Olvidaste tu contraseña?</Text>
+              </Link>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

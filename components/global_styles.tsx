@@ -25,8 +25,10 @@ export const estilos = StyleSheet.create({
       },
       linkText: {
         color: '#007AFF',
+        
         fontSize: 14,
         fontWeight: 'bold',
+        textAlign:"center",
       },
       mainButton: {
         flexDirection: "row",
