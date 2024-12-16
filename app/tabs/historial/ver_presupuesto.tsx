@@ -9,9 +9,8 @@ type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_obj
 export default function DetallePresupuesto(){
     const { presupuesto_id = 0} = useLocalSearchParams();
     if (presupuesto_id==0) {
-        alert("Valor inválido");
         router.dismiss();
-        router.replace("/tabs");
+        router.replace({pathname:"/tabs",params:{msg:"Valor inválido",error:"yes"}});
     }
     const [presupuesto,setPresupuesto]=useState<Presupuesto>();
    

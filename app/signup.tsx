@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  View,
+  
   Text,
   TextInput,
   Pressable,
@@ -8,6 +8,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  View,
 } from 'react-native';
 import { Link, router } from 'expo-router';
 import { useUserContext } from '@/context/UserContext';
@@ -15,6 +16,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { User } from "@/components/tipos";
 import { validateEmail, validatePassword } from "@/components/validations";
 import { estilos, colores } from "@/components/global_styles";
+import{error_alert} from '@/components/my_alert';
+import Toast from 'react-native-toast-message';
 
 export default function Signup() {
     const context = useUserContext();
@@ -39,23 +42,23 @@ export default function Signup() {
         }
     };
 
-    const handleEmailChange = (text) => {
+    const handleEmailChange = (text:any) => {
         setMail(text);
         setErrorEmail(validateEmail(text).msj);
     };
 
-    const handleNameChange = (text) => {
+    const handleNameChange = (text:any) => {
         setName(text);
         setErrorName(text ? '' : 'El nombre de usuario no puede estar vacío');
     };
 
-    const handlePasswordChange = (text) => {
+    const handlePasswordChange = (text:any) => {
         setPassword1(text);
         setErrorPassword(validatePassword(text).msj);
         validatePasswordConfirm(text, password2);
     };
 
-    const handlePasswordConfirmChange = (text) => {
+    const handlePasswordConfirmChange = (text:any) => {
         setPassword2(text);
         validatePasswordConfirm(password1, text);
     };
@@ -75,23 +78,24 @@ export default function Signup() {
                     body: JSON.stringify(user),
                 });
                 if (!response.ok) {
-                    if (response.status == 409) throw new Error('El usuario ya existe');
-                    throw new Error('Error al registrarse');
+                  if (response.status==409) error_alert('El usuario ya existe');
+                  throw new Error('Error al registrarse');
                 } else {
                     const datos_usuario = await response.json();
                     context.login_app(datos_usuario);
-                    router.replace('/tabs/');
+                    router.replace('/tabs/home');
                 }
             } catch (error) {
-                alert(error);
+              error_alert(String(error));
             }
         } else {
-            alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
+            error_alert('Corrija los errores resaltados en pantalla para la correcta creación del usuario');
         }
     }
 
 
   return (
+    
     <View style={[estilos.background2,colores.fondo_azul]}>
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -168,10 +172,12 @@ export default function Signup() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+      <Toast/>
     </View>
+    
   );
 
-
+/* 
     return (
         <View style={[estilos.background2, colores.fondo2]}>
             <KeyboardAvoidingView
@@ -264,7 +270,7 @@ export default function Signup() {
                 </ScrollView>
             </KeyboardAvoidingView>
         </View>
-    );
+    ); */
 }
 
 const styles = StyleSheet.create({

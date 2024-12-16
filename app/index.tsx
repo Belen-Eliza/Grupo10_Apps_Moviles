@@ -15,7 +15,9 @@ import { Ionicons } from '@expo/vector-icons';
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { User } from "@/components/tipos";
-import { validateEmail, validatePassword } from "@/components/validations";
+import { validateEmail,validatePassword } from "@/components/validations";
+import{error_alert} from '@/components/my_alert';
+import Toast from 'react-native-toast-message';
 
 export default function Login() {
   const [mail, setMail] = useState('');
@@ -52,22 +54,29 @@ export default function Login() {
           body: JSON.stringify(user),
         });
 
-        if (!rsp.ok) {
-          if (rsp.status === 400) throw new Error("Usuario o contraseña incorrectos");
-          throw new Error();
+                if (!rsp.ok) {
+                    if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
+                    throw new Error();
+                } else {
+                    const datos_usuario: User = await rsp.json();
+                    login_app(datos_usuario);
+                    router.replace("/tabs/home");
+                }
+            } catch (error) {
+                error_alert(String(error));
+            }
         } else {
           const datos_usuario: User = await rsp.json();
           login_app(datos_usuario);
           await AsyncStorage.setItem('user', "logged")
 
           router.replace("/tabs/");
+        
+
         }
-      } catch (error) {
-        alert(error);
-      }
-    } else {
-      alert('Corrija los errores resaltados en pantalla para ingresar');
+
     }
+
   }
   useEffect(() => {
     AsyncStorage.getItem("user").then((value) => { 
@@ -75,6 +84,7 @@ export default function Login() {
         router.replace("/tabs/");
   } )
   }, [])
+
   return (
 
     
@@ -140,13 +150,17 @@ export default function Login() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+      <Toast/>
+      </View>
+      
   );
 }
 
 
 const styles = StyleSheet.create({
-  
+  eyeIcon:{
+    //se borro o algo?
+  },
   scrollViewContent: {
     flexGrow: 1,
     justifyContent: 'center',

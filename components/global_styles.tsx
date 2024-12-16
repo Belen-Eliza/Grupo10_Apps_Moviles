@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 
 
 export const estilos = StyleSheet.create({
@@ -202,6 +202,8 @@ export const estilos = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         marginTop: 10,
+        minWidth: "80%"
+
       },
       cancelButtonText: {
         color: '#007AFF',
@@ -214,6 +216,7 @@ export const estilos = StyleSheet.create({
         padding: 15,
         alignItems: 'center',
         marginTop: 20,
+        minWidth: "80%"
       },
       confirmButtonText: {
         color: '#fff',
@@ -236,6 +239,40 @@ export const estilos = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
       },
+    modalContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+      minWidth: Dimensions.get("window").width*0.7,
+      opacity:1,
+    },
+    whiteModalContent: {
+      backgroundColor: "#FFFFFF",
+      borderRadius: 8,
+      padding: 20,
+      width: "80%",
+      alignItems: "center",
+    },
+    modalForm: {
+      backgroundColor: 'rgb(255, 255, 255)',
+      borderRadius: 20,
+      padding: 20,
+      width: Dimensions.get("window").width*0.9,
+      alignSelf: 'center',
+    },
+    modalTitle: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#333',
+      marginBottom: 20,
+      textAlign: 'center',
+    },
+    modalContainer: {
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: "rgba(0, 0, 0, 0.5)",
+    },
+    
 });
 
 export const colores = StyleSheet.create({

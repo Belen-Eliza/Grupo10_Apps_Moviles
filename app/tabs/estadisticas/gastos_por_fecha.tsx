@@ -1,6 +1,6 @@
 import { useUserContext } from "@/context/UserContext";
 import { useState, } from "react";
-import { Text, View, Dimensions } from "react-native";
+import { Text, View, Dimensions, Modal, ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import React from "react";
 import { LineChart } from "react-native-chart-kit";
@@ -242,7 +242,7 @@ export default function Gastos_por_Fecha() {
             <DateRangeModal visible={modalVisible} setVisible={setModalVisible} fecha_desde={fechaDesde} fecha_hasta={fechaHasta}
             setDesde={setFechaDesde} setHasta={setFechaHasta}            
             ></DateRangeModal>
-
+            
         </>
     );
     

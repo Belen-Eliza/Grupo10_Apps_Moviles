@@ -1,19 +1,18 @@
 import React, { useState } from "react";
-import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-native";
+import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker, CategoryIngresoPicker, traer_categorias, traer_categorias_ingresos } from "@/components/CategoryPicker";
-import { DateRangeModal } from "@/components/DateRangeModal";
+import { DateRangeModal, comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
 import { estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto, Ingreso } from "@/components/tipos";
-import { comparar_fechas } from "@/components/DateRangeModal";
 import {LoadingCircle} from "@/components/loading"
-import { today, semana_pasada } from "@/components/dias";
+import { today, semana_pasada, mes_pasado, year_start } from "@/components/dias";
 
 export default function Historial() {
   const context = useUserContext();
@@ -21,7 +20,7 @@ export default function Historial() {
   const [ingresos, setIngresos] = useState<Ingreso[]>([]);
   const [presupuestos, setPresupuestos] = useState<Presupuesto[]>([]);
   const [seleccion, setSeleccion] = useState(0); //0 gastos, 1 ingresos, 2 presupuestos
-  const [DateModalVisible, setDateModalVisible] = useState(false);
+  const [selectorSimpleVisible,setSelectorSimpleVisible]= useState(false);
   const [CateModalVisible, setCatModalVisible] = useState(false);
   const [fecha_desde, setFechaDesde] = useState(semana_pasada());
   const [fecha_hasta, setFechaHasta] = useState(today());
@@ -36,7 +35,7 @@ export default function Historial() {
   
   traer_categorias(setCategorias);
   traer_categorias_ingresos(setCategoriasIngresos);
-
+  const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fecha_desde];
   useFocusEffect(
     React.useCallback(() => {
       const query = async (url: string, callback: Function) => {
@@ -109,6 +108,7 @@ export default function Historial() {
   const ver_presupuesto = (presupuesto: Presupuesto) => {
     router.navigate({ pathname: "/tabs/historial/ver_presupuesto", params: { presupuesto_id: presupuesto.id } });
   };
+  
 
   const filtrar_por_cate = () => {
     setCatModalVisible(false);
@@ -192,7 +192,7 @@ export default function Historial() {
         <View style={styles.filterContainer}>
         <Text style={styles.filterTitle}>Filtrar por:</Text>
         <View style={styles.filterButtonsContainer}>
-          <Pressable onPress={() => setDateModalVisible(true)} style={styles.filterButton}>
+          <Pressable onPress={() => setSelectorSimpleVisible(true)} style={styles.filterButton}>
             <MaterialIcons name="event" size={24} color="#FFFFFF" />
             <Text style={styles.filterButtonText}>Fecha</Text>
           </Pressable>
@@ -243,19 +243,15 @@ export default function Historial() {
           />
       )}
       </View>
-      <DateRangeModal
-        visible={DateModalVisible}
-        setVisible={setDateModalVisible}
-        fecha_desde={fecha_desde}
-        fecha_hasta={fecha_hasta}
-        setDesde={setFechaDesde}
-        setHasta={setFechaHasta}
-      />
 
+      <SelectorFechaSimpleModal visible={selectorSimpleVisible} setVisible={setSelectorSimpleVisible} fecha_desde={fecha_desde}
+        fecha_hasta={fecha_hasta} setDesde={setFechaDesde} setHasta={setFechaHasta}
+      />
+     
       <Modal animationType="slide" transparent={true} visible={CateModalVisible} onRequestClose={cancelar}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Seleccionar Categoría</Text>
+            <Text style={estilos.modalTitle}>Seleccionar Categoría</Text>
             {seleccion===0 && (
               <CategoryPicker
               openPicker={openPicker}

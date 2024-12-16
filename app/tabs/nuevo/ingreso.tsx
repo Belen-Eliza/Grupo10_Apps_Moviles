@@ -1,6 +1,6 @@
-import { Text, View, TextInput, Pressable } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 import { router } from "expo-router";
@@ -9,6 +9,9 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from 'react-native-reanimated';
+import{error_alert, success_alert} from '@/components/my_alert';
+import Toast from 'react-native-toast-message';
+import { Dismiss_keyboard } from "@/components/botones";
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
 function es_valido(ingreso:Ingreso){
@@ -20,12 +23,31 @@ export default function Ahorro() {
   const [ingreso, setIngreso] = useState<Ingreso>({ monto: 0, descripcion: "", category_id: 0, user_id: context.id });
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0); 
+  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
+  const [keyboardHeight,setKeyboardHeight] = useState(300);
+
+  useEffect(() => {
+      const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+      const hideSubscription = Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
+  
+      return () => {
+        showSubscription.remove();
+      };
+    }, []);
+  
+  const handleKeyboardShow = (event: any) => {
+    setIsKeyboardVisible(true);
+    setKeyboardHeight(event.endCoordinates.height)
+  };
+
+  const handleKeyboardHide = (event: any) => {
+    setIsKeyboardVisible(false);
+  };
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
-    if (Number.isNaN(monto)) {
-      alert("El valor ingresado debe ser un número");
-    } else {
+    if (Number.isNaN(monto))  error_alert("El valor ingresado debe ser un número");
+    else {
       setIngreso(pre => ({ ...pre, monto }));
     }
   };
@@ -36,9 +58,7 @@ export default function Ahorro() {
 
   const confirmar = async () => {
     ingreso.category_id = cat;
-    if (!es_valido(ingreso)){
-      alert("Complete los campos vacíos para continuar");
-    }
+    if (!es_valido(ingreso)) error_alert("Complete los campos vacíos para continuar")
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
@@ -51,15 +71,14 @@ export default function Ahorro() {
           throw new Error("Error en la operación");
         }
         context.actualizar_info(context.id);
-        alert("Operación exitosa");
-        router.dismiss();
-        router.replace("/tabs");
+        router.back();
+        setTimeout(()=>success_alert("Ingreso creado correctamente"),200)
       } catch (e) {
-        alert(e);
+        error_alert(String(e));
+        console.log(e)
       }
     }
   };
-
   
   const scale = useSharedValue(1);
 
@@ -78,8 +97,13 @@ export default function Ahorro() {
   };
 
   return (
+    
+      <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={estilos.flex1}>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
     <View style={[{ flex: 1 }, estilos.centrado]}>
-
+    {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
@@ -96,7 +120,6 @@ export default function Ahorro() {
         onChangeText={handler_descripcion}
       />
 
-
       <Text style={estilos.subtitulo}>Categoría</Text>
       <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
 
@@ -110,5 +133,9 @@ export default function Ahorro() {
         </Animated.View>
       </Pressable>
     </View>
+    </TouchableWithoutFeedback>
+    <Toast/>
+    </KeyboardAvoidingView>
+    
   );
 }
