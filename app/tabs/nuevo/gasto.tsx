@@ -137,17 +137,7 @@ export default function Gasto() {
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 });
   };
-  const animatedStyleCancel = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scaleCancel.value }],
-    };
-  });
-  const handlePressInCancel = () => {
-    scaleCancel.value = withSpring(1.1, { damping: 5 });
-  };
-  const handlePressOutCancel = () => {
-    scaleCancel.value = withSpring(1, { damping: 5 });
-  };
+  
   const animatedStyleCancel = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scaleCancel.value }],

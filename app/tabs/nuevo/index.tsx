@@ -7,10 +7,10 @@ import {
   Pressable,
   SafeAreaView,
 } from "react-native";
-import { Link, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { Link, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
-import { error_alert, success_alert } from "@/components/my_alert";
+import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
 import Presupuesto from "./presupuesto";
 
@@ -21,9 +21,6 @@ interface Presupuesto {
   total_acumulado: number;
 }
 
-// interface ItemProps {
-//   presupuesto: Presupuesto;
-// }
 
 interface ActionButtonProps {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -34,13 +31,6 @@ interface ActionButtonProps {
 export default function Dashboard() {
   const context = useUserContext();
   const [datosPresupuestos, setDatosPresupuestos] = useState<Presupuesto[]>([]);
-
-  const { msg = false, error = false } = useLocalSearchParams();
-  if (msg) {
-    console.log(msg);
-    if (!error) success_alert(msg.toString());
-    else error_alert(msg.toString());
-  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -80,7 +70,7 @@ export default function Dashboard() {
       <View>
         <Text style={styles.itemType}>{descripcion}</Text>
         <Text style={styles.itemAmount}>
-          %{(total_acumulado / montoTotal) * 100}
+          %{((total_acumulado / montoTotal) * 100).toFixed(2)}
         </Text>
       </View>
     </View>
@@ -94,7 +84,7 @@ export default function Dashboard() {
       </Pressable>
     </Link>
   );
-  console.log(datosPresupuestos);
+  //console.log(datosPresupuestos);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

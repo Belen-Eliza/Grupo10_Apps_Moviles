@@ -12,7 +12,7 @@ export default function Layout(){
               fontWeight: 'bold',
             },
           }}>
-            <Stack.Screen name='index' options={{title: "Estadisticas"}}/>
+            <Stack.Screen name='index' options={{title: "Estadisticas",headerShown:false}}/>
             <Stack.Screen name='gastos_por_fecha' options={{title: "Datos por tiempo"}}/>
             <Stack.Screen name='gastos_por_categoria' options={{title: "Datos por categoría"}}/>
             

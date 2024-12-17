@@ -85,7 +85,7 @@ export default function Historial() {
           else query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/por_cate/${context.id}/${cate_ingreso_id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, setIngresos);
           break;
         case 2:
-          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/todos/${context.id}`, setPresupuestos);
+          query(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/user/${context.id}`, setPresupuestos);
           break;
       }
       
@@ -132,7 +132,7 @@ export default function Historial() {
 
   const limpiar_filtros = () => {
     setFechaDesde(new Date(0));
-    setFechaHasta(new Date());
+    setFechaHasta(today());
     setCateId(0);
     setCateIngresoId(0);
     setFiltrosUsados({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false})
@@ -154,7 +154,7 @@ export default function Historial() {
   }
 
   const reset_fecha_hasta = ()=>{
-    setFechaHasta(new Date());
+    setFechaHasta(today());
     setFiltrosUsados(prev=>{
       prev.fecha_hasta=false;
       return prev

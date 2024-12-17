@@ -134,11 +134,17 @@ export default function Presupuesto() {
   };
 
   const scale = useSharedValue(1);
+  const scaleCancel = useSharedValue(1);
 
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
+    };
+  });
+  const animatedStyleCancel = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleCancel.value }],
     };
   });
 
@@ -149,11 +155,6 @@ export default function Presupuesto() {
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 });
   };
-  const animatedStyleCancel = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scaleCancel.value }],
-    };
-  });
   const handlePressInCancel = () => {
     scaleCancel.value = withSpring(1.1, { damping: 5 }); 
   };
@@ -198,7 +199,7 @@ export default function Presupuesto() {
         presupuesto_id: presupuestoCreado.id, // Asociar al presupuesto creado
       };
 
-      const rspCategoria = await fetch(
+      /* const rspCategoria = await fetch(
         `${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/`,
         {
           method: "POST",
@@ -209,7 +210,7 @@ export default function Presupuesto() {
 
       if (!rspCategoria.ok) {
         throw new Error("Error al crear la categoría asociada");
-      }
+      } */
 
 
       // Si todo está bien, redirigir y mostrar éxito
@@ -295,15 +296,18 @@ export default function Presupuesto() {
             >
 
               <Animated.View
-                style={[
-                  estilos.tarjeta,
-                  estilos.centrado,
-                  colores.botones,
-                  { maxHeight: 50 },
-                  animatedStyle,
-                ]}
+                style={[estilos.confirmButton,  { maxHeight: 50 },  animatedStyle ]}
               >
-                <Text style={estilos.subtitulo}>Confirmar</Text>
+                <Text style={estilos.confirmButtonText}>Confirmar</Text>
+              </Animated.View>
+            </Pressable>
+            <Pressable
+              onPressIn={handlePressInCancel}
+              onPressOut={handlePressOutCancel}
+              onPress={() => router.back()}
+            >
+              <Animated.View style={[estilos.cancelButton, animatedStyleCancel]}>
+                <Text style={estilos.cancelButtonText}>Cancelar</Text>
               </Animated.View>
             </Pressable>
           </ScrollView>
