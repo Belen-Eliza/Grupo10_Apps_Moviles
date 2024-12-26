@@ -176,7 +176,7 @@ export default function Historial() {
     })
   }
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={estilos.flex1}>
       <Alternar
         activo={seleccion==4 ? 0: seleccion}
         callback={setSeleccion}
@@ -186,7 +186,7 @@ export default function Historial() {
           { texto: "Presupuestos", params_callback: 2,icon:{materialIconName:"account-balance"} }
         ]}
       />
-      <View style={styles.content}>
+      <View style={estilos.flex1}>
       
       {(seleccion!=2) && (
         <View style={styles.filterContainer}>
@@ -284,12 +284,6 @@ export default function Historial() {
 
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  content: {
-    flex: 1,
-  },
   filterContainer: {
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     padding: 16,
