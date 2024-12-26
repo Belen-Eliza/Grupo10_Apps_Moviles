@@ -82,7 +82,6 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     setIsLoggedIn(true);
     try {
       await  AsyncStorage.setItem("token",String(user.id));
-      await AsyncStorage.getItem("token").then(v=>console.log(v))
     } catch (error) {
       console.log(error,"al guardar la sesión");
     }

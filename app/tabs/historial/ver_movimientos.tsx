@@ -181,9 +181,9 @@ export default function Historial() {
         activo={seleccion==4 ? 0: seleccion}
         callback={setSeleccion}
         datos={[
-          { texto: "Gastos", params_callback: 0 },
-          { texto: "Ingresos", params_callback: 1 },
-          { texto: "Presupuestos", params_callback: 2 }
+          { texto: "Gastos", params_callback: 0, icon:{materialIconName:"attach-money"} },
+          { texto: "Ingresos", params_callback: 1,icon:{materialIconName:"savings"} },
+          { texto: "Presupuestos", params_callback: 2,icon:{materialIconName:"account-balance"} }
         ]}
       />
       <View style={styles.content}>
@@ -221,7 +221,7 @@ export default function Historial() {
             data={gastos}
             renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item, ver_gasto)}
             estimatedItemSize={100}
-            ListEmptyComponent={<Text style={styles.emptyListText}>No hay gastos registrados</Text>}
+            ListEmptyComponent={<Text style={estilos.emptyListText}>No hay gastos registrados</Text>}
           />
       )}
 
@@ -230,7 +230,7 @@ export default function Historial() {
             data={ingresos}
             renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item, ver_ingreso)}
             estimatedItemSize={100}
-            ListEmptyComponent={<Text style={styles.emptyListText}>No hay ingresos registrados</Text>}
+            ListEmptyComponent={<Text style={estilos.emptyListText}>No hay ingresos registrados</Text>}
           />
       )}
 
@@ -239,7 +239,7 @@ export default function Historial() {
             data={presupuestos}
             renderItem={({ item }: ListRenderItemInfo<Presupuesto>) => renderPresupuesto(item, ver_presupuesto)}
             estimatedItemSize={100}
-            ListEmptyComponent={<Text style={styles.emptyListText}>No hay presupuestos registrados</Text>}
+            ListEmptyComponent={<Text style={estilos.emptyListText}>No hay presupuestos registrados</Text>}
           />
       )}
       </View>
@@ -324,12 +324,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
   },
-  emptyListText: {
-    textAlign: "center",
-    marginTop: 20,
-    fontSize: 16,
-    color: "#007AFF",
-  },
+ 
   modalContainer: {
     flex: 1,
     justifyContent: "center",

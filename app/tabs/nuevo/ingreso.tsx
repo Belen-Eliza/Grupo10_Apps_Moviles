@@ -108,8 +108,8 @@ export default function Ahorro() {
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={estilos.flex1}>
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <ScrollView contentContainerStyle={[{ flex: 1 }, estilos.centrado]}>
+    <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss();setOpen(false)}} accessible={false}>
+    <ScrollView contentContainerStyle={[{ flex: 1,  }, estilos.centrado]}>
     {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput

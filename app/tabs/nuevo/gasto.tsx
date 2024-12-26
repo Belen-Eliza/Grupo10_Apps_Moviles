@@ -156,7 +156,7 @@ export default function Gasto() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={estilos.flex1}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+      <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss();setOpen(false)}} accessible={false}>
         <View style={[{ flex: 1 }, estilos.centrado]}>
           {isKeyboardVisible && (
             <Dismiss_keyboard

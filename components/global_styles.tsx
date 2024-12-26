@@ -272,6 +272,12 @@ export const estilos = StyleSheet.create({
       alignItems: "center",
       backgroundColor: "rgba(0, 0, 0, 0.5)",
     },
+    emptyListText: {
+      textAlign: "center",
+      marginTop: 20,
+      fontSize: 16,
+      color: "#007AFF",
+    },
     
 });
 
@@ -301,7 +307,7 @@ export const colores = StyleSheet.create({
     
 })
 
-
+ 
 export const botonesEstado = {
     active: "#228B22",  // Color for active button
     inactive: "#D3D3D3" // Color for inactive button

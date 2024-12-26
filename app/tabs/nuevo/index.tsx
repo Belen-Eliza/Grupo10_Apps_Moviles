@@ -84,7 +84,6 @@ export default function Dashboard() {
       </Pressable>
     </Link>
   );
-  //console.log(datosPresupuestos);
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -176,10 +175,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#333",
+    marginLeft: 5
   },
   itemAmount: {
     fontSize: 14,
     color: "#666",
+    marginLeft: 5
   },
   actionsContainer: {
     padding: 20,

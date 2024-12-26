@@ -95,7 +95,7 @@ export default function Gastos_por_Fecha() {
         datasets: [
             {
                 data: datosGastos.map((g) => g._sum.monto),
-                color: (opacity = 1) => `rgba(255, 69, 0, ${opacity})`, // rojo para gastos
+                color: (opacity = 1) => "#c213fd", //`rgba(255, 69, 0, ${opacity})`, // rojo para gastos
                 strokeWidth: 4,
             },
         ],
@@ -110,7 +110,7 @@ export default function Gastos_por_Fecha() {
         datasets: [
             {
                 data: datosIngresos.map((i) => i._sum.monto),
-                color: (opacity = 1) => `rgba(34, 139, 34, ${opacity})`, // verde para ingresos
+                color: (opacity = 1) => "#00c400", //`rgba(34, 139, 34, ${opacity})`, // verde para ingresos
                 strokeWidth: 4,
             },
         ],
@@ -134,7 +134,7 @@ export default function Gastos_por_Fecha() {
                     balance += d.tipo === 'ingreso' ? d._sum.monto : -d._sum.monto;
                     return balance;
                 }),
-                color: (opacity = 1) => `rgba(70, 130, 180, ${opacity})`, // azul para balance
+                color: (opacity = 1) => "#63c5fa", //`rgba(70, 130, 180, ${opacity})`, // azul para balance
                 strokeWidth: 4,
             },
         ],
@@ -142,7 +142,7 @@ export default function Gastos_por_Fecha() {
     };
 
     const chartConfig = {
-      backgroundGradientFrom: "#004040",
+      backgroundGradientFrom: "#004993",
       backgroundGradientFromOpacity: 4,
       backgroundGradientTo: "#005b5b",
       backgroundGradientToOpacity: 5,
@@ -200,7 +200,13 @@ export default function Gastos_por_Fecha() {
 
     return (
         <>
-    <View style={estilos.mainView}>
+    <View style={[estilos.mainView]}>
+        {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
+        <Alternar activo={chartType} callback= {setChartType} datos={[
+            {texto:"Gastos",params_callback:0,icon:{materialIconName:"attach-money"}},
+            {texto:"Ingresos",params_callback:1,icon:{materialIconName:"savings"}},
+            {texto:"Balance",params_callback:2,icon:{materialIconName:"balance"}}]}></Alternar>
+    
         <View style={[estilos.filterContainer, {elevation:5,margin:5,marginHorizontal:15,paddingBottom:8}]}>
             <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
             <View style={estilos.filterButtonsContainer}>
@@ -211,21 +217,20 @@ export default function Gastos_por_Fecha() {
                 <Filtro_aplicado texto={"Hasta: "+fechaHasta.toDateString()} callback={reset_fecha_hasta} isVisible={usa_filtro_avanzado.hasta}/>
             </View>
         </View>
-    <View style={{zIndex:-1}}>
+    <View style={{zIndex:-1,flexGrow:2}}>
    
-    {/* Botones para alternar entre Gastos, Ingresos, y Balance */}
-    <Alternar activo={chartType} callback= {setChartType} datos={[{texto:"Gastos",params_callback:0},{texto:"Ingresos",params_callback:1},{texto:"Balance",params_callback:2}]}></Alternar>
     
     {isFetching && ( <LoadingCircle/> )}
 
     {/* Mostrar el gráfico correspondiente */}
     {chartType === 0 && datosGastos.length === 0 ? (
-        <Text style={estilos.centrado}>No hay gastos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.emptyListText}>No hay gastos en el rango de fechas seleccionado.</Text>
     ) : chartType === 1 && datosIngresos.length === 0 ? (
-        <Text style={estilos.centrado}>No hay ingresos en el rango de fechas seleccionado.</Text>
+        <Text style={estilos.emptyListText}>No hay ingresos en el rango de fechas seleccionado.</Text>
     ) : chartType === 2 && combinedData.length === 0 ? (
-        <Text style={estilos.centrado}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
+        <Text style={estilos.emptyListText}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
     ) : (
+        <View style={[{flexGrow:2},colores.fondo_azul]}>
         <LineChart
             data={chartType === 2 ? dataBalance : chartType === 1 ? dataIngresos : dataGastos}
             width={screenWidth } 
@@ -235,6 +240,7 @@ export default function Gastos_por_Fecha() {
             yAxisLabel="$"
             fromZero={true}
         />
+        </View>
     )}
     </View>
 </View>

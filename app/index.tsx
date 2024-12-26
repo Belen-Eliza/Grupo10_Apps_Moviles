@@ -88,14 +88,8 @@ export default function Login() {
       } catch (error) {
           error_alert(String(error));
       }
-        } /* else {
-          const datos_usuario: User = await rsp.json();
-          login_app(datos_usuario);
-          await AsyncStorage.setItem('user', "logged")
-          router.replace("/tabs/home");
-        } */
-
-    }
+    } 
+  }
 
   return (
 

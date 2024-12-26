@@ -20,7 +20,7 @@ function CategoryPicker (props:{openPicker:boolean,setOpen:React.Dispatch<React.
     return (
         <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={props.openPicker} 
         value={props.selected_cat_id} items={categorias.map(e=>{return {value:e.id,label:e.name}})} setItems={setCategorias} 
-        itemKey="value" setOpen={props.setOpen} setValue={props.set_cat_id} />
+        itemKey="value" setOpen={props.setOpen} setValue={props.set_cat_id} listMode="SCROLLVIEW"/>
     )
 }
 
@@ -40,7 +40,7 @@ function CategoryIngresoPicker (props:{openPicker:boolean,setOpen:React.Dispatch
     return (
         <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={props.openPicker} 
           value={props.selected_cat_id} items={todas_categorias.map(e=>{return {value:e.id,label:e.name+" - "+e.description}})} 
-          setItems={setCategorias} itemKey="value" setOpen={props.setOpen} setValue={props.set_cat_id}  />
+          setItems={setCategorias} itemKey="value" setOpen={props.setOpen} setValue={props.set_cat_id}  listMode="SCROLLVIEW"/>
     )
 }
 

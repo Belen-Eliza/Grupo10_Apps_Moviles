@@ -1,9 +1,10 @@
 import { View, Pressable, Text, StyleSheet,Keyboard } from "react-native";
 import { estilos,colores,botonesEstado } from "@/components/global_styles";
-import { MaterialIcons } from "@expo/vector-icons";
-import Ionicons from '@expo/vector-icons/Ionicons';
-import Entypo from '@expo/vector-icons/Entypo';
+import { MaterialIcons,Ionicons,Entypo } from "@expo/vector-icons";
 
+type Icon = {
+    materialIconName: keyof typeof MaterialIcons.glyphMap;
+  }
 function Boton(props: { texto: string, callback :Function}){
     
     const estilos_priv = StyleSheet.create({
@@ -44,24 +45,32 @@ function IconButton (props:{icon_name:string,callback:Function}){
     )
 }
 
-function Alternar(props:{activo:number,callback:Function,datos:{texto:string,params_callback:number}[]}){
+function Alternar(props:{activo:number,callback:Function,datos:{texto:string,params_callback:number, icon: Icon}[]}){
     return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%', paddingHorizontal: 10 }}>
+    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%'}}>
         {props.datos.map((each,index)=>{
             return(
                 <Pressable key={index}
                     style={[
-                        estilos.tarjetasesp,
+                        //estilos.tarjetasesp,
                         estilos.centrado,
                         { 
                             flex: 1, 
+                            marginVertical: 8,
                             marginHorizontal: 5, 
-                            backgroundColor:  props.activo === index ? botonesEstado.active : botonesEstado.inactive 
+                            height: 50,
+                            borderWidth: 1,
+                            borderColor: "lightgray",
+                            borderRadius:30,
+                            backgroundColor:  props.activo === index ? '#007AFF': "white",//botonesEstado.active : botonesEstado.inactive 
+                            flexDirection:"row",
+                            
                         }
                     ]}
                     onPress={() => props.callback(each.params_callback) }
                 >
-                    <Text style={{ color: props.activo === index ? "white" : "black" }}>{each.texto}</Text>
+                    <MaterialIcons name={each.icon.materialIconName} size={24} color={props.activo === index ? "white" : "#0e017e"}/>
+                    <Text style={{fontSize:14,marginLeft:4, color: props.activo === index ? "white" : "#0e017e" }}>{each.texto}</Text>
                 </Pressable>
             )
         })}
