@@ -1,8 +1,7 @@
 import { createContext, useContext, useState } from "react";
 import { router } from "expo-router";
-type User = {id: number,mail:string,name:string,password:string,saldo:number}
-
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { User } from "@/components/tipos";
 
 export const UserContext = createContext({
   nombre: "Ej",
@@ -75,20 +74,31 @@ export const UserContextProvider = ({ children }: { children: React.ReactNode })
     }
   }
 
-  const login_app = (user:User) => {
+  const login_app = async (user:User) => {
     setId(user.id);
     setMail(user.mail);
     setNombre(user.name);
     setSaldo(user.saldo);
     setIsLoggedIn(true);
+    try {
+      await  AsyncStorage.setItem("token",String(user.id));
+      await AsyncStorage.getItem("token").then(v=>console.log(v))
+    } catch (error) {
+      console.log(error,"al guardar la sesión");
+    }
   }
 
-  const logout = () => {
-      setIsLoggedIn(false);
-      setId(0);
-      setMail("");
-      setNombre("");
-      setSaldo(0);
+  const logout = async () => {
+    setIsLoggedIn(false);
+    setId(0);
+    setMail("");
+    setNombre("");
+    setSaldo(0);
+    try {
+      await  AsyncStorage.removeItem("token");
+    } catch (error) {
+      console.log(error,"al cerrar la sesión");
+    }
   }
   const actualizar_info = async (id:number) =>{ //después de editar el perfil o agregar gastos e ingresos
     try {

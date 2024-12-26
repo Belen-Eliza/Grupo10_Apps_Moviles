@@ -27,6 +27,29 @@ export default function Login() {
   const [showPassword, setShowPassword] = useState(false);
   const { login_app } = useUserContext();
 
+  useEffect( () => {
+    (async ()=>  {
+      const value = await AsyncStorage.getItem("token");
+      if (value !== null) { console.log(value)
+        try {
+          const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/${value}`, {
+            method: "GET",
+            headers: { "Content-Type": "application/json" },
+          });
+          if (!rsp.ok) {
+            throw new Error();
+          }
+          const user = await rsp.json();
+          login_app(user);
+          router.replace("/tabs/home");
+        } catch (error) {
+          console.log(error," al regresar a la sesión");
+        }
+        
+      }
+    } )()
+  }, [])
+
   const handleEmailChange = (text: string) => {
     setMail(text);
     setErrorEmail(validateEmail(text).msj);
@@ -54,36 +77,25 @@ export default function Login() {
           body: JSON.stringify(user),
         });
 
-                if (!rsp.ok) {
-                    if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
-                    throw new Error();
-                } else {
-                    const datos_usuario: User = await rsp.json();
-                    login_app(datos_usuario);
-                    router.replace("/tabs/home");
-                }
-            } catch (error) {
-                error_alert(String(error));
-            }
+        if (!rsp.ok) {
+            if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
+            throw new Error();
         } else {
+            const datos_usuario: User = await rsp.json();
+            login_app(datos_usuario);
+            router.replace("/tabs/home");
+        }
+      } catch (error) {
+          error_alert(String(error));
+      }
+        } /* else {
           const datos_usuario: User = await rsp.json();
           login_app(datos_usuario);
           await AsyncStorage.setItem('user', "logged")
-
-          router.replace("/tabs/");
-        
-
-        }
+          router.replace("/tabs/home");
+        } */
 
     }
-
-  /*
-  useEffect(() => {
-    AsyncStorage.getItem("user").then((value) => { 
-      if (value !== null)
-        router.replace("/tabs/");
-  } )
-  }, [])*/
 
   return (
 

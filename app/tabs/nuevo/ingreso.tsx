@@ -1,14 +1,10 @@
-import { Text, View, TextInput, Pressable, Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform,ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
 import { CategoryIngresoPicker } from "@/components/CategoryPicker";
 import { router } from "expo-router";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withSpring,
-} from 'react-native-reanimated';
+import Animated, {  useAnimatedStyle,  useSharedValue,  withSpring} from 'react-native-reanimated';
 import{error_alert, success_alert} from '@/components/my_alert';
 import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
@@ -113,7 +109,7 @@ export default function Ahorro() {
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={estilos.flex1}>
     <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-    <View style={[{ flex: 1 }, estilos.centrado]}>
+    <ScrollView contentContainerStyle={[{ flex: 1 }, estilos.centrado]}>
     {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
       <Text style={estilos.subtitulo}>Monto</Text>
       <TextInput
@@ -152,7 +148,7 @@ export default function Ahorro() {
           <Text style={estilos.cancelButtonText}>Cancelar</Text>
         </Animated.View>
       </Pressable>
-    </View>
+    </ScrollView>
     </TouchableWithoutFeedback>
     <Toast/>
     </KeyboardAvoidingView>

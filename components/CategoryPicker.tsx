@@ -15,7 +15,7 @@ function CategoryPicker (props:{openPicker:boolean,setOpen:React.Dispatch<React.
           .then(info =>setCategorias(info))
         })();
     
-      },[process])
+      },[]) 
 
     return (
         <DropDownPicker style={[{maxWidth:"60%"},estilos.textInput,estilos.margen,estilos.centrado]} open={props.openPicker} 
