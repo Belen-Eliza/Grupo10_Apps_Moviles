@@ -69,7 +69,7 @@ export const estilos = StyleSheet.create({
         alignSelf: "center"
     },
     subtitulo: {
-        fontSize: 25,
+        fontSize: 20,
         fontWeight: "semibold"
     },
     tarjetasesp:{
@@ -281,6 +281,10 @@ export const estilos = StyleSheet.create({
     curvedTopBorders: {
       borderTopEndRadius:20,
       borderTopStartRadius:20
+    },
+    thinGrayBottomBorder:{
+      borderBottomColor:"lightgray",
+      borderBottomWidth: 1
     }
     
 });
