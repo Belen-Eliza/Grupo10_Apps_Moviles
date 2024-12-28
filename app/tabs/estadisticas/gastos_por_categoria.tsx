@@ -1,4 +1,4 @@
-import { Text, View,  Dimensions,StyleSheet } from "react-native";
+import { Text, View,  Dimensions,StyleSheet, ScrollView } from "react-native";
 import{estilos,colores} from "@/components/global_styles"
 import { PieChart } from "react-native-chart-kit";
 import { useUserContext } from "@/context/UserContext";
@@ -15,6 +15,7 @@ type Datos = {cant: number,name: string,color:string,legendFontColor: string,leg
 export default function Gastos_por_Categoria() {
     const context = useUserContext();
     const [datos,setDatos] = useState<Datos[]>();
+    const dimensions = [Dimensions.get("window").width,Dimensions.get("window").height]
     const colors = ["rgba(131, 167, 234, 1)","red","#c722fd","#00d2d2","#159572"]
 
     useFocusEffect(
@@ -36,7 +37,7 @@ export default function Gastos_por_Categoria() {
               const total= info.reduce((accumulator:number,currentValue)=>accumulator+currentValue._sum.monto,0)
               const lista:Datos[] = info.map((each:Suma,index:number)=>{
                 const nombre_cat=info_categorias.find((cat:Category) => cat.id==each.category_id)?.name;
-                return {cant:each._sum.monto,name:nombre_cat,color:colors[index],legendFontColor:"#7F7F7F", legendFontSize: 15,porcentaje:Math.round(each._sum.monto/total*100)}
+                return {cant:each._sum.monto,name:nombre_cat,color:colors[index],legendFontColor:"#7F7F7F", legendFontSize: 18,porcentaje:Math.round(each._sum.monto/total*100)}
               })
               setDatos(lista);
             }
@@ -54,36 +55,38 @@ export default function Gastos_por_Categoria() {
     );
     
   return (
-    <View style={[{flex: 1},estilos.centrado]} >
+    <View style={[estilos.flex1,estilos.centrado]} >
       {datos==undefined ? <Text>Todavía no has cargado gastos</Text>:
-      <View>
+      <View style={[{marginHorizontal:10,marginTop:25},estilos.curvedTopBorders,colores.fondo_blanco]}>
         <PieChart
           data={datos}
-          width={Dimensions.get("window").width}
-          height={Dimensions.get("window").height/2}
+          width={dimensions[0]*0.8}
+          height={dimensions[1]*0.4}
           chartConfig={chartConfig}
           accessor={"cant"}
           backgroundColor={"transparent"}
           paddingLeft={"1"}
-          center={[100, 0]}
+          center={[75, 0]}
           style={{flex:1}}
           hasLegend={false}
         />
-        <View style={[{flex:1,alignSelf:"center",marginTop:100}]}>
+        <ScrollView style={[{flex:1,alignSelf:"center",marginTop:100}]}>
           {datos.map((value,index)=>{
             return (
               <View style={styles.legendItem} key={index}>
-                  <FontAwesome name="circle" size={24} color={value.color} />
-                  <Text style={[styles.legendItemValue,{fontSize:value.legendFontSize,color:value.legendFontColor}]}>
-                    {value.porcentaje} % 
-                  </Text>
+                  <FontAwesome name="circle" size={35} color={value.color} />
+                  <View style={[estilos.flex1,{flexDirection:"row",marginLeft:10,justifyContent:"space-between",alignItems:"center"}]}>
                   <Text style={{fontSize:value.legendFontSize,color:value.legendFontColor}}>
                     {value.name}
                   </Text>
+                  <Text style={[styles.legendItemValue,{fontSize:value.legendFontSize,color:value.legendFontColor}]}>
+                    {value.porcentaje} % 
+                  </Text>
+                  </View>
                </View>
            
           )})}
-        </View>
+        </ScrollView>
       </View>
       }
       
@@ -111,7 +114,13 @@ const styles = StyleSheet.create({
    },
    legendItem: {
       flexDirection: "row",
-      marginVertical:8
+      marginVertical:8,
+      marginLeft: 15,
+      width: "85%",
+      paddingBottom: 8,
+      borderBottomColor: "lightgray",
+      borderBottomWidth: 1,
+      justifyContent: "space-between"
    },
    legendItemValue: {
       marginHorizontal: 10,

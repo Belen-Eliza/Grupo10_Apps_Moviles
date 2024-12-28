@@ -278,6 +278,10 @@ export const estilos = StyleSheet.create({
       fontSize: 16,
       color: "#007AFF",
     },
+    curvedTopBorders: {
+      borderTopEndRadius:20,
+      borderTopStartRadius:20
+    }
     
 });
 
@@ -288,13 +292,20 @@ export const colores = StyleSheet.create({
     fondo_azul: {
         backgroundColor: "#004993",
     },
+    fondo_blanco: {
+      backgroundColor:"white"
+    },
+    fondo_azul_botones: {
+      backgroundColor: "#007AFF"
+    },
+    texto_azul: {
+      color: '#007AFF',
+    },
     botones: {
         backgroundColor: "lightblue",
         borderColor: "#0082bf",
         borderWidth: 3,
         borderRadius: 5,
-        
-
     },
     button: {
         backgroundColor: '#007AFF',
