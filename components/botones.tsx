@@ -1,6 +1,7 @@
-import { View, Pressable, Text, StyleSheet,Keyboard } from "react-native";
+import { View, Pressable, Text, StyleSheet,Keyboard, ScrollView, ImageBackground,  } from "react-native";
 import { estilos,colores,botonesEstado } from "@/components/global_styles";
 import { MaterialIcons,Ionicons,Entypo } from "@expo/vector-icons";
+import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 
 type Icon = {
     materialIconName: keyof typeof MaterialIcons.glyphMap;
@@ -47,7 +48,10 @@ function IconButton (props:{icon_name:string,callback:Function}){
 
 function Alternar(props:{activo:number,callback:Function,datos:{texto:string,params_callback:number, icon: Icon}[]}){
     return (
-    <View style={{ flexDirection: "row", justifyContent: "space-between", width: '100%'}}>
+    <SafeAreaProvider>
+    <SafeAreaView style={estilos.flex1} edges={['left', 'right']}>
+        <ImageBackground style={{  flex: 1, justifyContent: 'center',minHeight:80}} source={require("@/assets/images/fondo1.jpeg")} resizeMode="cover">
+        <ScrollView horizontal contentContainerStyle={{ flexDirection: "row", justifyContent: "space-between", width: '100%',maxHeight:60,flex:1}}>
         {props.datos.map((each,index)=>{
             return(
                 <Pressable key={index}
@@ -56,7 +60,7 @@ function Alternar(props:{activo:number,callback:Function,datos:{texto:string,par
                         estilos.centrado,
                         { 
                             flex: 1, 
-                            marginVertical: 8,
+                            marginTop: 10,
                             marginHorizontal: 5, 
                             height: 50,
                             borderWidth: 1,
@@ -64,7 +68,7 @@ function Alternar(props:{activo:number,callback:Function,datos:{texto:string,par
                             borderRadius:30,
                             backgroundColor:  props.activo === index ? '#007AFF': "white",//botonesEstado.active : botonesEstado.inactive 
                             flexDirection:"row",
-                            
+                            padding:3,
                         }
                     ]}
                     onPress={() => props.callback(each.params_callback) }
@@ -74,7 +78,11 @@ function Alternar(props:{activo:number,callback:Function,datos:{texto:string,par
                 </Pressable>
             )
         })}
-        </View>
+        </ScrollView>
+        </ImageBackground>
+    </SafeAreaView>
+    </SafeAreaProvider>
+        
     )
 }
 

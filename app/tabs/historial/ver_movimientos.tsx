@@ -186,10 +186,10 @@ export default function Historial() {
           { texto: "Presupuestos", params_callback: 2,icon:{materialIconName:"account-balance"} }
         ]}
       />
-      <View style={estilos.flex1}>
+      <View style={{flex:10}}>
       
       {(seleccion!=2) && (
-        <View style={styles.filterContainer}>
+        <View style={[styles.filterContainer,{borderTopEndRadius:30}]}>
         <Text style={styles.filterTitle}>Filtrar por:</Text>
         <View style={styles.filterButtonsContainer}>
           <Pressable onPress={() => setSelectorSimpleVisible(true)} style={styles.filterButton}>
@@ -285,10 +285,11 @@ export default function Historial() {
 
 const styles = StyleSheet.create({
   filterContainer: {
-    backgroundColor: "rgba(255, 255, 255, 0.9)",
+    backgroundColor: "rgba(255, 255, 255, 1)",
     padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0, 122, 255, 0.1)",
+    zIndex:-1
   },
   filterTitle: {
     fontSize: 18,

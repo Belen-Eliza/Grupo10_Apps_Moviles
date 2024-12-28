@@ -30,7 +30,7 @@ export default function Login() {
   useEffect( () => {
     (async ()=>  {
       const value = await AsyncStorage.getItem("token");
-      if (value !== null) { console.log(value)
+      if (value !== null) { 
         try {
           const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/${value}`, {
             method: "GET",
