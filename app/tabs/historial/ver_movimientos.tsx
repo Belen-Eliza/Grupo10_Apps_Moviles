@@ -4,7 +4,7 @@ import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
 import { CategoryPicker, CategoryIngresoPicker, traer_categorias, traer_categorias_ingresos } from "@/components/CategoryPicker";
-import { DateRangeModal, comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
+import { comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRangeModal";
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";

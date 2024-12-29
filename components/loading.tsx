@@ -1,8 +1,9 @@
 import { ActivityIndicator, View ,Text} from "react-native";
+import { estilos } from "./global_styles";
 
 function LoadingCircle (){
     return (
-        <View style={{height:"100%",width:"100%",backgroundColor:"transparent",justifyContent:"center"}}>
+        <View style={[{backgroundColor:"transparent",height:"100%"},estilos.centrado]}>
           <ActivityIndicator size="large" />
         </View>
     )

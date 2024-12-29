@@ -8,10 +8,10 @@ import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar ,Filtro_aplicado} from "@/components/botones";
 import { useNavigation } from '@react-navigation/native';
-import { today,semana_pasada,mes_pasado,year_start } from "@/components/dias";
+import { today,semana_pasada,mes_pasado,year_start, meses } from "@/components/dias";
 import {LoadingCircle} from "@/components/loading"
 
-type Datos = { fecha: Date; _sum: {monto: number} };
+type Datos = { fecha: Date; _sum: {monto: number} }; 
 
 export default function Gastos_por_Fecha() {
     const context = useUserContext();
@@ -28,16 +28,13 @@ export default function Gastos_por_Fecha() {
     const [isFetching,setFetching] = useState(true);
 
     const navigation = useNavigation();
-
-    const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
     const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fechaDesde];
     
     useFocusEffect(
         React.useCallback(() => {
             const fetchData = async () => {
                 const fechas = { fecha_desde: fechaDesde.toISOString(), fecha_hasta: fechaHasta.toISOString() };
-                // Wait 2 seconds
-                //await new Promise((resolve) => setTimeout(resolve, 2000));
+                
                 try {
                     const rspGastos = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/por_fecha/${context.id}/${fechas.fecha_desde}/${fechas.fecha_hasta}`, {
                         method: "GET",
