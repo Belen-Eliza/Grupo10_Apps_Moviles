@@ -29,20 +29,18 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import { today } from "@/components/dias";
 
 type Presupuesto = {
   descripcion: string;
   montoTotal: number;
-  cant_cuotas: number;
   fecha_objetivo: string;
   total_acumulado: number;
   user_id: number;
 };
 function es_valido(presupuesto: Presupuesto) {
   return (
-    presupuesto.cant_cuotas != 0 &&
-    presupuesto.descripcion.length != 0 &&
-    presupuesto.montoTotal != 0
+    presupuesto.descripcion.length != 0 && presupuesto.montoTotal != 0 
   );
 }
 
@@ -51,7 +49,6 @@ export default function Presupuesto() {
   const [presupuesto, setPresupuesto] = useState<Presupuesto>({
     descripcion: "",
     montoTotal: 0,
-    cant_cuotas: 0,
     fecha_objetivo: "",
     total_acumulado: 0,
     user_id: context.id,
@@ -101,21 +98,8 @@ export default function Presupuesto() {
       });
     }
   };
-  const handler_cuotas = (input: string) => {
-    let aux = Number(input.replace(",", "."));
-    if (Number.isNaN(aux)) {
-      error_alert("El valor ingresado debe ser un número");
-    } else {
-      setPresupuesto((pre) => {
-        pre.cant_cuotas = aux;
-        return pre;
-      });
-    }
-  };
-  const onChangeDate = (
-    event: DateTimePickerEvent,
-    selectedDate: Date | undefined
-  ) => {
+  
+  const onChangeDate = ( event: DateTimePickerEvent, selectedDate: Date | undefined) => {
     let currentDate = new Date(0);
     if (selectedDate != undefined) currentDate = selectedDate;
     setFecha(currentDate);
@@ -190,29 +174,6 @@ export default function Presupuesto() {
         throw new Error("Error al crear el presupuesto");
       }
 
-      const presupuestoCreado = await rsp.json(); // Obtener el presupuesto creado
-
-      // Crear categoría asociada al presupuesto
-      const nuevaCategoria = {
-        nombre: presupuesto.descripcion, // Usa la descripción del presupuesto como nombre de la categoría
-        user_id: context.id,
-        presupuesto_id: presupuestoCreado.id, // Asociar al presupuesto creado
-      };
-
-      /* const rspCategoria = await fetch(
-        `${process.env.EXPO_PUBLIC_DATABASE_URL}/categorias/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(nuevaCategoria),
-        }
-      );
-
-      if (!rspCategoria.ok) {
-        throw new Error("Error al crear la categoría asociada");
-      } */
-
-
       // Si todo está bien, redirigir y mostrar éxito
       router.back();
       setTimeout(
@@ -248,14 +209,6 @@ export default function Presupuesto() {
               keyboardType="decimal-pad"
               onChangeText={handler_monto}
               placeholder="Ingresar valor"
-            ></TextInput>
-
-            <Text style={estilos.subtitulo}>Cuotas</Text>
-            <TextInput
-              style={[estilos.textInput, estilos.poco_margen]}
-              keyboardType="number-pad"
-              onChangeText={handler_cuotas}
-              placeholder="Ingresar cuotas"
             ></TextInput>
 
             <Text style={estilos.subtitulo}>Descripción</Text>

@@ -120,7 +120,7 @@ export default function Ahorro() {
         placeholder="Ingresar valor"
       />
 
-      <Text style={estilos.subtitulo}>Descripción</Text>
+      <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
       <TextInput
         style={[estilos.textInput, estilos.margen]}
         keyboardType="default"

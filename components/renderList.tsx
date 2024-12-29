@@ -1,17 +1,17 @@
 import { View, Pressable, Text, StyleSheet } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
-import { Category } from "./tipos";
+import { Category, Gasto,Ingreso,Presupuesto } from "./tipos";
 
-type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
+/* type Gasto ={ id: number, monto: number, cant_cuotas:number, fecha: Date, category: Category}
 type Ingreso = {id:number,monto: number,description: string,category: Category, fecha: Date}
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date}
-
+ */
 function renderGasto ( item : Gasto,callback:Function)  {
     return (
       <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.poco_margen,estilos.centrado]}>
         <Text style={{alignSelf:"flex-start",fontSize:10,color:"#909090"}}> {new Date(item.fecha).toDateString()}</Text>
         <Text style={estilos.subtitulo}> {item.category.name}</Text>
-        <Text style={{fontSize:20,color:"#909090"}}> {item.category.description}</Text>
+        <Text style={{fontSize:20,color:"#909090"}}> {item.description}</Text>
         <Text>Monto: ${item.monto}</Text>
       </Pressable>)
   }; 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView, ScrollView } from "react-native";
+import { Text, View, Pressable, Modal, StyleSheet, SafeAreaView } from "react-native";
 import { FlashList, ListRenderItemInfo } from "@shopify/flash-list";
 import { useUserContext } from "@/context/UserContext";
 import { renderGasto, renderIngreso, renderPresupuesto } from "@/components/renderList";
@@ -28,14 +28,13 @@ export default function Historial() {
   const [cate_ingreso_id, setCateIngresoId] = useState(0);
   const [openPicker, setOpen] = useState(false);
   const [filtros_usados,setFiltrosUsados] = useState({fecha_desde:false,fecha_hasta:false,categoria_gasto:false,categoria_ingreso:false});
-  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:"",description:""}])
-  const [categorias_ingresos,setCategoriasIngresos] =useState<Category[]>([{id:0,name:"",description:""}])
+  const [todas_categorias,setCategorias] =useState<Category[]>([{id:0,name:""}])
+  const [categorias_ingresos,setCategoriasIngresos] =useState<Category[]>([{id:0,name:""}])
   const [isFetching,setFetching] = useState(true);
   const navigation = useNavigation();
   
   traer_categorias(setCategorias);
   traer_categorias_ingresos(setCategoriasIngresos);
-  const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fecha_desde];
   useFocusEffect(
     React.useCallback(() => {
       const query = async (url: string, callback: Function) => {

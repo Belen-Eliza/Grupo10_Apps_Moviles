@@ -23,23 +23,22 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { LoadingCircle } from "@/components/loading";
 
 type Gasto = {
   monto: number;
   category_id: number;
-  cant_cuotas: number;
+  description: string,
   user_id: number;
 };
 
 function es_valido(gasto: Gasto) {
-  return gasto.cant_cuotas != 0 && gasto.category_id != 0 && gasto.monto != 0;
+  return  gasto.category_id != 0 && gasto.monto != 0 && gasto.user_id!=0;
 }
 export default function Gasto() {
   const inicial: Gasto = {
     monto: 0,
     category_id: 0,
-    cant_cuotas: 0,
+    description: "",
     user_id: 0,
   };
   const [gasto, setGasto] = useState(inicial);
@@ -48,7 +47,6 @@ export default function Gasto() {
   const context = useUserContext();
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(300);
-  const [isFetching, setFetching] = useState(false);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener(
@@ -85,12 +83,8 @@ export default function Gasto() {
     }
   };
 
-  const handler_Cuotas = (input: string) => {
-    let aux = Number(input);
-    setGasto((pre) => {
-      pre.cant_cuotas = aux;
-      return pre;
-    });
+  const handler_descripcion = (input: string) => {
+    setGasto(pre => ({ ...pre, descripcion: input }));
   };
 
   const confirmar = async () => {
@@ -106,13 +100,11 @@ export default function Gasto() {
         body: JSON.stringify(gasto),
       })
         .then((v) => {
-          setFetching(false);
           context.actualizar_info(context.id);
           router.back();
           setTimeout(() => success_alert("Gasto creado correctamente"), 200);
         })
         .catch((e) => {
-          setFetching(false);
           error_alert(String(e));
           console.log(e);
         });
@@ -128,12 +120,9 @@ export default function Gasto() {
     };
   });
   
-
   const handlePressIn = () => {
     scale.value = withSpring(1.1, { damping: 5 });
   };
-  
-
   const handlePressOut = () => {
     scale.value = withSpring(1, { damping: 5 });
   };
@@ -173,12 +162,12 @@ export default function Gasto() {
             placeholder="Ingresar valor"
           />
 
-          <Text style={estilos.subtitulo}>Cuotas</Text>
+          <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
           <TextInput
             style={[estilos.textInput, estilos.margen]}
-            keyboardType="number-pad"
-            onChangeText={handler_Cuotas}
-            placeholder="Ingresar cuotas"
+            keyboardType="default"
+            onChangeText={handler_descripcion}
+            placeholder="Ingresar descripción"
           />
 
           <Text style={estilos.subtitulo}>Categoría</Text>
