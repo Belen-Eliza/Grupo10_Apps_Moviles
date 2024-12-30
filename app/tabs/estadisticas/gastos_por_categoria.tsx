@@ -11,6 +11,7 @@ import React from "react";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import {mes_siguiente, mes_anterior,meses, today } from "@/components/dias";
 import {LoadingCircle} from "@/components/loading"
+import { comparar_mes_year } from "@/components/DateRangeModal";
 
 type Suma= {_sum:{monto:number},category_id:number}
 type Datos = {cant: number,name: string,color:string,legendFontColor: string,legendFontSize:number,porcentaje:number}
@@ -99,8 +100,8 @@ export default function Gastos_por_Categoria() {
         <MaterialIcons name="arrow-back-ios" size={24} color="#007AFF" /> 
         </Pressable>
         <Text style={[estilos.subtitulo,{marginTop:40}]}>{dateString}</Text>
-        <Pressable style={{marginTop:40}} onPress={proximo_mes}>
-        <MaterialIcons name="arrow-forward-ios" size={24} color="#007AFF" />
+        <Pressable style={{marginTop:40}} onPress={proximo_mes} >
+        <MaterialIcons name="arrow-forward-ios" size={24} color={comparar_mes_year(mes,today()) ? "lightgray":"#007AFF"} />
         </Pressable>
       </View> 
       

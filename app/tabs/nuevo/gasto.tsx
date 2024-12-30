@@ -84,7 +84,7 @@ export default function Gasto() {
   };
 
   const handler_descripcion = (input: string) => {
-    setGasto(pre => ({ ...pre, descripcion: input }));
+    setGasto(pre => ({ ...pre, description: input }));
   };
 
   const confirmar = async () => {

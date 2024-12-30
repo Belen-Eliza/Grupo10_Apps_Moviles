@@ -8,7 +8,7 @@ import { comparar_fechas, SelectorFechaSimpleModal } from "@/components/DateRang
 import { router, useFocusEffect } from "expo-router";
 import { Alternar,Filtro_aplicado } from "@/components/botones";
 import { MaterialIcons } from "@expo/vector-icons";
-import { estilos } from "@/components/global_styles";
+import { colores, estilos } from "@/components/global_styles";
 import { useNavigation } from '@react-navigation/native';
 import { Category, Gasto, Presupuesto, Ingreso } from "@/components/tipos";
 import {LoadingCircle} from "@/components/loading"
@@ -188,8 +188,8 @@ export default function Historial() {
       <View style={{flex:10}}>
       
       {(seleccion!=2) && (
-        <View style={[styles.filterContainer,{borderTopEndRadius:30}]}>
-        <Text style={styles.filterTitle}>Filtrar por:</Text>
+      <View style={[styles.filterContainer,estilos.curvedTopBorders,estilos.thinGrayBottomBorder,{backgroundColor:"#f3f3f3"}]}>
+        <Text style={[styles.filterTitle]}>Filtrar por:</Text>
         <View style={styles.filterButtonsContainer}>
           <Pressable onPress={() => setSelectorSimpleVisible(true)} style={styles.filterButton}>
             <MaterialIcons name="event" size={24} color="#FFFFFF" />
@@ -211,6 +211,7 @@ export default function Historial() {
           <Filtro_aplicado texto={"Categoría: "+ categorias_ingresos.find(value=>value.id==cate_ingreso_id)?.name} callback={reset_cate_ingreso} isVisible={filtros_usados.categoria_ingreso && seleccion==1}/>
         </View>
       </View>
+     
       )}
       {isFetching && (
         <LoadingCircle/>

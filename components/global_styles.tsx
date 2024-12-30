@@ -180,11 +180,15 @@ export const estilos = StyleSheet.create({
     fontWeight: 'bold',
     },
     list_element:{
-        borderBottomColor: "black",
-        borderBottomWidth: 2,
-        padding: 5,
+        paddingVertical: 25,
+        paddingHorizontal: 5,
         minWidth: "100%",
-        maxHeight:400
+        maxHeight:400,
+        backgroundColor: "#ffffff"
+    },
+    fila_espaciada:{
+      flexDirection: "row",
+      justifyContent: "space-between",
     },
     show_date:{
         borderColor: "#808080",
@@ -285,6 +289,12 @@ export const estilos = StyleSheet.create({
     thinGrayBottomBorder:{
       borderBottomColor:"lightgray",
       borderBottomWidth: 1
+    },
+    ver_debug:{
+      borderColor: "black",
+      borderWidth: 2,
+      backgroundColor: "blue"
+
     }
     
 });

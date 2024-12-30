@@ -121,7 +121,10 @@ const styles = StyleSheet.create({
     }
   });
 function comparar_fechas(fecha1:Date, fecha2:Date){
-  return fecha1.getDate()==fecha2.getDate() && fecha1.getFullYear()==fecha2.getFullYear() &&fecha1.getMonth()==fecha2.getMonth()
+  return fecha1.getDate()==fecha2.getDate() && comparar_mes_year(fecha1,fecha2)
+}
+function comparar_mes_year(fecha1:Date, fecha2:Date){
+  return fecha1.getFullYear()==fecha2.getFullYear() &&fecha1.getMonth()==fecha2.getMonth()
 }
 
 function SelectorFechaSimple(props:{open:boolean,setOpen:React.Dispatch<React.SetStateAction<boolean>>,selected_id: number,set_selection_id:React.Dispatch<React.SetStateAction<number>>,onChange:Function}) {
@@ -191,4 +194,4 @@ function SelectorFechaSimpleModal(props:{  visible:boolean,setVisible: React.Dis
     )
   }
 
-export {DateRangeModal, comparar_fechas, SelectorFechaSimple, SelectorFechaSimpleModal}
+export {DateRangeModal, comparar_fechas,comparar_mes_year, SelectorFechaSimple, SelectorFechaSimpleModal}
