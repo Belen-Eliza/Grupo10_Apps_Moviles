@@ -6,8 +6,9 @@ import {
   FlatList,
   Pressable,
   SafeAreaView,
+  TouchableOpacity,
 } from "react-native";
-import { Link, useFocusEffect } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
@@ -20,7 +21,6 @@ interface Presupuesto {
   montoTotal: number;
   total_acumulado: number;
 }
-
 
 interface ActionButtonProps {
   icon: keyof typeof MaterialIcons.glyphMap;
@@ -61,11 +61,17 @@ export default function Dashboard() {
   );
 
   const Item: React.FC<Presupuesto> = ({
+    id,
     descripcion,
     montoTotal,
     total_acumulado,
-  }) => (
-    <View style={styles.item}>
+  }) =>  {
+    return (
+    <TouchableOpacity style={styles.item} activeOpacity={0.5} 
+        onPress={()=>{
+          
+          router.replace({ pathname: "/tabs/historial/[presupuesto_id]", 
+                                    params: { presupuesto_id: id }})}}>
       <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
       <View>
         <Text style={styles.itemType}>{descripcion}</Text>
@@ -73,8 +79,9 @@ export default function Dashboard() {
           %{((total_acumulado / montoTotal) * 100).toFixed(2)}
         </Text>
       </View>
-    </View>
-  );
+    </TouchableOpacity>
+    
+  );}
 
   const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, href }) => (
     <Link href={href} asChild>
@@ -84,6 +91,7 @@ export default function Dashboard() {
       </Pressable>
     </Link>
   );
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -151,6 +159,7 @@ const styles = StyleSheet.create({
   recentTransactions: {
     flex: 1,
     padding: 20,
+    zIndex:-1
   },
   list: {
     flex: 1,

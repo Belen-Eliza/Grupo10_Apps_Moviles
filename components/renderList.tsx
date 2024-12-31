@@ -1,11 +1,11 @@
-import { View, Pressable, Text, StyleSheet } from "react-native";
+import { View, Pressable, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import { Gasto,Ingreso,Presupuesto } from "./tipos";
 
-function renderGasto ( item : Gasto,callback:Function)  {
+function renderGasto ( item : Gasto)  {
   const fecha = new Date(item.fecha);
     return (
-      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
+      <View  style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
         <View style={styles.view_fecha}>
           <Text style={styles.texto_fecha}> {fecha.getDate()}/{fecha.getMonth()}/{fecha.getFullYear()}</Text>
         </View>
@@ -18,13 +18,13 @@ function renderGasto ( item : Gasto,callback:Function)  {
           <Text style={styles.texto_monto}> ${item.monto}</Text>
         </View>
         
-      </Pressable>)
+      </View>)
   }; 
 
-  function renderIngreso ( item : Ingreso,callback:Function)  {
+  function renderIngreso ( item : Ingreso)  {
     const fecha = new Date(item.fecha);
     return (
-      <Pressable onPress={()=>callback(item)} style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
+      <View style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
         <View style={styles.view_fecha}>
           <Text style={styles.texto_fecha}> {fecha.getDate()}/{fecha.getMonth()}/{fecha.getFullYear()}</Text>
         </View>
@@ -35,12 +35,12 @@ function renderGasto ( item : Gasto,callback:Function)  {
         <View style={styles.view_monto}>
           <Text style={styles.texto_monto}> ${item.monto}</Text>
         </View>
-      </Pressable>)
+      </View>)
 }; 
 function renderPresupuesto (item : Presupuesto,callback:Function)  {
   const fecha = new Date(item.fecha_objetivo);
     return (
-      <Pressable onPress={()=>callback(item)}  style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
+      <TouchableOpacity activeOpacity={0.5} onPress={()=>callback(item)}  style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
         <View style={styles.view_fecha}>
           <Text> Para: {fecha.getDate()}/{fecha.getMonth()}/{fecha.getFullYear()}</Text>
         </View>
@@ -48,7 +48,7 @@ function renderPresupuesto (item : Presupuesto,callback:Function)  {
           <Text style={{fontSize:18}}>{item.descripcion}</Text>
         </View>
         <Text>Total: ${item.montoTotal}</Text>
-      </Pressable>)};
+      </TouchableOpacity>)};
 
 
 
@@ -63,7 +63,6 @@ const styles = StyleSheet.create({
   },
   texto_monto: {
     alignSelf:"flex-end",
-    marginRight:5,
     fontSize:16
   },
   view_fecha:{

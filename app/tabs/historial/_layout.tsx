@@ -1,9 +1,14 @@
-import { Stack } from 'expo-router';
+import { estilos } from '@/components/global_styles';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Stack, Navigator } from 'expo-router';
+import { Pressable } from 'react-native';
 
 
 export default function Layout(){
     return(
+      
         <Stack screenOptions={{
+          
           headerStyle: {
             backgroundColor: "#004993",
           },
@@ -12,10 +17,17 @@ export default function Layout(){
               fontWeight: 'bold',
             },
           }}>
-            <Stack.Screen name='ver_movimientos' options={{title: "Historial",headerShown:false}}/>
-            <Stack.Screen name='ver_ingreso' options={{presentation:"card", title:"Ingreso"}}/>
-            <Stack.Screen name='ver_gasto' options={{presentation:"card", title: "Gasto"}}/>
-            <Stack.Screen name='ver_presupuesto' options={{presentation:"card", title: "Presupuesto"}}/>
+            <Stack.Screen name='index' options={{title: "Historial",headerShown:false}}/>
+            <Stack.Screen name='[presupuesto_id]' options={({ navigation }) => ({
+                presentation:"card", title: "Presupuesto",
+                headerLeft: () => (
+                  <Pressable onPress={()=>{navigation.replace("index")}}>
+                    <MaterialIcons name="arrow-back-ios" size={24} color="white" /> 
+                </Pressable>
+                  
+                ),
+              })}
+      />
         </Stack>
     )
 } 

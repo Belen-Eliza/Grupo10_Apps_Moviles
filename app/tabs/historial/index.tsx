@@ -96,16 +96,8 @@ export default function Historial() {
     }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_gasto_id,cate_ingreso_id,navigation])
   );
 
-  const ver_ingreso = (ingreso: Ingreso) => {
-    router.navigate({ pathname: "/tabs/historial/ver_ingreso", params: { ingreso_id: ingreso.id } });
-  };
-
-  const ver_gasto = (gasto: Gasto) => {
-    router.navigate({ pathname: "/tabs/historial/ver_gasto", params: { gasto_id: gasto.id } });
-  };
-
   const ver_presupuesto = (presupuesto: Presupuesto) => {
-    router.navigate({ pathname: "/tabs/historial/ver_presupuesto", params: { presupuesto_id: presupuesto.id } });
+    router.push({ pathname: "/tabs/historial/[presupuesto_id]", params: { presupuesto_id: presupuesto.id } });
   };
   
 
@@ -219,7 +211,7 @@ export default function Historial() {
       {(seleccion===0 || seleccion===4 ) && (
           <FlashList
             data={gastos}
-            renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item, ver_gasto)}
+            renderItem={({ item }: ListRenderItemInfo<Gasto>) => renderGasto(item)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={estilos.emptyListText}>No hay gastos registrados</Text>}
           />
@@ -228,7 +220,7 @@ export default function Historial() {
       {seleccion === 1 && (
           <FlashList
             data={ingresos}
-            renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item, ver_ingreso)}
+            renderItem={({ item }: ListRenderItemInfo<Ingreso>) => renderIngreso(item)}
             estimatedItemSize={100}
             ListEmptyComponent={<Text style={estilos.emptyListText}>No hay ingresos registrados</Text>}
           />

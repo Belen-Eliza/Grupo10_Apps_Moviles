@@ -181,7 +181,7 @@ export const estilos = StyleSheet.create({
     },
     list_element:{
         paddingVertical: 25,
-        paddingHorizontal: 5,
+        paddingHorizontal: 10,
         minWidth: "100%",
         maxHeight:400,
         backgroundColor: "#ffffff"
