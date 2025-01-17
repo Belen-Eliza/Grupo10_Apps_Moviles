@@ -3,7 +3,7 @@ import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNati
 import { Text, View, Pressable, Modal, Platform, StyleSheet } from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { today, semana_pasada, principio_este_mes, mes_pasado, year_start } from "@/components/dias";
+import { today, semana_pasada, principio_este_mes, mes_pasado, year_start,fin_mes_pasado} from "@/components/dias";
 
 function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,
   fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,
@@ -145,15 +145,16 @@ function SelectorFechaSimpleModal(props:{  visible:boolean,setVisible: React.Dis
     const [advancedVisible,setAdvancedVisible]=useState(false);
     const [rango_simple,setRangoSimple] = useState(0);
 
-    const fechas_rango_simple = [semana_pasada(),principio_este_mes,mes_pasado(),year_start(),new Date(0),props.fecha_desde];
+    const fechas_rango_simple = [semana_pasada(),principio_este_mes(),mes_pasado(),year_start(),new Date(0),props.fecha_desde];
 
     const onChangeRango=(selection:{label:string,value:number})=>{
       if (selection.value==5) {
         setAdvancedVisible(true);
-        props.setVisible(false)
+        props.setVisible(false);
       } else {
         setNuevoDesde(fechas_rango_simple[selection.value]);
         setNuevoHasta(today());
+        if (selection.value==2){setNuevoHasta(fin_mes_pasado())}
       }
       
     }

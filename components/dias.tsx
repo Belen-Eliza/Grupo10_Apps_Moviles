@@ -20,6 +20,11 @@ const mes_anterior = (f: Date)=>{
     f.setHours(0,0,0,0);
     return f
 }
+const fin_mes_pasado = ()=>{
+    let fecha = new Date();
+    fecha.setDate(0);
+     return fecha
+}
 const principio_este_mes =()=>{
     let f = new Date();
     f.setDate(1);
@@ -44,4 +49,4 @@ const mes_siguiente = (f: Date)=>{
 }
 const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
 
-export {today,semana_pasada,mes_pasado,year_start,mes_anterior,meses,mes_siguiente,principio_este_mes}
+export {today,semana_pasada,mes_pasado,year_start,mes_anterior,meses,mes_siguiente,principio_este_mes,fin_mes_pasado}

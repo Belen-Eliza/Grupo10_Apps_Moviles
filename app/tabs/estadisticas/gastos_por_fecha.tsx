@@ -171,6 +171,7 @@ export default function Gastos_por_Fecha() {
         } else {
             setFechaDesde(fechas_rango_simple[selection.value]);
             setFechaHasta(today());
+            if (selection.value==3) setFechaHasta(principio_este_mes())
             setUsaFiltroAvanzado(prev=>{
                 prev.desde=false;
                 prev.hasta=false;

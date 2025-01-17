@@ -1,10 +1,10 @@
-import { View, Pressable, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { estilos,colores } from "@/components/global_styles";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { estilos } from "@/components/global_styles";
 import { Gasto,Ingreso,Presupuesto } from "./tipos";
 
 function renderGasto ( item : Gasto)  {
   const fecha = new Date(item.fecha);
-  {/* Los meses se guardan de 0 a 11*/}
+  /* Los meses se guardan de 0 a 11*/
     return (
       <View  style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
         <View style={styles.view_fecha}>
