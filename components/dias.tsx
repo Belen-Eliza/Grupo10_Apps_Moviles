@@ -14,6 +14,18 @@ const mes_pasado = ()=>{
     let fecha = new Date();
     return mes_anterior(fecha)
 }
+const mes_anterior = (f: Date)=>{
+    f.setMonth(f.getMonth()-1)
+    f.setDate(1);
+    f.setHours(0,0,0,0);
+    return f
+}
+const principio_este_mes =()=>{
+    let f = new Date();
+    f.setDate(1);
+    f.setHours(0,0,0,0);
+    return f 
+}
 
 const year_start = ()=>{
     let fecha = new Date();
@@ -23,10 +35,7 @@ const year_start = ()=>{
     return fecha
 }
 
-const mes_anterior = (f: Date)=>{
-    f.setMonth(f.getMonth()-1)
-    return f
-}
+
 const mes_siguiente = (f: Date)=>{
     if (!(f.getMonth()==today().getMonth() && f.getFullYear()==today().getFullYear())){
         f.setMonth(f.getMonth()+1);
@@ -35,4 +44,4 @@ const mes_siguiente = (f: Date)=>{
 }
 const meses = ["Ene","Feb","Mar","Abr","Mayo","Jun","Jul","Ago","Sept","Oct","Nov","Dic"];
 
-export {today,semana_pasada,mes_pasado,year_start,mes_anterior,meses,mes_siguiente}
+export {today,semana_pasada,mes_pasado,year_start,mes_anterior,meses,mes_siguiente,principio_este_mes}

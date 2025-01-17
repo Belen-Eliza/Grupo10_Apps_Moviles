@@ -3,7 +3,7 @@ import DateTimePicker, { DateTimePickerEvent, DateTimePickerAndroid, AndroidNati
 import { Text, View, Pressable, Modal, Platform, StyleSheet } from "react-native";
 import { useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
-import { today, semana_pasada, mes_pasado, year_start } from "@/components/dias";
+import { today, semana_pasada, principio_este_mes, mes_pasado, year_start } from "@/components/dias";
 
 function DateRangeModal(props:{  visible:boolean,setVisible: React.Dispatch<React.SetStateAction<boolean>>,
   fecha_desde: Date,setDesde:React.Dispatch<React.SetStateAction<Date>>,fecha_hasta: Date,
@@ -128,7 +128,7 @@ function comparar_mes_year(fecha1:Date, fecha2:Date){
 }
 
 function SelectorFechaSimple(props:{open:boolean,setOpen:React.Dispatch<React.SetStateAction<boolean>>,selected_id: number,set_selection_id:React.Dispatch<React.SetStateAction<number>>,onChange:Function}) {
-  const opciones = ["Últimos 7 días","Último mes","Este año","Todos","Avanzado"];
+  const opciones = ["Últimos 7 días","Este mes","Mes pasado","Este año","Todos","Avanzado"];
   return (
     <DropDownPicker style={[{maxWidth:"60%",elevation:2,zIndex:999,marginBottom:30},estilos.textInput,estilos.centrado]} open={props.open} 
           value={props.selected_id} items={opciones.map((each,index)=>{return {value:index,label:each}})} 
@@ -145,16 +145,17 @@ function SelectorFechaSimpleModal(props:{  visible:boolean,setVisible: React.Dis
     const [advancedVisible,setAdvancedVisible]=useState(false);
     const [rango_simple,setRangoSimple] = useState(0);
 
-    const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),props.fecha_desde];
+    const fechas_rango_simple = [semana_pasada(),principio_este_mes,mes_pasado(),year_start(),new Date(0),props.fecha_desde];
 
     const onChangeRango=(selection:{label:string,value:number})=>{
-      if (selection.value==4) {
+      if (selection.value==5) {
         setAdvancedVisible(true);
         props.setVisible(false)
       } else {
         setNuevoDesde(fechas_rango_simple[selection.value]);
         setNuevoHasta(today());
       }
+      
     }
     const confirmar =()=>{
       props.setDesde(nuevo_desde);

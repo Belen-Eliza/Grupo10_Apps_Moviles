@@ -52,6 +52,7 @@ export default function Historial() {
           } else {
             const info = await rsp.json();
             callback(info);
+            
             setFetching(false);
           }
         } catch (error) {
@@ -91,7 +92,6 @@ export default function Historial() {
       const limpiar = navigation.addListener('blur', () => {
         limpiar_filtros();
       });
-
       return limpiar
     }, [context.id, seleccion, fecha_desde, fecha_hasta, cate_gasto_id,cate_ingreso_id,navigation])
   );

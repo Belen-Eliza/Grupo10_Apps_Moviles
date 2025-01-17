@@ -18,7 +18,7 @@ import TokenInput from './TokenInput';
 import { Link } from 'expo-router';
 import { estilos } from '@/components/global_styles';
 import { navigate } from 'expo-router/build/global-state/routing';
-
+import Toast from 'react-native-toast-message';
 
 const PasswordRecovery = () => {
   const [email, setEmail] = useState('');
@@ -194,7 +194,7 @@ const PasswordRecovery = () => {
           {renderButton(isLoading ? 'Sending...' : 'Send Recovery Email', handleEmailSubmit)}
           <View style={styles.signupContainer}>
           <Link href="/" style={styles.signupLink}>
-                          <Text style={estilos.linkText}>volver al log-in</Text>
+                          <Text style={estilos.linkText}>Volver al log-in</Text>
                         </Link>
                         </View>
           {isLoading && <ActivityIndicator style={styles.loader} color="#004993" />}
@@ -272,6 +272,7 @@ const PasswordRecovery = () => {
           </Modal>
         </View>
       </ScrollView>
+      <Toast />
     </KeyboardAvoidingView>
   );
 };

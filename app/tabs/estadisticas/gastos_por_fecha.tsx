@@ -8,7 +8,7 @@ import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar ,Filtro_aplicado} from "@/components/botones";
 import { useNavigation } from '@react-navigation/native';
-import { today,semana_pasada,mes_pasado,year_start, meses } from "@/components/dias";
+import { today,semana_pasada,principio_este_mes,mes_pasado,year_start, meses } from "@/components/dias";
 import {LoadingCircle} from "@/components/loading"
 
 type Datos = { fecha: Date; _sum: {monto: number} }; 
@@ -28,7 +28,7 @@ export default function Gastos_por_Fecha() {
     const [isFetching,setFetching] = useState(true);
 
     const navigation = useNavigation();
-    const fechas_rango_simple = [semana_pasada(),mes_pasado(),year_start(),new Date(0),fechaDesde];
+    const fechas_rango_simple = [semana_pasada(),principio_este_mes(),mes_pasado,year_start(),new Date(0),fechaDesde];
     
     useFocusEffect(
         React.useCallback(() => {
@@ -161,7 +161,7 @@ export default function Gastos_por_Fecha() {
     };
 
     const onChangeRango=(selection:{label:string,value:number})=>{
-        if (selection.value==4) {
+        if (selection.value==5) {
             setModalVisible(true);
             setUsaFiltroAvanzado(prev=>{
                 prev.desde=true;
@@ -204,7 +204,7 @@ export default function Gastos_por_Fecha() {
             {texto:"Ingresos",params_callback:1,icon:{materialIconName:"savings"}},
             {texto:"Balance",params_callback:2,icon:{materialIconName:"balance"}}]}></Alternar>
     
-        <View style={[estilos.filterContainer, {elevation:5,marginTop:50,paddingBottom:8,borderTopEndRadius:20}]}>
+        <View style={[estilos.filterContainer,estilos.curvedTopBorders, {elevation:5,marginTop:50,paddingBottom:8}]}>
             <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
             <View style={estilos.filterButtonsContainer}>
                 <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>
@@ -221,11 +221,12 @@ export default function Gastos_por_Fecha() {
 
     {/* Mostrar el gráfico correspondiente */}
     {chartType === 0 && datosGastos.length === 0 ? (
-        <Text style={estilos.emptyListText}>No hay gastos en el rango de fechas seleccionado.</Text>
+        <View style={{minHeight:"70%"}}><Text style={estilos.emptyListText}>No hay gastos en el rango de fechas seleccionado.</Text></View>
+        
     ) : chartType === 1 && datosIngresos.length === 0 ? (
-        <Text style={estilos.emptyListText}>No hay ingresos en el rango de fechas seleccionado.</Text>
+        <View style={{minHeight:"70%"}}><Text style={estilos.emptyListText}>No hay ingresos en el rango de fechas seleccionado.</Text></View>
     ) : chartType === 2 && combinedData.length === 0 ? (
-        <Text style={estilos.emptyListText}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text>
+        <View style={{minHeight:"70%"}}><Text style={estilos.emptyListText}>No hay datos de ingresos o gastos en el rango de fechas seleccionado para calcular el balance.</Text></View>
     ) : (
         <View style={[{flexGrow:2},colores.fondo_azul]}>
         <LineChart
