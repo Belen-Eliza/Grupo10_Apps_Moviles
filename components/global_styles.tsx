@@ -295,7 +295,30 @@ export const estilos = StyleSheet.create({
       borderWidth: 2,
       backgroundColor: "blue"
 
-    }
+    },
+    header: {
+      padding: 20,
+      alignItems: "center",
+    },
+    headerTitle: {
+      fontSize: 32,
+      fontWeight: "bold",
+      color: '#007AFF', 
+    },
+    actionButton: {
+      flexDirection: "row",
+      alignItems: "center",
+      backgroundColor: "#007AFF",
+      borderRadius: 10,
+      padding: 15,
+      marginBottom: 15,
+    },
+    actionButtonText: {
+      color: "#FFFFFF",
+      marginLeft: 10,
+      fontSize: 18,
+      fontWeight: "bold",
+    },
     
 });
 

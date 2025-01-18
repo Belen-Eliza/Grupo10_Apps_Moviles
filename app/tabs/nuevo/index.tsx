@@ -14,6 +14,7 @@ import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
 import Presupuesto from "./presupuesto";
+import { estilos } from "@/components/global_styles";
 
 interface Presupuesto {
   id: number;
@@ -85,17 +86,17 @@ export default function Dashboard() {
 
   const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, href }) => (
     <Link href={href} asChild>
-      <Pressable style={styles.actionButton}>
+      <Pressable style={estilos.actionButton}>
         <MaterialIcons name={icon} size={24} color="#FFFFFF" />
-        <Text style={styles.actionButtonText}>{label}</Text>
+        <Text style={estilos.actionButtonText}>{label}</Text>
       </Pressable>
     </Link>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Dashboard</Text>
+    <SafeAreaView style={estilos.flex1}>
+      <View style={estilos.header}>
+        <Text style={estilos.headerTitle}>Dashboard</Text>
       </View>
 
       <View style={styles.recentTransactions}>
@@ -138,18 +139,6 @@ export default function Dashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  header: {
-    padding: 20,
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#007AFF",
-  },
   sectionTitle: {
     fontSize: 24,
     fontWeight: "600",
@@ -197,18 +186,5 @@ const styles = StyleSheet.create({
   actionButtonsColumn: {
     alignItems: "stretch",
   },
-  actionButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#007AFF",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-  },
-  actionButtonText: {
-    color: "#FFFFFF",
-    marginLeft: 10,
-    fontSize: 18,
-    fontWeight: "bold",
-  },
+ 
 });

@@ -7,8 +7,8 @@ import { estilos, colores } from "@/components/global_styles";
 export default function UpdatedEnhancedStatisticsMenu() {
   return (
     <SafeAreaView style={[styles.container, estilos.background2]}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>Statistics</Text>
+      <View style={estilos.header}>
+        <Text style={estilos.headerTitle}>Statistics</Text>
       </View>
       
       <View style={styles.content}>
@@ -46,15 +46,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  header: {
-    padding: 20,
-    alignItems: "center",
-  },
-  headerTitle: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: '#007AFF', // Changed from #409fff to #007AFF
-  },
+ 
   content: {
     flex: 1,
     padding: 20,
