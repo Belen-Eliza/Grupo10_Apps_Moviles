@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { estilos } from "@/components/global_styles";
 import { Gasto,Ingreso,Presupuesto } from "./tipos";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
 function renderGasto ( item : Gasto)  {
   const fecha = new Date(item.fecha);
@@ -12,7 +13,7 @@ function renderGasto ( item : Gasto)  {
         </View>
         
         <View style={{flex: 3}}>
-          <Text style={{fontSize:18}}> {item.category.name}</Text>
+          <Text style={{fontSize:18, marginTop:20}}> {item.category.name}</Text>
           <Text style={styles.texto_centro}> {item.description}</Text>
         </View>
         <View style={styles.view_monto}>
@@ -30,7 +31,7 @@ function renderGasto ( item : Gasto)  {
           <Text style={styles.texto_fecha}> {fecha.getDate()}/{fecha.getMonth()+1}/{fecha.getFullYear()}</Text>
         </View>
         <View style={{flex: 3}}>
-          <Text style={{fontSize:18}}> {item.category.name}</Text>
+          <Text style={{fontSize:18, marginTop:20}}> {item.category.name}</Text>
           <Text style={styles.texto_centro}> {item.description}</Text>
         </View>
         <View style={styles.view_monto}>
@@ -49,6 +50,7 @@ function renderPresupuesto (item : Presupuesto,callback:Function)  {
           <Text style={{fontSize:18}}>{item.descripcion}</Text>
         </View>
         <Text>Total: ${item.montoTotal}</Text>
+        <MaterialIcons name="arrow-forward-ios" style={{marginLeft:5}} size={20} color="#007AFF" />
       </TouchableOpacity>)};
 
 

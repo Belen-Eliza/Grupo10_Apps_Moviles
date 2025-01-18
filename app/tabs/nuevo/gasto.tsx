@@ -92,7 +92,7 @@ export default function Gasto() {
     gasto.user_id = context.id;
 
     if (!es_valido(gasto))
-      error_alert("Complete todos los campos para continuar");
+      error_alert("Complete los campos obligatorios para continuar");
     else {
       fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
         method: "POST",

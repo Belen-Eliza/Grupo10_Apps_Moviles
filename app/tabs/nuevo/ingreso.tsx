@@ -10,8 +10,9 @@ import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
+
 function es_valido(ingreso:Ingreso){
-  return ingreso.category_id!=0 && ingreso.monto!=0 && ingreso.descripcion!=""
+  return ingreso.category_id!=0 && ingreso.monto!=0 && ingreso.user_id!=0
 }
 
 export default function Ahorro() {
@@ -54,7 +55,7 @@ export default function Ahorro() {
 
   const confirmar = async () => {
     ingreso.category_id = cat;
-    if (!es_valido(ingreso)) error_alert("Complete los campos vacíos para continuar")
+    if (!es_valido(ingreso)) error_alert("Complete los campos obligatorios para continuar")
     else {
       try {
         const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/ingresos/`, {
