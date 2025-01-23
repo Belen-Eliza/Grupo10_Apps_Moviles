@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Text, View, Pressable, Modal,Dimensions, StyleSheet } from "react-native";
+import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import { router,useFocusEffect,useLocalSearchParams } from "expo-router";
 import { LoadingCircle } from "@/components/loading";
@@ -9,6 +9,8 @@ import Toast from "react-native-toast-message";
 import { MaterialIcons } from "@expo/vector-icons";
 import { ProgressChart } from "react-native-chart-kit";
 import { ActionButton } from "@/components/tipos";
+import { DateRangeModal } from "@/components/DateRangeModal";
+import Fontisto from '@expo/vector-icons/Fontisto';
 
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date,total_acumulado:number}
 
@@ -56,67 +58,90 @@ export default function DetallePresupuesto(){
         data: [porcentaje/10]
       };
     return (
-        <View style={[estilos.mainView,estilos.centrado]}>
-            {!router.canDismiss() && 
-                <Pressable style={{position: "absolute", left: 10,top:-10,zIndex:999,elevation:5}} onPress={()=>{router.replace("/tabs/historial/")}}>
-                    <MaterialIcons name="arrow-back-ios" size={24} color="white" /> 
-                </Pressable>}
+        <ScrollView contentContainerStyle={estilos.centrado}>
             
             {presupuesto==undefined? <LoadingCircle/>:
-                <View style={estilos.mainView}>
-                <View style={[estilos.header]}>
-                    <Text style={estilos.headerTitle}>{presupuesto.descripcion}</Text>
-                </View>
-                <View style={styles.header}>
-                          <Text style={styles.messageText}>Tienes acumulados</Text>
-                          <Text style={styles.amount}>$ {presupuesto.total_acumulado}</Text>
-                          <Text style={styles.messageText}>de</Text>
-                          <Text style={styles.amount}>$ {presupuesto.montoTotal}</Text>
+            <View style={estilos.mainView}>
+                
+                <View style={[estilos.modalForm,estilos.margen]}>
+                    <View style={estilos.thinGrayBottomBorder}>
+                    <View style={[{flexDirection:"row",alignItems:"center"}]}>
+                        <MaterialIcons name="attach-money" size={40} color="#007AFF" />
+                        <Text style={styles.title}>{presupuesto.descripcion}</Text>
+                    </View>
+                    <View style={[styles.header]}>
+                        <View style={{margin:10}}>
+                            <Text style={styles.messageText}>Dinero acumulado</Text>
+                            <Text style={styles.amount}>$ {presupuesto.total_acumulado}</Text>
+                        </View>
+                        
+                        <Fontisto name="wallet" size={90} color="white" />
+                    </View>
+                    
+                    <ActionButton
+                        icon="savings"
+                        label="Reservar"
+                        href="/tabs/nuevo/gasto"
+                    />
+                   
+                
+                    </View>
+                    <View style={{flexDirection:"row",marginTop:20}}>
+                        <Text style={[styles.messageText,{color:"black",fontWeight:"bold"}]}>Meta: </Text>
+                        <Text style={[styles.messageText,{color:"black"}]}>$ {presupuesto.montoTotal}</Text>
+                    </View>
+                    <View style={{flexDirection:"row",marginTop:20}}>
+                        <Text style={[styles.messageText,{color:"black",fontWeight:"bold"}]}>Plazo: </Text>
+                        <Text style={[styles.messageText,{color:"black"}]}>{fecha_objetivo.getDate()}/{fecha_objetivo.getMonth()+1}/ {fecha_objetivo.getFullYear()}</Text>
+                    </View>
+                    
                 </View>
                 
-                <Text style={estilos.subtitulo}>Vence el: {fecha_objetivo.getDate()}/{fecha_objetivo.getMonth()+1}/ {fecha_objetivo.getFullYear()}  </Text>
                 <View>
                     <ProgressChart
                         data={data}
                         width={width}
                         height={220}
                         strokeWidth={16}
-                        radius={90}
+                        radius={85}
                         chartConfig={chartConfig}
                         hideLegend={true}
                     />
-                    <Text style={[colores.texto_azul,estilos.subtitulo,{position:"absolute",left:width/2-15,top:90}]}>{(porcentaje.toFixed(2))} %</Text>
+                    <Text style={[colores.texto_azul,estilos.subtitulo,{position:"absolute",left:width/2-20,top:90}]}>{(porcentaje.toFixed(2))} %</Text>
                 </View>
-                <View style={[{width:"80%",alignSelf:"center"},estilos.margen]}>
-                    <ActionButton
-                        icon="savings"
-                        label="Agregar Ahorro"
-                        href="/tabs/nuevo/gasto"
-                    />
-                </View>
+                
             </View>
             }
             
             <Toast/>
-        </View>
+        </ScrollView>
     )
 }
 
 const styles = StyleSheet.create({
     header: {
+        flexDirection:"row",
         marginTop: 40,
-        marginBottom: 20,
-        alignItems: 'center',
+        marginBottom: 30,
+        backgroundColor: "#007AFF",
+        padding: 20,
+        borderRadius: 5
+      },
+      title:{
+        color: "black",
+        fontWeight: "semibold",
+        fontSize: 25,
+        marginLeft:10
       },
       messageText: {
-        fontSize: 18,
-        color: '#666',
+        fontSize: 20,
+        color: 'white',
         marginBottom: 10,
       },
      
       amount: {
-        fontSize: 36,
+        fontSize: 40,
         fontWeight: 'bold',
-        color: '#007AFF',
+        color: 'white',
       },
 })
