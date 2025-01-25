@@ -8,7 +8,7 @@ import { DateRangeModal, SelectorFechaSimple } from '@/components/DateRangeModal
 import { useFocusEffect } from '@react-navigation/native';
 import { Alternar ,Filtro_aplicado} from "@/components/botones";
 import { useNavigation } from '@react-navigation/native';
-import { today,semana_pasada,principio_este_mes,mes_pasado,year_start, meses } from "@/components/dias";
+import { today,semana_pasada,principio_este_mes,mes_pasado,year_start, meses, fin_mes_pasado } from "@/components/dias";
 import {LoadingCircle} from "@/components/loading"
 
 type Datos = { fecha: Date; _sum: {monto: number} }; 
@@ -73,7 +73,7 @@ export default function Gastos_por_Fecha() {
             const limpiar = navigation.addListener('blur', () => {
                 setFechaDesde(new Date(0));
                 setFechaHasta(today());
-                setRangoSimple(3);
+                setRangoSimple(4);
             });
         
               return limpiar
@@ -92,7 +92,7 @@ export default function Gastos_por_Fecha() {
         datasets: [
             {
                 data: datosGastos.map((g) => g._sum.monto),
-                color: (opacity = 1) => "#c213fd", //`rgba(255, 69, 0, ${opacity})`, // rojo para gastos
+                color: (opacity = 1) => "#c213fd", 
                 strokeWidth: 4,
             },
         ],
@@ -107,7 +107,7 @@ export default function Gastos_por_Fecha() {
         datasets: [
             {
                 data: datosIngresos.map((i) => i._sum.monto),
-                color: (opacity = 1) => "#00c400", //`rgba(34, 139, 34, ${opacity})`, // verde para ingresos
+                color: (opacity = 1) => "#00c400", 
                 strokeWidth: 4,
             },
         ],
@@ -131,7 +131,7 @@ export default function Gastos_por_Fecha() {
                     balance += d.tipo === 'ingreso' ? d._sum.monto : -d._sum.monto;
                     return balance;
                 }),
-                color: (opacity = 1) => "#63c5fa", //`rgba(70, 130, 180, ${opacity})`, // azul para balance
+                color: (opacity = 1) => "#63c5fa", 
                 strokeWidth: 4,
             },
         ],
@@ -171,7 +171,7 @@ export default function Gastos_por_Fecha() {
         } else {
             setFechaDesde(fechas_rango_simple[selection.value]);
             setFechaHasta(today());
-            if (selection.value==3) setFechaHasta(principio_este_mes())
+            if (selection.value==2) setFechaHasta(fin_mes_pasado())
             setUsaFiltroAvanzado(prev=>{
                 prev.desde=false;
                 prev.hasta=false;

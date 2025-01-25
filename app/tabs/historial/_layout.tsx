@@ -18,14 +18,8 @@ export default function Layout(){
             },
           }}>
             <Stack.Screen name='index' options={{title: "Historial",headerShown:false}}/>
-            <Stack.Screen name='[presupuesto_id]' options={({ navigation }) => ({
-                presentation:"card", title: "Presupuesto",
-                headerLeft: () => (
-                  <Pressable onPress={()=>{navigation.replace("index")}}>
-                    <MaterialIcons name="arrow-back-ios" size={24} color="white" /> 
-                </Pressable>
-                  
-                ),
+            <Stack.Screen name='[presupuesto_id]' options={({  }) => ({
+                presentation:"card", title: "Presupuesto"            
               })}
       />
         </Stack>

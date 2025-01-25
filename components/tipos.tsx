@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons"
 import { Link } from "expo-router"
-import { Pressable, Text } from "react-native"
+import { Pressable, Text, TouchableOpacity } from "react-native"
 import { estilos } from "./global_styles"
 
 type User = {id: number,mail:string,name:string,password:string,saldo:number}
@@ -16,10 +16,10 @@ interface ActionButtonProps {
 }
 const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, href }) => (
     <Link href={href} asChild>
-      <Pressable style={estilos.actionButton}>
+      <TouchableOpacity style={estilos.actionButton} >
         <MaterialIcons name={icon} size={24} color="#FFFFFF" />
         <Text style={estilos.actionButtonText}>{label}</Text>
-      </Pressable>
+      </TouchableOpacity>
     </Link>
   );
 

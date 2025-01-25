@@ -1,32 +1,19 @@
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  Pressable,
-  SafeAreaView,
-  TouchableOpacity,
-} from "react-native";
-import { Link, router, useFocusEffect } from "expo-router";
+import React, { useState } from "react";
+import {  View,  Text,  StyleSheet,  FlatList,  Pressable,  SafeAreaView,} from "react-native";
+import { Link, useFocusEffect } from "expo-router";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
 import Presupuesto from "./presupuesto";
 import { estilos } from "@/components/global_styles";
+import { ActionButton,ActionButtonProps } from "@/components/tipos";
 
 interface Presupuesto {
   id: number;
   descripcion: string;
   montoTotal: number;
   total_acumulado: number;
-}
-
-interface ActionButtonProps {
-  icon: keyof typeof MaterialIcons.glyphMap;
-  label: string;
-  href: string;
 }
 
 export default function Dashboard() {
@@ -68,11 +55,7 @@ export default function Dashboard() {
     total_acumulado,
   }) =>  {
     return (
-    <TouchableOpacity style={styles.item} activeOpacity={0.5} 
-        onPress={()=>{
-          
-          router.replace({ pathname: "/tabs/historial/[presupuesto_id]", 
-                                    params: { presupuesto_id: id }})}}>
+    <View style={styles.item} >
       <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
       <View>
         <Text style={styles.itemType}>{descripcion}</Text>
@@ -80,18 +63,9 @@ export default function Dashboard() {
           %{((total_acumulado / montoTotal) * 100).toFixed(2)}
         </Text>
       </View>
-    </TouchableOpacity>
+    </View>
     
   );}
-
-  const ActionButton: React.FC<ActionButtonProps> = ({ icon, label, href }) => (
-    <Link href={href} asChild>
-      <Pressable style={estilos.actionButton}>
-        <MaterialIcons name={icon} size={24} color="#FFFFFF" />
-        <Text style={estilos.actionButtonText}>{label}</Text>
-      </Pressable>
-    </Link>
-  );
 
   return (
     <SafeAreaView style={estilos.flex1}>

@@ -11,6 +11,7 @@ import { ProgressChart } from "react-native-chart-kit";
 import { ActionButton } from "@/components/tipos";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import Fontisto from '@expo/vector-icons/Fontisto';
+import { SafeAreaView } from "react-native-safe-area-context";
 
 type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date,total_acumulado:number}
 
@@ -58,6 +59,7 @@ export default function DetallePresupuesto(){
         data: [porcentaje/10]
       };
     return (
+        <SafeAreaView>
         <ScrollView contentContainerStyle={estilos.centrado}>
             
             {presupuesto==undefined? <LoadingCircle/>:
@@ -115,6 +117,7 @@ export default function DetallePresupuesto(){
             
             <Toast/>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 
