@@ -21,7 +21,8 @@ export default function Layout(){
             <Stack.Screen name='[presupuesto_id]' options={({  }) => ({
                 presentation:"card", title: "Presupuesto"            
               })}
-      />
+            />
+            <Stack.Screen name='editar_presupuesto' options={{presentation:"transparentModal",headerShown:false }}   />
         </Stack>
     )
 } 

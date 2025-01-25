@@ -25,7 +25,7 @@ export default function Dashboard() {
       const fetchData = async () => {
         try {
           const rspPresupuestos = await fetch(
-            `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/user/${context.id}`,
+            `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/activos/${context.id}`,
             {
               method: "GET",
               headers: { "Content-Type": "application/json" },
@@ -74,7 +74,7 @@ export default function Dashboard() {
       </View>
 
       <View style={styles.recentTransactions}>
-        <Text style={styles.sectionTitle}>Presupuestos</Text>
+        <Text style={styles.sectionTitle}>Presupuestos activos</Text>
         {datosPresupuestos.length > 0 ? (
           <FlatList<Presupuesto>
             data={datosPresupuestos}

@@ -99,7 +99,7 @@ export default function Login() {
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={estilos.flex1}
       >
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView contentContainerStyle={estilos.scrollViewContent}>
           <View style={styles.formContainer}>
             <Text style={styles.title}>Iniciar Sesión</Text>
 
@@ -167,10 +167,7 @@ const styles = StyleSheet.create({
   eyeIcon:{
     //se borro o algo?
   },
-  scrollViewContent: {
-    flexGrow: 1,
-    justifyContent: 'center',
-  },
+  
   formContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 20,

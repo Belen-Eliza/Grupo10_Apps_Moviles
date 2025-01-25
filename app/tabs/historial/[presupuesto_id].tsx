@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView } from "react-native";
+import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView, TouchableOpacity } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
-import { router,useFocusEffect,useLocalSearchParams } from "expo-router";
+import { Link, router,useFocusEffect,useLocalSearchParams } from "expo-router";
 import { LoadingCircle } from "@/components/loading";
 import { error_alert } from "@/components/my_alert";
 import React from "react";
@@ -11,9 +11,8 @@ import { ProgressChart } from "react-native-chart-kit";
 import { ActionButton } from "@/components/tipos";
 import { DateRangeModal } from "@/components/DateRangeModal";
 import Fontisto from '@expo/vector-icons/Fontisto';
-import { SafeAreaView } from "react-native-safe-area-context";
-
-type Presupuesto ={id: number, descripcion: string,montoTotal: number, fecha_objetivo: Date,total_acumulado:number}
+import Feather from '@expo/vector-icons/Feather';
+import { Presupuesto } from "@/components/tipos";
 
 export default function DetallePresupuesto(){
     const { presupuesto_id = 0} = useLocalSearchParams();
@@ -59,17 +58,23 @@ export default function DetallePresupuesto(){
         data: [porcentaje/10]
       };
     return (
-        <SafeAreaView>
-        <ScrollView contentContainerStyle={estilos.centrado}>
+        
+        <ScrollView contentContainerStyle={estilos.scrollViewContent}>
             
             {presupuesto==undefined? <LoadingCircle/>:
             <View style={estilos.mainView}>
                 
                 <View style={[estilos.modalForm,estilos.margen]}>
                     <View style={estilos.thinGrayBottomBorder}>
-                    <View style={[{flexDirection:"row",alignItems:"center"}]}>
+                    <View style={[{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}]}>
                         <MaterialIcons name="attach-money" size={40} color="#007AFF" />
                         <Text style={styles.title}>{presupuesto.descripcion}</Text>
+                        <Link href="/tabs/historial/editar_presupuesto" asChild>
+                        <TouchableOpacity  >
+                            <Feather name="edit" size={24} color="#007AFF" />
+                        </TouchableOpacity>
+                        </Link>
+                        
                     </View>
                     <View style={[styles.header]}>
                         <View style={{margin:10}}>
@@ -114,10 +119,10 @@ export default function DetallePresupuesto(){
                 
             </View>
             }
-            
+           
             <Toast/>
         </ScrollView>
-        </SafeAreaView>
+        
     )
 }
 
@@ -134,7 +139,6 @@ const styles = StyleSheet.create({
         color: "black",
         fontWeight: "semibold",
         fontSize: 25,
-        marginLeft:10
       },
       messageText: {
         fontSize: 20,

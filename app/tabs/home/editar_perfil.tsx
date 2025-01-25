@@ -44,7 +44,7 @@ export default function Editar(){
           exito=true;
         }
         else  error_alert("El nombre no puede estar vacío");
-      }
+      } 
       if (mail!=undefined) {
         if (validateEmail(mail).status) {
           user.cambiar_mail(mail);
@@ -85,7 +85,7 @@ export default function Editar(){
     }
      
     return(
-        <View style={estilos.centrado}>
+        <View style={[estilos.centrado]}>
           <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
               <View style={estilos.modalForm}>
                 <Text style={estilos.modalTitle}>Editar Perfil</Text>

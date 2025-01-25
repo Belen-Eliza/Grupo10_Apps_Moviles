@@ -319,6 +319,10 @@ export const estilos = StyleSheet.create({
       fontSize: 18,
       fontWeight: "bold",
     },
+    scrollViewContent: {
+      flexGrow: 1,
+      justifyContent: 'center',
+    },
     
 });
 
