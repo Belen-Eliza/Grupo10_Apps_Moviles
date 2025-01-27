@@ -69,7 +69,7 @@ export default function DetallePresupuesto(){
                     <View style={[{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}]}>
                         <MaterialIcons name="attach-money" size={40} color="#007AFF" />
                         <Text style={styles.title}>{presupuesto.descripcion}</Text>
-                        <Link href="/tabs/historial/editar_presupuesto" asChild>
+                        <Link href={{pathname:"/tabs/historial/editar_presupuesto", params:{presupuesto_id:presupuesto.id}}}  asChild>
                         <TouchableOpacity  >
                             <Feather name="edit" size={24} color="#007AFF" />
                         </TouchableOpacity>

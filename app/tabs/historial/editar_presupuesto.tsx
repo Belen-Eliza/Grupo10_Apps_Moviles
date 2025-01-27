@@ -1,53 +1,54 @@
 import { useEffect, useState } from "react";
 import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView, TouchableOpacity, TextInput, Platform } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
-import { Link, router,useFocusEffect,useLocalSearchParams } from "expo-router";
+import { Link, router,useLocalSearchParams } from "expo-router";
 import { LoadingCircle } from "@/components/loading";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { ProgressChart } from "react-native-chart-kit";
-import { ActionButton, Presupuesto } from "@/components/tipos";
-import { DateRangeModal } from "@/components/DateRangeModal";
-import Fontisto from '@expo/vector-icons/Fontisto';
+import { Ionicons, MaterialIcons, Fontisto, FontAwesome6  } from "@expo/vector-icons";
+import { Presupuesto } from "@/components/tipos";
 import DateTimePicker, {
     DateTimePickerEvent,
     DateTimePickerAndroid,
     AndroidNativeProps,
   } from "@react-native-community/datetimepicker";
+import { comparar_fechas } from "@/components/DateRangeModal";
+import { today } from "@/components/dias";
  
 export default function EditarPresupuesto(){
 const { presupuesto_id = 0} = useLocalSearchParams();
     if (presupuesto_id==0) {
         router.dismiss();
-        router.replace({pathname:"/tabs",params:{msg:"Valor inválido",error:"yes"}});
+        router.back();
     }
     const [presupuesto,setPresupuesto]=useState<Presupuesto>();
     const [descripcion,handlerDescripcion]=useState<string>();
     const [monto,setMonto]=useState<number>();
-    const [pass,handler_password]=useState<string>()
-    const [errorEmail, setErrorEmail] = useState('');
+    const [fecha, setFecha] = useState<Date>(new Date());
+    const [errorDesc, setErrorDesc] = useState('');
     const [errorMonto, setErrorMonto] = useState('');
-    const [errorName,setErrorName] = useState('');
-    const [fecha, setFecha] = useState(new Date());
+    const [errorFecha,setErrorFecha] = useState('');
    
     useEffect(()=>{
-        (async ()=>{
-            try {
-                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/unico/${presupuesto_id}`,{
-                    method:'GET',
-                    headers:{"Content-Type":"application/json"}});
-                if (!rsp.ok)  throw new Error(rsp.status+" en ver presupuesto")
-                else {
-                    const data= await rsp.json();
-                    setPresupuesto(data);
-                }
-            } catch (error) {
-                console.log(error);
-                error_alert("Presupuesto no encontrado");
-                setTimeout(()=>{router.back()},3000);                
-            }
-        })()
+      (async ()=>{
+          try {
+              const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/unico/${presupuesto_id}`,{
+                  method:'GET',
+                  headers:{"Content-Type":"application/json"}});
+              if (!rsp.ok)  throw new Error(rsp.status+" en ver presupuesto")
+              else {
+                  const data= await rsp.json();
+                  setPresupuesto(data);
+                  setFecha(new Date(data.fecha_objetivo));
+                  setMonto(data.montoTotal)
+                  handlerDescripcion(data.descripcion)
+              }
+          } catch (error) {
+              console.log(error);
+              error_alert("Presupuesto no encontrado");
+              setTimeout(()=>{router.back()},3000);                
+          }
+      })()
     }, [presupuesto_id]);
 
     const handlerMonto=(text: string) =>{
@@ -63,9 +64,13 @@ const { presupuesto_id = 0} = useLocalSearchParams();
     }
 
     const onChangeDate = ( event: DateTimePickerEvent, selectedDate: Date | undefined) => {
-        let currentDate = new Date(0);
-        if (selectedDate != undefined) currentDate = selectedDate;
-        setFecha(currentDate);
+      if (selectedDate != undefined ) {
+        if (!comparar_fechas(selectedDate,today())) {
+          setFecha(selectedDate);
+          setErrorFecha("")
+        }
+        else setErrorFecha("La fecha objetivo no puede ser menor o igual al día de hoy")
+      }
       };
       const showMode = (currentMode: AndroidNativeProps["mode"]) => {
         DateTimePickerAndroid.open({
@@ -85,27 +90,25 @@ const { presupuesto_id = 0} = useLocalSearchParams();
         <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
             <View style={estilos.modalForm}>
               <Text style={estilos.modalTitle}>Editar Presupuesto</Text>
-
+              
               <View style={styles.inputContainer}>
-                <Ionicons name="person-outline" size={24} color="#666" style={styles.inputIcon} />
+                
+                <FontAwesome6 name="pencil" size={24} color="#666" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={presupuesto?.descripcion}
                   onChangeText={handlerDescripcion}
-                  placeholder="Nuevo nombre"
-                  placeholderTextColor="#999"
                 />
               </View>
-              {errorName ? <Text style={styles.errorText}>{errorName}</Text> : null}
+              {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
 
               <View style={styles.inputContainer}>
-                <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
+                
+              <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={styles.inputIcon} />
                 <TextInput
                   style={styles.input}
                   value={monto?.toString()}
                   onChangeText={handlerMonto}
-                  placeholder={presupuesto? presupuesto.montoTotal.toString():"0"}
-                  placeholderTextColor="#999"
                   keyboardType="decimal-pad"
                 />
               </View>
@@ -127,7 +130,7 @@ const { presupuesto_id = 0} = useLocalSearchParams();
               </View>
             ) : (
               <DateTimePicker
-                style={estilos.margen}
+                style={[estilos.margen,estilos.centrado]}
                 value={fecha}
                 onChange={onChangeDate}
                 mode="date"
