@@ -35,41 +35,18 @@ export default function Gasto() {
   const [openPicker, setOpen] = useState(false);
   const [cat, setCat] = useState(0);
   const context = useUserContext();
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(300);
+  const [errorMonto, setErrorMonto] = useState('');
 
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener(
-      "keyboardDidShow",
-      handleKeyboardShow
-    );
-    const hideSubscription = Keyboard.addListener(
-      "keyboardDidHide",
-      handleKeyboardHide
-    );
-
-    return () => {
-      showSubscription.remove();
-    };
-  }, []);
-
-  const handleKeyboardShow = (event: any) => {
-    setIsKeyboardVisible(true);
-    setKeyboardHeight(event.endCoordinates.height);
-  };
-
-  const handleKeyboardHide = (event: any) => {
-    setIsKeyboardVisible(false);
-  };
 
   const handler_Amount = (input: string) => {
     let aux = Number(input.replace(",", "."));
-    if (Number.isNaN(aux)) error_alert("El valor ingresado debe ser un número");
+    if (Number.isNaN(aux)) setErrorMonto("El valor ingresado debe ser un número");
     else {
       setGasto((pre) => {
         pre.monto = aux;
         return pre;
       });
+      setErrorMonto("");
     }
   };
 
@@ -150,6 +127,7 @@ export default function Gasto() {
               onChangeText={handler_Amount}
               placeholder="Ingresar valor"
             />
+            {errorMonto ? <Text style={estilos.errorText}>{errorMonto}</Text> : null}
           </View>
 
           <View style={estilos.thinGrayBottomBorder}>

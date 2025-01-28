@@ -8,7 +8,6 @@ import React from "react";
 import Toast from "react-native-toast-message";
 import { MaterialIcons, Fontisto,Feather } from "@expo/vector-icons";
 import { ProgressChart } from "react-native-chart-kit";
-import { ActionButton } from "@/components/tipos";
 import { Presupuesto } from "@/components/tipos";
 import { useNavigation } from '@react-navigation/native';
 
@@ -64,6 +63,10 @@ export default function DetallePresupuesto(){
         labels: [""], // optional
         data: [porcentaje]
       };
+
+    const reservar = ()=>{
+        if (presupuesto?.activo==1) router.push({pathname:"/tabs/historial/nuevo_ahorro_presupuesto",params:{presupuesto_id:presupuesto_id}})
+    }
     return (
         
         <ScrollView contentContainerStyle={estilos.scrollViewContent}>
@@ -95,13 +98,12 @@ export default function DetallePresupuesto(){
                         <Fontisto name="wallet" size={90} color="white" />
                     </View>
                     
-                    <ActionButton
-                        icon="savings"
-                        label="Reservar"
-                        href="/tabs/nuevo/gasto"
-                    />
+                    <TouchableOpacity style={[estilos.actionButton,{backgroundColor: presupuesto.activo==1? "#007AFF": "lightgray"}]} onPress={reservar} activeOpacity={presupuesto.activo==1? 0.2 : 1}>
+                        <MaterialIcons name="savings" size={24} color="#FFFFFF" />
+                        <Text style={estilos.actionButtonText}>Reservar</Text>
+                    </TouchableOpacity>
+
                    
-                
                     </View>
                     <View style={{flexDirection:"row",marginTop:20}}>
                         <Text style={[styles.messageText,{color:"black",fontWeight:"bold"}]}>Meta: </Text>

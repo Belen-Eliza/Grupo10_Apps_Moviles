@@ -23,6 +23,7 @@ export default function Layout(){
               })}
             />
             <Stack.Screen name='editar_presupuesto' options={{presentation:"modal",headerShown:false }}   />
+            <Stack.Screen name='nuevo_ahorro_presupuesto' options={{presentation:"modal",headerShown:false }}   />
         </Stack>
     )
 } 
