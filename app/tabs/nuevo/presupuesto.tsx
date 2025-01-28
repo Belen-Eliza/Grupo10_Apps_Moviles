@@ -1,16 +1,4 @@
-import {
-  Pressable,
-  Text,
-  TextInput,
-  ScrollView,
-  View,
-  Platform,
-  StyleSheet,
-  Keyboard,
-  KeyboardAvoidingView,
-  Dimensions,
-  TouchableWithoutFeedback,
-} from "react-native";
+import {  Text, TextInput,  ScrollView,  View,  StyleSheet, Keyboard, Platform,  Pressable} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
@@ -21,7 +9,6 @@ import DateTimePicker, {
   AndroidNativeProps,
 } from "@react-native-community/datetimepicker";
 import Toast from "react-native-toast-message";
-import { Dismiss_keyboard } from "@/components/botones";
 import { success_alert, error_alert } from "@/components/my_alert";
 
 import Animated, {
@@ -29,7 +16,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { today } from "@/components/dias";
+import { FontAwesome6 } from "@expo/vector-icons";
 
 type Presupuesto = {
   descripcion: string;
@@ -54,48 +41,30 @@ export default function Presupuesto() {
     user_id: context.id,
   });
   const [fecha, setFecha] = useState(new Date());
-  const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(300);
-
-  useEffect(() => {
-    const showSubscription = Keyboard.addListener(
-      "keyboardDidShow",
-      handleKeyboardShow
-    );
-    const hideSubscription = Keyboard.addListener(
-      "keyboardDidHide",
-      handleKeyboardHide
-    );
-
-    return () => {
-      showSubscription.remove();
-    };
-  }, []);
-
-  const handleKeyboardShow = (event: any) => {
-    setIsKeyboardVisible(true);
-    setKeyboardHeight(event.endCoordinates.height);
-  };
-
-  const handleKeyboardHide = (event: any) => {
-    setIsKeyboardVisible(false);
-  };
+  const [errorDesc, setErrorDesc] = useState('');
+  const [errorMonto, setErrorMonto] = useState('');
+  const [errorFecha,setErrorFecha] = useState('');
 
   const handler_descripcion = (input: string) => {
-    setPresupuesto((pre) => {
-      pre.descripcion = input;
-      return pre;
-    });
+    if (input=="") setErrorDesc("La descripción no puede estar vacía");
+    else {
+      setPresupuesto((pre) => {
+        pre.descripcion = input;
+        return pre;
+      });
+      setErrorDesc("")
+    }
   };
   const handler_monto = (input: string) => {
     let aux = Number(input.replace(",", "."));
     if (Number.isNaN(aux)) {
-      error_alert("El valor ingresado debe ser un número");
+      setErrorMonto("El valor ingresado debe ser un número");
     } else {
       setPresupuesto((pre) => {
         pre.montoTotal = aux;
         return pre;
       });
+      setErrorMonto("")
     }
   };
   
@@ -187,38 +156,46 @@ export default function Presupuesto() {
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={estilos.flex1}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
-        <View style={[estilos.mainView, { alignItems: "center" }]}>
-          {isKeyboardVisible && (
-            <Dismiss_keyboard
-              setVisible={setIsKeyboardVisible}
-              pos_y={Dimensions.get("screen").height - keyboardHeight - 150}
-            />
-          )}
-          <ScrollView
-            contentContainerStyle={[estilos.mainView, { alignItems: "center" }]}
-            automaticallyAdjustKeyboardInsets={true}
-          >
-            <Text style={[estilos.subtitulo, estilos.poco_margen]}>Monto</Text>
-            <TextInput
-              style={[estilos.textInput, estilos.poco_margen]}
-              keyboardType="decimal-pad"
-              onChangeText={handler_monto}
-              placeholder="Ingresar valor"
-            ></TextInput>
+    <View style={[estilos.centrado]}>
+      <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
+          <View style={estilos.modalForm}>
+          <Text style={estilos.modalTitle}>Nuevo Presupuesto</Text>
+            <View style={estilos.thinGrayBottomBorder}>
+              <View style={styles.inputContainer}>
+                <FontAwesome6 name="pencil" size={24} color="#666" style={styles.inputIcon} />
+                <Text style={estilos.subtitulo}>Descripción:</Text>
+              </View>
+              <TextInput
+                  style={estilos.text_input2}
+                  keyboardType="default"
+                  onChangeText={handler_descripcion}
+                  placeholder="Ingresar descripción"
+                  placeholderTextColor="#999"
+                />
+              {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
+            </View>
 
-            <Text style={estilos.subtitulo}>Descripción</Text>
-            <TextInput
-              style={[estilos.textInput, estilos.poco_margen]}
-              keyboardType="default"
-              onChangeText={handler_descripcion}
-            ></TextInput>
+            <View style={estilos.thinGrayBottomBorder}>
+              <View style={styles.inputContainer}>
+                <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={styles.inputIcon} />
+                <Text style={estilos.subtitulo}>Monto total:</Text>
+              </View>
+              <TextInput
+                  style={estilos.text_input2}
+                  onChangeText={handler_monto}
+                  keyboardType="decimal-pad"
+                  placeholder="Ingresar monto"
+                  placeholderTextColor="#999"
+                />
+              {errorMonto ? <Text style={styles.errorText}>{errorMonto}</Text> : null}
+            </View>
 
-            <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
+            <View style={estilos.thinGrayBottomBorder}>
+                <View style={styles.inputContainer}>
+                  <FontAwesome6 name="calendar-days" size={24} color="#666" style={styles.inputIcon} />
+                  <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
+                </View>
+                
             {Platform.OS === "android" ? (
               <View style={styles.androidDateTime}>
                 <Pressable onPress={showDatepicker}>
@@ -234,7 +211,7 @@ export default function Presupuesto() {
               </View>
             ) : (
               <DateTimePicker
-                style={estilos.margen}
+                style={[estilos.centrado,estilos.poco_margen]}
                 value={fecha}
                 onChange={onChangeDate}
                 mode="date"
@@ -242,18 +219,20 @@ export default function Presupuesto() {
               />
             )}
 
+            {errorFecha ? <Text style={styles.errorText}>{errorFecha}</Text> : null}
+            </View>
+
+            <View style={{marginTop:30}}>
             <Pressable
               onPressIn={handlePressIn}
               onPressOut={handlePressOut}
               onPress={confirmar}
             >
-
-              <Animated.View
-                style={[estilos.confirmButton,  { maxHeight: 50 },  animatedStyle ]}
-              >
+              <Animated.View  style={[estilos.confirmButton,  { maxHeight: 50 },  animatedStyle ]}   >
                 <Text style={estilos.confirmButtonText}>Confirmar</Text>
               </Animated.View>
             </Pressable>
+
             <Pressable
               onPressIn={handlePressInCancel}
               onPressOut={handlePressOutCancel}
@@ -263,18 +242,30 @@ export default function Presupuesto() {
                 <Text style={estilos.cancelButtonText}>Cancelar</Text>
               </Animated.View>
             </Pressable>
-          </ScrollView>
-
-        </View>
-      </TouchableWithoutFeedback>
+            </View>
+          </View>
+      </ScrollView>
       <Toast />
-    </KeyboardAvoidingView>
-  );
+    </View>)
+   
 }
 
 const styles = StyleSheet.create({
   androidDateTime: {
     flexDirection: "row",
     justifyContent: "space-around",
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 15
+  },
+  inputIcon: {
+    marginRight: 10,
+  },
+  errorText: {
+    color: '#ff3b30',
+    fontSize: 12,
+    marginBottom: 10,
   },
 });

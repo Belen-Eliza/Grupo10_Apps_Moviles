@@ -74,8 +74,11 @@ export default function DetallePresupuesto(){
                 <View style={[estilos.modalForm,estilos.margen]}>
                     <View style={estilos.thinGrayBottomBorder}>
                     <View style={[{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}]}>
-                        <MaterialIcons name="attach-money" size={40} color="#007AFF" />
-                        <Text style={[styles.title,{marginRight:30}]}>{presupuesto.descripcion}</Text>
+                        <View style={{flexDirection:"row"}}>
+                            <MaterialIcons name="attach-money" size={40} color="#007AFF" />
+                            <Text style={[styles.title,{flexWrap:"wrap",maxWidth:200}]}>{presupuesto.descripcion}</Text>
+                        </View>
+                        
                         <Link href={{pathname:"/tabs/historial/editar_presupuesto", params:{presupuesto_id:presupuesto.id}}}  asChild>
                         <TouchableOpacity  >
                             <Feather name="edit" size={24} color="#007AFF" />
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
         color: "black",
         fontWeight: "semibold",
         fontSize: 25,
+        alignSelf:"center"
       },
       messageText: {
         fontSize: 20,
