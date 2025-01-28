@@ -205,7 +205,7 @@ export default function Gastos_por_Fecha() {
             {texto:"Ingresos",params_callback:1,icon:{materialIconName:"savings"}},
             {texto:"Balance",params_callback:2,icon:{materialIconName:"balance"}}]}></Alternar>
     
-        <View style={[estilos.filterContainer,estilos.curvedTopBorders, {elevation:5,marginTop:50,paddingBottom:8}]}>
+        <View style={[estilos.filterContainer,estilos.curvedTopBorders, {marginTop:50,paddingBottom:8}]}>
             <Text style={[estilos.filterTitle,{margin:0}]}>Filtrar por fecha:</Text>
             <View style={estilos.filterButtonsContainer}>
                 <SelectorFechaSimple open={simplePickerVisible} setOpen={setVisible} selected_id={rango_simple} set_selection_id={setRangoSimple} onChange={onChangeRango}/>

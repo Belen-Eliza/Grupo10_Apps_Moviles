@@ -146,7 +146,7 @@ export default function Ahorro() {
         />
       </View>
 
-      <View style={estilos.thinGrayBottomBorder}>
+      <View style={[estilos.thinGrayBottomBorder,{zIndex:999}]}>
         <View style={estilos.inputContainer}>
           <MaterialIcons name="category" size={24} color="#666" style={estilos.inputIcon} />
           <Text style={estilos.subtitulo}>Categoría</Text>
@@ -155,7 +155,7 @@ export default function Ahorro() {
         <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
       </View>
 
-      <View style={{marginTop:30}}>
+      <View style={{marginTop:30,zIndex:-1}}>
         <Pressable
           onPressIn={handlePressIn}
           onPressOut={handlePressOut}

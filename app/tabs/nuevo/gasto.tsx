@@ -1,14 +1,4 @@
-import {
-  Pressable,
-  Text,
-  TextInput,
-  View,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Dimensions,
-  KeyboardAvoidingView,
-  Platform,
-} from "react-native";
+import { Pressable, Text, TextInput,View, Keyboard, Dimensions, KeyboardAvoidingView, Platform, ScrollView} from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { CategoryPicker } from "@/components/CategoryPicker";
@@ -16,13 +6,13 @@ import { useUserContext } from "@/context/UserContext";
 import { router } from "expo-router";
 import { error_alert, success_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
-import { Dismiss_keyboard } from "@/components/botones";
 
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
 } from "react-native-reanimated"; 
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 
 type Gasto = {
   monto: number;
@@ -143,41 +133,52 @@ export default function Gasto() {
 
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={estilos.flex1}
+      style={[estilos.flex1,estilos.centrado]}
     >
-      <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss();setOpen(false)}} accessible={false}>
-        <View style={[{ flex: 1 }, estilos.centrado]}>
-          {isKeyboardVisible && (
-            <Dismiss_keyboard
-              setVisible={setIsKeyboardVisible}
-              pos_y={Dimensions.get("screen").height - keyboardHeight - 150}
+       <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
+        <View style={estilos.modalForm}>
+          <Text style={estilos.modalTitle}>Nuevo Gasto</Text>
+
+          <View style={estilos.thinGrayBottomBorder}>
+            <View style={estilos.inputContainer}>
+              <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={estilos.inputIcon} />
+              <Text style={estilos.subtitulo}>Monto</Text>
+            </View>
+            <TextInput
+              style={estilos.text_input2}
+              keyboardType="decimal-pad"
+              onChangeText={handler_Amount}
+              placeholder="Ingresar valor"
             />
-          )}
+          </View>
 
-          <Text style={estilos.subtitulo}>Monto</Text>
-          <TextInput
-            style={[estilos.textInput, estilos.margen]}
-            keyboardType="decimal-pad"
-            onChangeText={handler_Amount}
-            placeholder="Ingresar valor"
-          />
+          <View style={estilos.thinGrayBottomBorder}>
+            <View style={estilos.inputContainer}>
+              <FontAwesome6 name="pencil" size={24} color="#666" style={estilos.inputIcon} />
+              <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
+            </View>
+            <TextInput
+              style={estilos.text_input2}
+              keyboardType="default"
+              onChangeText={handler_descripcion}
+              placeholder="Ingresar descripción"
+            />
+          </View>
 
-          <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
-          <TextInput
-            style={[estilos.textInput, estilos.margen]}
-            keyboardType="default"
-            onChangeText={handler_descripcion}
-            placeholder="Ingresar descripción"
-          />
+          <View style={[estilos.thinGrayBottomBorder,{zIndex:999}]}>
+            <View style={estilos.inputContainer}>
+              <MaterialIcons name="category" size={24} color="#666" style={estilos.inputIcon} />
+              <Text style={estilos.subtitulo}>Categoría</Text>
+            </View>
+            <CategoryPicker
+              openPicker={openPicker}
+              setOpen={setOpen}
+              selected_cat_id={cat}
+              set_cat_id={setCat}
+            ></CategoryPicker>
+          </View>
 
-          <Text style={estilos.subtitulo}>Categoría</Text>
-          <CategoryPicker
-            openPicker={openPicker}
-            setOpen={setOpen}
-            selected_cat_id={cat}
-            set_cat_id={setCat}
-          ></CategoryPicker>
-
+          <View style={{marginTop:30,zIndex:-1}}></View>
           <Pressable
             onPressIn={handlePressIn}
             onPressOut={handlePressOut}
@@ -197,9 +198,9 @@ export default function Gasto() {
             </Animated.View>
           </Pressable>
         </View>
-      </TouchableWithoutFeedback>
+      
       <Toast />
-
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }
