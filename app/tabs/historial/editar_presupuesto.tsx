@@ -122,22 +122,22 @@ const { presupuesto_id = 0} = useLocalSearchParams();
               <Text style={estilos.modalTitle}>Editar Presupuesto</Text>
               
               <View style={estilos.thinGrayBottomBorder}>
-                <View style={styles.inputContainer}>
-                  <FontAwesome6 name="pencil" size={24} color="#666" style={styles.inputIcon} />
+                <View style={estilos.inputContainer}>
+                  <FontAwesome6 name="pencil" size={24} color="#666" style={estilos.inputIcon} />
                   <TextInput
                     style={estilos.text_input2}
                     value={descripcion}
                     onChangeText={handlerDescripcion}
                   />
                 </View>
-                {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
+                {errorDesc ? <Text style={estilos.errorText}>{errorDesc}</Text> : null}
               </View>
               
 
               <View style={estilos.thinGrayBottomBorder}>
-                <View style={styles.inputContainer}>
+                <View style={estilos.inputContainer}>
                   
-                  <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={styles.inputIcon} />
+                  <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={estilos.inputIcon} />
                   <TextInput
                     style={estilos.text_input2}
                     value={monto?.toString()}
@@ -145,11 +145,11 @@ const { presupuesto_id = 0} = useLocalSearchParams();
                     keyboardType="decimal-pad"
                   />
                 </View>
-                {errorMonto ? <Text style={styles.errorText}>{errorMonto}</Text> : null}
+                {errorMonto ? <Text style={estilos.errorText}>{errorMonto}</Text> : null}
               </View>
               <View style={estilos.thinGrayBottomBorder}>
-                <View style={styles.inputContainer}>
-                  <FontAwesome6 name="calendar-days" size={24} color="#666" style={styles.inputIcon} />
+                <View style={estilos.inputContainer}>
+                  <FontAwesome6 name="calendar-days" size={24} color="#666" style={estilos.inputIcon} />
                   <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
                 </View>
                 
@@ -176,11 +176,11 @@ const { presupuesto_id = 0} = useLocalSearchParams();
               />
             )}
 
-            {errorFecha ? <Text style={styles.errorText}>{errorFecha}</Text> : null}
+            {errorFecha ? <Text style={estilos.errorText}>{errorFecha}</Text> : null}
             </View>
-            <View style={[styles.inputContainer,estilos.thinGrayBottomBorder,{justifyContent:"space-between"}]}>
+            <View style={[estilos.inputContainer,estilos.thinGrayBottomBorder,{justifyContent:"space-between"}]}>
               <View style={{flexDirection:"row"}}>
-                <FontAwesome6 name="check-circle" size={24} color="#666" style={styles.inputIcon} />
+                <FontAwesome6 name="check-circle" size={24} color="#666" style={estilos.inputIcon} />
                 <Text style={estilos.subtitulo}>Activo </Text>
               </View>
               
@@ -263,22 +263,7 @@ const styles = StyleSheet.create({
       color: '#fff',
       fontSize: 18,
       fontWeight: 'bold',
-    },
-    
-    inputContainer: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginTop: 15
-    },
-    inputIcon: {
-      marginRight: 10,
-    },
-    errorText: {
-      color: '#ff3b30',
-      fontSize: 12,
-      marginBottom: 10,
-    },
-    
+    },    
     androidDateTime: {
         flexDirection: "row",
         justifyContent: "space-around",

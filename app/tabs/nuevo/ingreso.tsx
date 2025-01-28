@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Pressable, Keyboard, TouchableWithoutFeedback, Dimensions,KeyboardAvoidingView,Platform,ScrollView } from "react-native";
+import { Text, View, TextInput, Pressable, Keyboard, Dimensions,KeyboardAvoidingView,Platform,ScrollView } from "react-native";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext"; 
@@ -8,6 +8,7 @@ import Animated, {  useAnimatedStyle,  useSharedValue,  withSpring} from 'react-
 import{error_alert, success_alert} from '@/components/my_alert';
 import Toast from 'react-native-toast-message';
 import { Dismiss_keyboard } from "@/components/botones";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 
 type Ingreso = { monto: number, descripcion: string, category_id: number, user_id: number };
 
@@ -22,6 +23,7 @@ export default function Ahorro() {
   const [cat, setCat] = useState(0); 
   const [isKeyboardVisible, setIsKeyboardVisible] = useState(false);
   const [keyboardHeight,setKeyboardHeight] = useState(300);
+  const [errorMonto, setErrorMonto] = useState('');
 
   useEffect(() => {
       const showSubscription = Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
@@ -43,9 +45,10 @@ export default function Ahorro() {
 
   const handler_monto = (input: string) => {
     const monto = Number(input.replace(",", "."));
-    if (Number.isNaN(monto))  error_alert("El valor ingresado debe ser un número");
+    if (Number.isNaN(monto))  setErrorMonto("El valor ingresado debe ser un número");
     else {
       setIngreso(pre => ({ ...pre, monto }));
+      setErrorMonto("")
     }
   };
 
@@ -108,49 +111,73 @@ export default function Ahorro() {
     
       <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={estilos.flex1}>
-    <TouchableWithoutFeedback onPress={()=>{Keyboard.dismiss();setOpen(false)}} accessible={false}>
-    <ScrollView contentContainerStyle={[{ flex: 1,  }, estilos.centrado]}>
+      style={[estilos.flex1,estilos.centrado]}>
+    
+    <ScrollView contentContainerStyle={estilos.modalContent} automaticallyAdjustKeyboardInsets={true}>
     {isKeyboardVisible && <Dismiss_keyboard setVisible={setIsKeyboardVisible} pos_y={Dimensions.get("screen").height-keyboardHeight-150}/>}
-      <Text style={estilos.subtitulo}>Monto</Text>
-      <TextInput
-        style={[estilos.textInput, estilos.margen]}
-        inputMode="decimal"
-        keyboardType="decimal-pad"
-        onChangeText={handler_monto}
-        placeholder="Ingresar valor"
-      />
+    <View style={estilos.modalForm}>
+      <Text style={estilos.modalTitle}>Nuevo Ingreso</Text>
 
-      <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
-      <TextInput
-        style={[estilos.textInput, estilos.margen]}
-        keyboardType="default"
-        onChangeText={handler_descripcion}
-      />
+      <View style={estilos.thinGrayBottomBorder}>
+        <View style={estilos.inputContainer}>
+          <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={estilos.inputIcon} />
+          <Text style={estilos.subtitulo}>Monto</Text>
+        </View>
+        <TextInput
+          style={estilos.text_input2}
+          inputMode="decimal"
+          keyboardType="decimal-pad"
+          onChangeText={handler_monto}
+          placeholder="Ingresar valor"
+        />
+        {errorMonto ? <Text style={estilos.errorText}>{errorMonto}</Text> : null}
+      </View>
+     
+      <View style={estilos.thinGrayBottomBorder}>
+        <View style={estilos.inputContainer}>
+          <FontAwesome6 name="pencil" size={24} color="#666" style={estilos.inputIcon} />
+          <Text style={estilos.subtitulo}>Descripción (opcional)</Text>
+        </View>
+        <TextInput
+          style={estilos.text_input2}
+          keyboardType="default"
+          onChangeText={handler_descripcion}
+          placeholder="Ingresar descripción"
+        />
+      </View>
 
-      <Text style={estilos.subtitulo}>Categoría</Text>
-      <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
+      <View style={estilos.thinGrayBottomBorder}>
+        <View style={estilos.inputContainer}>
+          <MaterialIcons name="category" size={24} color="#666" style={estilos.inputIcon} />
+          <Text style={estilos.subtitulo}>Categoría</Text>
+        </View>
+        
+        <CategoryIngresoPicker openPicker={openPicker} setOpen={setOpen} selected_cat_id={cat} set_cat_id={setCat}></CategoryIngresoPicker>
+      </View>
 
-      <Pressable
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
-        onPress={confirmar}
-      >
-        <Animated.View style={[estilos.confirmButton, animatedStyle]}>
-          <Text style={estilos.confirmButtonText}>Confirmar</Text>
-        </Animated.View>
-      </Pressable>
-      <Pressable
-        onPressIn={handlePressInCancel}
-        onPressOut={handlePressOutCancel}
-        onPress={()=>router.back()}
-      >
-        <Animated.View style={[estilos.cancelButton, animatedStyleCancel]}>
-          <Text style={estilos.cancelButtonText}>Cancelar</Text>
-        </Animated.View>
-      </Pressable>
+      <View style={{marginTop:30}}>
+        <Pressable
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={confirmar}
+        >
+          <Animated.View style={[estilos.confirmButton, animatedStyle]}>
+            <Text style={estilos.confirmButtonText}>Confirmar</Text>
+          </Animated.View>
+        </Pressable>
+        <Pressable
+          onPressIn={handlePressInCancel}
+          onPressOut={handlePressOutCancel}
+          onPress={()=>router.back()}
+        >
+          <Animated.View style={[estilos.cancelButton, animatedStyleCancel]}>
+            <Text style={estilos.cancelButtonText}>Cancelar</Text>
+          </Animated.View>
+        </Pressable>
+      </View>
+      </View>
     </ScrollView>
-    </TouchableWithoutFeedback>
+    
     <Toast/>
     </KeyboardAvoidingView>
     

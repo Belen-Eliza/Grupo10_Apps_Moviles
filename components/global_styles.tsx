@@ -155,6 +155,14 @@ export const estilos = StyleSheet.create({
         alignItems: 'center',
 
     },
+    inputContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginTop: 15
+    },
+    inputIcon: {
+      marginRight: 10,
+    },
     
     poco_margen:{
         margin: 21

@@ -172,7 +172,7 @@ export default function Presupuesto() {
                   placeholder="Ingresar descripción"
                   placeholderTextColor="#999"
                 />
-              {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
+              {errorDesc ? <Text style={estilos.errorText}>{errorDesc}</Text> : null}
             </View>
 
             <View style={estilos.thinGrayBottomBorder}>
@@ -187,7 +187,7 @@ export default function Presupuesto() {
                   placeholder="Ingresar monto"
                   placeholderTextColor="#999"
                 />
-              {errorMonto ? <Text style={styles.errorText}>{errorMonto}</Text> : null}
+              {errorMonto ? <Text style={estilos.errorText}>{errorMonto}</Text> : null}
             </View>
 
             <View style={estilos.thinGrayBottomBorder}>
@@ -219,7 +219,7 @@ export default function Presupuesto() {
               />
             )}
 
-            {errorFecha ? <Text style={styles.errorText}>{errorFecha}</Text> : null}
+            {errorFecha ? <Text style={estilos.errorText}>{errorFecha}</Text> : null}
             </View>
 
             <View style={{marginTop:30}}>
@@ -263,9 +263,5 @@ const styles = StyleSheet.create({
   inputIcon: {
     marginRight: 10,
   },
-  errorText: {
-    color: '#ff3b30',
-    fontSize: 12,
-    marginBottom: 10,
-  },
+  
 });
