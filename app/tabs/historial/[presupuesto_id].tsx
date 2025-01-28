@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView, TouchableOpacity } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
 import { Link, router,useFocusEffect,useLocalSearchParams } from "expo-router";
@@ -6,13 +6,11 @@ import { LoadingCircle } from "@/components/loading";
 import { error_alert } from "@/components/my_alert";
 import React from "react";
 import Toast from "react-native-toast-message";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Fontisto,Feather } from "@expo/vector-icons";
 import { ProgressChart } from "react-native-chart-kit";
 import { ActionButton } from "@/components/tipos";
-import { DateRangeModal } from "@/components/DateRangeModal";
-import Fontisto from '@expo/vector-icons/Fontisto';
-import Feather from '@expo/vector-icons/Feather';
 import { Presupuesto } from "@/components/tipos";
+import { useNavigation } from '@react-navigation/native';
 
 export default function DetallePresupuesto(){
     const { presupuesto_id = 0} = useLocalSearchParams();
@@ -21,25 +19,34 @@ export default function DetallePresupuesto(){
         router.replace({pathname:"/tabs",params:{msg:"Valor inválido",error:"yes"}});
     }
     const [presupuesto,setPresupuesto]=useState<Presupuesto>();
+    const navigation = useNavigation();
    
-    useEffect(()=>{
-        (async ()=>{
-            try {
-                const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/unico/${presupuesto_id}`,{
-                    method:'GET',
-                    headers:{"Content-Type":"application/json"}});
-                if (!rsp.ok)  throw new Error(rsp.status+" en ver presupuesto")
-                else {
-                    const data= await rsp.json();
-                    setPresupuesto(data);
+    useFocusEffect(
+        React.useCallback(() => {
+            (async ()=>{
+                try {
+                    const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/unico/${presupuesto_id}`,{
+                        method:'GET',
+                        headers:{"Content-Type":"application/json"}});
+                    if (!rsp.ok)  throw new Error(rsp.status+" en ver presupuesto")
+                    else {
+                        const data= await rsp.json();
+                        setPresupuesto(data);
+                    }
+                } catch (error) {
+                    console.log(error);
+                    error_alert("Presupuesto no encontrado");
+                    setTimeout(()=>{router.back()},3000);                
                 }
-            } catch (error) {
-                console.log(error);
-                error_alert("Presupuesto no encontrado");
-                setTimeout(()=>{router.back()},3000);                
-            }
-        })()
-    }, [presupuesto_id])
+            })()
+          
+          const limpiar = navigation.addListener('blur', () => {
+            //?
+          });
+          return limpiar
+        }, [presupuesto_id])
+      );
+    
     const width = Dimensions.get("window").width;
     const chartConfig = {
         backgroundGradientFrom: `#ffffff`,
@@ -51,11 +58,11 @@ export default function DetallePresupuesto(){
         barPercentage: 0.5,
         useShadowColorFromDataset: false // optional
     };
-    const porcentaje = presupuesto? presupuesto.total_acumulado/presupuesto.montoTotal*100 : 0;
+    const porcentaje = presupuesto? presupuesto.total_acumulado/presupuesto.montoTotal : 0;
     const fecha_objetivo = presupuesto? (new Date(presupuesto.fecha_objetivo)) : new Date();
     const data = {
         labels: [""], // optional
-        data: [porcentaje/10]
+        data: [porcentaje]
       };
     return (
         
@@ -68,7 +75,7 @@ export default function DetallePresupuesto(){
                     <View style={estilos.thinGrayBottomBorder}>
                     <View style={[{flexDirection:"row",alignItems:"center",justifyContent:"space-between"}]}>
                         <MaterialIcons name="attach-money" size={40} color="#007AFF" />
-                        <Text style={styles.title}>{presupuesto.descripcion}</Text>
+                        <Text style={[styles.title,{marginRight:30}]}>{presupuesto.descripcion}</Text>
                         <Link href={{pathname:"/tabs/historial/editar_presupuesto", params:{presupuesto_id:presupuesto.id}}}  asChild>
                         <TouchableOpacity  >
                             <Feather name="edit" size={24} color="#007AFF" />
@@ -99,24 +106,26 @@ export default function DetallePresupuesto(){
                     </View>
                     <View style={{flexDirection:"row",marginTop:20}}>
                         <Text style={[styles.messageText,{color:"black",fontWeight:"bold"}]}>Plazo: </Text>
-                        <Text style={[styles.messageText,{color:"black"}]}>{fecha_objetivo.getDate()}/{fecha_objetivo.getMonth()+1}/ {fecha_objetivo.getFullYear()}</Text>
+                        <Text style={[styles.messageText,{color:"black"}]}>{fecha_objetivo.getDate()}/{fecha_objetivo.getMonth()+1}/{fecha_objetivo.getFullYear()}</Text>
                     </View>
                     
                 </View>
                 
-                <View>
-                    <ProgressChart
-                        data={data}
-                        width={width}
-                        height={220}
-                        strokeWidth={16}
-                        radius={85}
-                        chartConfig={chartConfig}
-                        hideLegend={true}
-                    />
-                    <Text style={[colores.texto_azul,estilos.subtitulo,{position:"absolute",left:width/2-20,top:90}]}>{(porcentaje.toFixed(2))} %</Text>
+                <View style={[estilos.modalForm,estilos.poco_margen,estilos.centrado]}>
+                    <Text style={[styles.title,{alignSelf:"flex-start"}]}>Progreso:</Text>
+                    <View >
+                        <ProgressChart
+                            data={data}
+                            width={width}
+                            height={220}
+                            strokeWidth={16}
+                            radius={85}
+                            chartConfig={chartConfig}
+                            hideLegend={true}
+                        />
+                        <Text style={[colores.texto_azul,estilos.subtitulo,{position:"absolute",left:width/2-20,top:90}]}>{((porcentaje*100).toFixed(2))} %</Text>
+                    </View>
                 </View>
-                
             </View>
             }
            

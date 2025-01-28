@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Text, View, Pressable, Modal,Dimensions, StyleSheet,ScrollView, TouchableOpacity, TextInput, Platform } from "react-native";
+import { Text, View, Pressable, StyleSheet,ScrollView, TextInput, Platform } from "react-native";
 import { estilos,colores } from "@/components/global_styles";
-import { Link, router,useLocalSearchParams } from "expo-router";
-import { LoadingCircle } from "@/components/loading";
-import { error_alert } from "@/components/my_alert";
+import { router,useLocalSearchParams } from "expo-router";
+import Checkbox from 'expo-checkbox';
+import { error_alert, success_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
 import { Ionicons, MaterialIcons, Fontisto, FontAwesome6  } from "@expo/vector-icons";
 import { Presupuesto } from "@/components/tipos";
@@ -22,12 +22,14 @@ const { presupuesto_id = 0} = useLocalSearchParams();
         router.back();
     }
     const [presupuesto,setPresupuesto]=useState<Presupuesto>();
-    const [descripcion,handlerDescripcion]=useState<string>();
+    const [descripcion,setDescripcion]=useState<string>();
     const [monto,setMonto]=useState<number>();
     const [fecha, setFecha] = useState<Date>(new Date());
+    const [activo,setActivo] = useState<number>()
     const [errorDesc, setErrorDesc] = useState('');
     const [errorMonto, setErrorMonto] = useState('');
     const [errorFecha,setErrorFecha] = useState('');
+    const [isChecked, setChecked] = useState(false);
    
     useEffect(()=>{
       (async ()=>{
@@ -37,11 +39,12 @@ const { presupuesto_id = 0} = useLocalSearchParams();
                   headers:{"Content-Type":"application/json"}});
               if (!rsp.ok)  throw new Error(rsp.status+" en ver presupuesto")
               else {
-                  const data= await rsp.json();
-                  setPresupuesto(data);
-                  setFecha(new Date(data.fecha_objetivo));
-                  setMonto(data.montoTotal)
-                  handlerDescripcion(data.descripcion)
+                const data= await rsp.json();
+                setPresupuesto(data);
+                setFecha(new Date(data.fecha_objetivo));
+                setMonto(data.montoTotal);
+                setDescripcion(data.descripcion);
+                setChecked(data.activo==1);
               }
           } catch (error) {
               console.log(error);
@@ -51,18 +54,45 @@ const { presupuesto_id = 0} = useLocalSearchParams();
       })()
     }, [presupuesto_id]);
 
+    const confirmar= async ()=>{
+      try {
+        const rsp = await fetch( `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/${presupuesto_id}`,
+          {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({new_desc:descripcion,new_amount:monto, new_act:activo, new_date: fecha.toISOString()}),
+          })
+          if (!rsp.ok) {
+            throw new Error("Error al modificar el presupuesto");
+          }
+    
+          router.back();
+          setTimeout(
+            () => success_alert("Presupuesto modificado correctamente"),
+            200 );
+      } catch (e) {
+        error_alert(String(e));
+        console.log(e," en editar presupuesto");
+      }
+      
+    }
+    const cancelar= ()=>{
+        router.back();
+    }
+
     const handlerMonto=(text: string) =>{
         let aux = Number(text.replace(",", "."));
         if (Number.isNaN(aux)) setErrorMonto("El valor ingresado debe ser un número");
         else setMonto(aux);
     }
-    const handlerFecha=(text: string) =>{}
-    const handlerActivo=(text: string) =>{}
-    const confirmar= ()=>{}
-    const cancelar= ()=>{
-        router.back()
+    const handlerDescripcion = (text:string)=>{
+      setDescripcion(text)
     }
-
+    const handlerActivo=(input: boolean) =>{
+      setChecked(input);
+      if (input) setActivo(1);
+      else setActivo(0);
+    }
     const onChangeDate = ( event: DateTimePickerEvent, selectedDate: Date | undefined) => {
       if (selectedDate != undefined ) {
         if (!comparar_fechas(selectedDate,today())) {
@@ -91,30 +121,38 @@ const { presupuesto_id = 0} = useLocalSearchParams();
             <View style={estilos.modalForm}>
               <Text style={estilos.modalTitle}>Editar Presupuesto</Text>
               
-              <View style={styles.inputContainer}>
-                
-                <FontAwesome6 name="pencil" size={24} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  value={presupuesto?.descripcion}
-                  onChangeText={handlerDescripcion}
-                />
+              <View style={estilos.thinGrayBottomBorder}>
+                <View style={styles.inputContainer}>
+                  <FontAwesome6 name="pencil" size={24} color="#666" style={styles.inputIcon} />
+                  <TextInput
+                    style={estilos.text_input2}
+                    value={descripcion}
+                    onChangeText={handlerDescripcion}
+                  />
+                </View>
+                {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
               </View>
-              {errorDesc ? <Text style={styles.errorText}>{errorDesc}</Text> : null}
+              
 
-              <View style={styles.inputContainer}>
-                
-              <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={styles.inputIcon} />
-                <TextInput
-                  style={styles.input}
-                  value={monto?.toString()}
-                  onChangeText={handlerMonto}
-                  keyboardType="decimal-pad"
-                />
+              <View style={estilos.thinGrayBottomBorder}>
+                <View style={styles.inputContainer}>
+                  
+                  <FontAwesome6 name="money-check-dollar" size={24} color="#666" style={styles.inputIcon} />
+                  <TextInput
+                    style={estilos.text_input2}
+                    value={monto?.toString()}
+                    onChangeText={handlerMonto}
+                    keyboardType="decimal-pad"
+                  />
+                </View>
+                {errorMonto ? <Text style={styles.errorText}>{errorMonto}</Text> : null}
               </View>
-              {errorMonto ? <Text style={styles.errorText}>{errorMonto}</Text> : null}
-
-              <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
+              <View style={estilos.thinGrayBottomBorder}>
+                <View style={styles.inputContainer}>
+                  <FontAwesome6 name="calendar-days" size={24} color="#666" style={styles.inputIcon} />
+                  <Text style={estilos.subtitulo}>Fecha objetivo:</Text>
+                </View>
+                
             {Platform.OS === "android" ? (
               <View style={styles.androidDateTime}>
                 <Pressable onPress={showDatepicker}>
@@ -130,13 +168,31 @@ const { presupuesto_id = 0} = useLocalSearchParams();
               </View>
             ) : (
               <DateTimePicker
-                style={[estilos.margen,estilos.centrado]}
+                style={[estilos.centrado,estilos.poco_margen]}
                 value={fecha}
                 onChange={onChangeDate}
                 mode="date"
                 minimumDate={new Date()}
               />
             )}
+
+            {errorFecha ? <Text style={styles.errorText}>{errorFecha}</Text> : null}
+            </View>
+            <View style={[styles.inputContainer,estilos.thinGrayBottomBorder,{justifyContent:"space-between"}]}>
+              <View style={{flexDirection:"row"}}>
+                <FontAwesome6 name="check-circle" size={24} color="#666" style={styles.inputIcon} />
+                <Text style={estilos.subtitulo}>Activo </Text>
+              </View>
+              
+              <Checkbox
+                style={styles.checkbox}
+                value={isChecked}
+                onValueChange={handlerActivo}
+                color={isChecked ? '#007AFF' : undefined}
+              />
+            </View>
+
+            <View style={{marginTop:30}}>
               <Pressable style={estilos.confirmButton} onPress={confirmar}>
                 <Text style={estilos.confirmButtonText}>Confirmar</Text>
               </Pressable>
@@ -145,6 +201,7 @@ const { presupuesto_id = 0} = useLocalSearchParams();
             <Pressable style={estilos.cancelButton} onPress={cancelar}>
                 <Text style={estilos.cancelButtonText}>Cancelar</Text>
             </Pressable>
+            </View>
               
             </View>
           </ScrollView>
@@ -198,15 +255,7 @@ const styles = StyleSheet.create({
     buttonContainer: {
       marginTop: 20,
     },
-    button: {
-      backgroundColor: '#007AFF',
-      borderRadius: 10,
-      flexDirection: 'row',
-      alignItems: 'center',
-      justifyContent: 'center',
-      padding: 15,
-      marginBottom: 15,
-    },
+  
     buttonIcon: {
       marginRight: 10,
     },
@@ -215,28 +264,14 @@ const styles = StyleSheet.create({
       fontSize: 18,
       fontWeight: 'bold',
     },
-    modalContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    },
     
     inputContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderBottomWidth: 1,
-      borderBottomColor: '#ddd',
-      marginBottom: 15,
+      marginTop: 15
     },
     inputIcon: {
       marginRight: 10,
-    },
-    input: {
-      flex: 1,
-      height: 50,
-      fontSize: 16,
-      color: '#333',
     },
     errorText: {
       color: '#ff3b30',
@@ -244,23 +279,13 @@ const styles = StyleSheet.create({
       marginBottom: 10,
     },
     
-    cancelButton: {
-      backgroundColor: '#fff',
-      borderRadius: 10,
-      borderWidth: 1,
-      borderColor: '#007AFF',
-      padding: 15,
-      alignItems: 'center',
-      marginTop: 10,
-    },
-    cancelButtonText: {
-      color: '#007AFF',
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
     androidDateTime: {
         flexDirection: "row",
         justifyContent: "space-around",
+      },
+      checkbox: {
+        margin: 10,
+        
       },
   });
   

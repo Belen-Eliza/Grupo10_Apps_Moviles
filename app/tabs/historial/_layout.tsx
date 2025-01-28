@@ -22,7 +22,7 @@ export default function Layout(){
                 presentation:"card", title: "Presupuesto"            
               })}
             />
-            <Stack.Screen name='editar_presupuesto' options={{presentation:"transparentModal",headerShown:false }}   />
+            <Stack.Screen name='editar_presupuesto' options={{presentation:"modal",headerShown:false }}   />
         </Stack>
     )
 } 

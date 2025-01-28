@@ -111,6 +111,12 @@ export const estilos = StyleSheet.create({
         borderWidth: 2,
         flex: 1,
     },
+    text_input2: {
+      flex: 1,
+      height: 50,
+      fontSize: 16,
+      color: '#333',
+    },
     margen: {
         margin: 41
     },
@@ -323,6 +329,7 @@ export const estilos = StyleSheet.create({
       flexGrow: 1,
       justifyContent: 'center',
     },
+    
     
 });
 

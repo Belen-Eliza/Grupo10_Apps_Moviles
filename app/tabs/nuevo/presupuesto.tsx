@@ -177,7 +177,7 @@ export default function Presupuesto() {
       // Si todo está bien, redirigir y mostrar éxito
       router.back();
       setTimeout(
-        () => success_alert("Presupuesto y categoría creados correctamente"),
+        () => success_alert("Presupuesto creado correctamente"),
         200
       );
     } catch (e) {
