@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { estilos } from "@/components/global_styles";
 import { Gasto,Ingreso,Presupuesto } from "./tipos";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { FontAwesome6 } from "@expo/vector-icons";
 
 function renderGasto ( item : Gasto)  {
   const fecha = new Date(item.fecha);
@@ -43,13 +44,28 @@ function renderPresupuesto (item : Presupuesto,callback:Function)  {
   const fecha = new Date(item.fecha_objetivo);
     return (
       <TouchableOpacity activeOpacity={0.5} onPress={()=>callback(item)}  style={[estilos.list_element,estilos.thinGrayBottomBorder,estilos.fila_espaciada]}>
+        
         <View style={styles.view_fecha}>
           <Text> Para: {fecha.getDate()}/{fecha.getMonth()+1}/{fecha.getFullYear()}</Text>
         </View>
         <View style={{flex: 3}}>
           <Text style={{fontSize:18}}>{item.descripcion}</Text>
+          
+          {item.montoTotal==item.total_acumulado? 
+          <View style={[{flexDirection:"row",marginTop:10,alignItems:"center"}]}>
+            <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={[estilos.centrado,estilos.inputIcon]} />
+            <Text>Completado</Text>
+          </View>: item.activo==1? 
+          <View style={[{flexDirection:"row",marginTop:10,alignItems:"center"}]}>
+            <MaterialIcons name="pending-actions" size={24} color="#1fe024" style={[estilos.centrado,estilos.inputIcon]} />
+            <Text>Activo</Text>
+          </View>: null}
         </View>
+        
+        <View style={styles.view_monto}>
         <Text>Total: ${item.montoTotal}</Text>
+        
+        </View>
         <MaterialIcons name="arrow-forward-ios" style={{marginLeft:5}} size={20} color="#007AFF" />
       </TouchableOpacity>)};
 

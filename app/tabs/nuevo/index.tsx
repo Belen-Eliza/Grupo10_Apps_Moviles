@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import {  View,  Text,  StyleSheet,  FlatList,  Pressable,  SafeAreaView,} from "react-native";
 import { Link, useFocusEffect } from "expo-router";
-import { MaterialIcons } from "@expo/vector-icons";
+import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
@@ -55,7 +55,8 @@ export default function Dashboard() {
     total_acumulado,
   }) =>  {
     return (
-    <View style={styles.item} >
+    <View style={[styles.item,{justifyContent:"space-between"}]} >
+      <View style={[{flexDirection:"row"},estilos.centrado]}>
       <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
       <View>
         <Text style={styles.itemType}>{descripcion}</Text>
@@ -63,6 +64,11 @@ export default function Dashboard() {
           %{((total_acumulado / montoTotal) * 100).toFixed(2)}
         </Text>
       </View>
+      </View>
+      
+      {total_acumulado==montoTotal? <View style={{alignSelf:"flex-end"}}>
+        <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={estilos.inputIcon} />
+      </View>:null}
     </View>
     
   );}
