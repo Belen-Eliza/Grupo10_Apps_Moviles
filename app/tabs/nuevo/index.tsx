@@ -8,12 +8,14 @@ import Toast from "react-native-toast-message";
 import Presupuesto from "./presupuesto";
 import { estilos } from "@/components/global_styles";
 import { ActionButton,ActionButtonProps } from "@/components/tipos";
+import { today } from "@/components/dias";
 
 interface Presupuesto {
   id: number;
   descripcion: string;
   montoTotal: number;
   total_acumulado: number;
+  fecha_objetivo: Date
 }
 
 export default function Dashboard() {
@@ -53,7 +55,9 @@ export default function Dashboard() {
     descripcion,
     montoTotal,
     total_acumulado,
+    fecha_objetivo
   }) =>  {
+    const f = new Date(fecha_objetivo)
     return (
     <View style={[styles.item,{justifyContent:"space-between"}]} >
       <View style={[{flexDirection:"row"},estilos.centrado]}>
@@ -66,9 +70,14 @@ export default function Dashboard() {
       </View>
       </View>
       
-      {total_acumulado==montoTotal? <View style={{alignSelf:"flex-end"}}>
+      {total_acumulado==montoTotal? 
+      <View style={{alignSelf:"flex-end"}}>
         <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={estilos.inputIcon} />
-      </View>:null}
+      </View>: f<today()?
+      <View style={{alignSelf:"flex-end"}}>
+        <MaterialIcons name="assignment-late" size={24} color="red" style={estilos.inputIcon} />
+      </View>: null
+    }
     </View>
     
   );}

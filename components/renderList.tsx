@@ -3,6 +3,7 @@ import { estilos } from "@/components/global_styles";
 import { Gasto,Ingreso,Presupuesto } from "./tipos";
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import { FontAwesome6 } from "@expo/vector-icons";
+import { today } from "./dias";
 
 function renderGasto ( item : Gasto)  {
   const fecha = new Date(item.fecha);
@@ -55,11 +56,16 @@ function renderPresupuesto (item : Presupuesto,callback:Function)  {
           <View style={[{flexDirection:"row",marginTop:10,alignItems:"center"}]}>
             <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={[estilos.centrado,estilos.inputIcon]} />
             <Text>Completado</Text>
-          </View>: item.activo==1? 
+          </View>:fecha<today()?
           <View style={[{flexDirection:"row",marginTop:10,alignItems:"center"}]}>
-            <MaterialIcons name="pending-actions" size={24} color="#1fe024" style={[estilos.centrado,estilos.inputIcon]} />
+          <MaterialIcons name="assignment-late" size={24} color="red" style={estilos.inputIcon} />
+          <Text>Atrasado</Text>
+        </View>
+          : item.activo==1? 
+          <View style={[{flexDirection:"row",marginTop:10,alignItems:"center"}]}>
+            <MaterialIcons name="pending-actions" size={24} color="#f0bd0f" style={[estilos.centrado,estilos.inputIcon]} />
             <Text>Activo</Text>
-          </View>: null}
+          </View>:null}
         </View>
         
         <View style={styles.view_monto}>

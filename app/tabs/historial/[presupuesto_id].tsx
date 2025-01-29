@@ -10,6 +10,7 @@ import { MaterialIcons, Fontisto,Feather, FontAwesome6 } from "@expo/vector-icon
 import { ProgressChart } from "react-native-chart-kit";
 import { Presupuesto } from "@/components/tipos";
 import { useNavigation } from '@react-navigation/native';
+import { today } from "@/components/dias";
 
 function esta_activo(p:Presupuesto){
     return p.activo==1 && p.montoTotal!=p.total_acumulado
@@ -21,7 +22,7 @@ export default function DetallePresupuesto(){
         router.dismiss();
         router.replace({pathname:"/tabs",params:{msg:"Valor inválido",error:"yes"}});
     }
-    const [presupuesto,setPresupuesto]=useState<Presupuesto>({id:0,fecha_objetivo:new Date(),montoTotal:0,total_acumulado:0,activo:0,descripcion:""});
+    const [presupuesto,setPresupuesto]=useState<Presupuesto>({id:0,fecha_objetivo:today(),montoTotal:0,total_acumulado:0,activo:0,descripcion:""});
     const navigation = useNavigation();
    
     useFocusEffect(
@@ -121,7 +122,11 @@ export default function DetallePresupuesto(){
                     <View style={[{flexDirection:"row",alignItems:"center",marginTop:10}]}>
                         <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={estilos.inputIcon} />
                         <Text style={[{color:"black",fontSize:18}]}>Completado</Text>
-                    </View>   : null
+                    </View>   : (fecha_objetivo<today()?
+                    <View style={[{flexDirection:"row",alignItems:"center",marginTop:10}]}>
+                        <MaterialIcons name="assignment-late" size={24} color="red" style={estilos.inputIcon} />
+                        <Text style={[{color:"black",fontSize:18}]}>Atrasado</Text>
+                    </View>   : null)
                     }
                 </View>
                 
