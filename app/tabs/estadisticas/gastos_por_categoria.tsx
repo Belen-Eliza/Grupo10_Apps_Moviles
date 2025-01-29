@@ -26,7 +26,7 @@ export default function Gastos_por_Categoria() {
     const navigation = useNavigation();
     
     const dimensions = [Dimensions.get("window").width,Dimensions.get("window").height]
-    const colors = ["rgba(131, 167, 234, 1)","red","#c722fd","#00d2d2","#159572"]
+    const colors = ["blue","purple","#c722fd","red","hotpink","pink","#00d2d2","#159572","darkgreen","rgba(131, 167, 234, 1)"]
 
     useFocusEffect(
       React.useCallback(() => {
