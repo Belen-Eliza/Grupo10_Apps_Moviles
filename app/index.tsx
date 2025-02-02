@@ -128,7 +128,7 @@ export default function Login() {
                 placeholder="Contraseña"
                 placeholderTextColor="#999"
               />
-              <Pressable onPress={togglePasswordVisibility} style={styles.eyeIcon}>
+              <Pressable onPress={()=> setShowPassword(!showPassword)} >
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={24}
@@ -148,11 +148,11 @@ export default function Login() {
                 <Text style={estilos.linkText}>Regístrate aquí</Text>
               </Link>
             </View>
-            <View style={styles.signupContainer}>
+            {/* <View style={styles.signupContainer}>
               <Link href="/password-recovery" style={styles.signupLink}>
                 <Text style={estilos.linkText}>¿Olvidaste tu contraseña?</Text>
               </Link>
-            </View>
+            </View> */}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -164,10 +164,7 @@ export default function Login() {
 
 
 const styles = StyleSheet.create({
-  eyeIcon:{
-    //se borro o algo?
-  },
-  
+
   formContainer: {
     backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 20,

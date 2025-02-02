@@ -135,13 +135,20 @@ export default function Signup() {
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword1}
                 textContentType="newPassword"
                 onChangeText={handlePasswordChange}
                 value={password1}
                 placeholder="Contraseña"
                 placeholderTextColor="#999"
               />
+              <Pressable onPress={()=> setShowPassword1(!showPassword1)} >
+                <Ionicons
+                  name={showPassword1 ? "eye-outline" : "eye-off-outline"}
+                  size={24}
+                  color="#666"
+                />
+              </Pressable>
             </View>
             {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
 
@@ -149,13 +156,20 @@ export default function Signup() {
               <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
               <TextInput
                 style={styles.input}
-                secureTextEntry={true}
+                secureTextEntry={!showPassword2}
                 textContentType="newPassword"
                 onChangeText={handlePasswordConfirmChange}
                 value={password2}
                 placeholder="Confirmar Contraseña"
                 placeholderTextColor="#999"
               />
+              <Pressable onPress={()=> setShowPassword2(!showPassword2)} >
+                <Ionicons
+                  name={showPassword2 ? "eye-outline" : "eye-off-outline"}
+                  size={24}
+                  color="#666"
+                />
+              </Pressable>
             </View>
             {errorPasswordConfirm ? <Text style={estilos.errorText}>{errorPasswordConfirm}</Text> : null}
 

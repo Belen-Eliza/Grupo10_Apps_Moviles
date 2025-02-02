@@ -1,6 +1,6 @@
 const today = () => {
     let fecha = new Date();
-    fecha.setHours(23, 59);
+    fecha.setHours(20, 59);
     return fecha;
 };
 
@@ -17,7 +17,7 @@ const mes_pasado = ()=>{
 const mes_anterior = (f: Date)=>{
     f.setMonth(f.getMonth()-1)
     f.setDate(1);
-    f.setHours(0,0,0,0);
+    f.setHours(3,0,0,0);
     return f
 }
 const fin_mes_pasado = ()=>{
@@ -28,7 +28,7 @@ const fin_mes_pasado = ()=>{
 const principio_este_mes =()=>{
     let f = new Date();
     f.setDate(1);
-    f.setHours(0,0,0,0);
+    f.setHours(3,0,0,0);
     return f 
 }
 
@@ -36,7 +36,7 @@ const year_start = ()=>{
     let fecha = new Date();
     fecha.setMonth(0);
     fecha.setDate(1);
-    fecha.setHours(0,0,0,0);
+    fecha.setHours(3,0,0,0);
     return fecha
 }
 

@@ -82,7 +82,7 @@ export default function Gastos_por_Categoria() {
       prev.setTime((new Date()).getTime())
       return prev
     });
-    actualizar_fecha();
+    setTimeout(actualizar_fecha,100);
   }
   const proximo_mes = ()=>{
     setMes(mes_siguiente(mes));

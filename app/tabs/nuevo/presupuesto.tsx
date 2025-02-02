@@ -123,7 +123,7 @@ export default function Presupuesto() {
 
     if (!es_valido(presupuesto) || fecha <= new Date()) {
       error_alert(
-        "Complete los espacios en blanco o proporcione una fecha objetivo válida"
+        "Corrija los errores marcados en pantalla"
       );
       return;
     }
