@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import {  View,  Text,  StyleSheet,  FlatList,  Pressable,  SafeAreaView,} from "react-native";
-import { Link, useFocusEffect } from "expo-router";
+import { View, Text, StyleSheet, FlatList, SafeAreaView } from "react-native";
+import { useFocusEffect } from "expo-router";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
-import Presupuesto from "./presupuesto";
 import { estilos } from "@/components/global_styles";
-import { ActionButton,ActionButtonProps } from "@/components/tipos";
+import { ActionButton } from "@/components/tipos";
 import { today } from "@/components/dias";
 
 interface Presupuesto {
@@ -15,7 +14,7 @@ interface Presupuesto {
   descripcion: string;
   montoTotal: number;
   total_acumulado: number;
-  fecha_objetivo: Date
+  fecha_objetivo: Date;
 }
 
 export default function Dashboard() {
@@ -35,8 +34,7 @@ export default function Dashboard() {
           );
 
           if (rspPresupuestos.ok) {
-            const presupuestosData: Presupuesto[] =
-              await rspPresupuestos.json();
+            const presupuestosData: Presupuesto[] = await rspPresupuestos.json();
             setDatosPresupuestos(presupuestosData.reverse());
           }
         } catch (e) {
@@ -46,41 +44,27 @@ export default function Dashboard() {
       };
 
       fetchData();
-      return () => {};
     }, [context.id])
   );
 
-  const Item: React.FC<Presupuesto> = ({
-    id,
-    descripcion,
-    montoTotal,
-    total_acumulado,
-    fecha_objetivo
-  }) =>  {
-    const f = new Date(fecha_objetivo)
+  const Item: React.FC<Presupuesto> = ({ id, descripcion, montoTotal, total_acumulado, fecha_objetivo }) => {
+    const f = new Date(fecha_objetivo);
+    const completado = total_acumulado >= montoTotal;
+    const vencido = f < today() && !completado;
     return (
-    <View style={[styles.item,{justifyContent:"space-between"}]} >
-      <View style={[{flexDirection:"row"},estilos.centrado]}>
-      <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
-      <View>
-        <Text style={styles.itemType}>{descripcion}</Text>
-        <Text style={styles.itemAmount}>
-          %{((total_acumulado / montoTotal) * 100).toFixed(2)}
-        </Text>
+      <View style={[styles.item, { justifyContent: "space-between" }]}>
+        <View style={[{ flexDirection: "row" }, estilos.centrado]}>
+          <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
+          <View>
+            <Text style={styles.itemType}>{descripcion}</Text>
+            <Text style={styles.itemAmount}>
+              {completado ? "Completado ✅" : vencido ? "No completado ❌" : `%${((total_acumulado / montoTotal) * 100).toFixed(2)}`}
+            </Text>
+          </View>
+        </View>
       </View>
-      </View>
-      
-      {total_acumulado==montoTotal? 
-      <View style={{alignSelf:"flex-end"}}>
-        <FontAwesome6 name="check-circle" size={24} color="#1fe024" style={estilos.inputIcon} />
-      </View>: f<today()?
-      <View style={{alignSelf:"flex-end"}}>
-        <MaterialIcons name="assignment-late" size={24} color="red" style={estilos.inputIcon} />
-      </View>: null
-    }
-    </View>
-    
-  );}
+    );
+  };
 
   return (
     <SafeAreaView style={estilos.flex1}>
@@ -105,21 +89,9 @@ export default function Dashboard() {
       <View style={styles.actionsContainer}>
         <Text style={styles.sectionTitle}>Acciones Rápidas</Text>
         <View style={styles.actionButtonsColumn}>
-          <ActionButton
-            icon="add"
-            label="Agregar Gasto"
-            href="/tabs/nuevo/gasto"
-          />
-          <ActionButton
-            icon="savings"
-            label="Agregar Ingreso"
-            href="/tabs/nuevo/ingreso"
-          />
-          <ActionButton
-            icon="account-balance"
-            label="Agregar Presupuesto"
-            href="/tabs/nuevo/presupuesto"
-          />
+          <ActionButton icon="add" label="Agregar Gasto" href="/tabs/nuevo/gasto" />
+          <ActionButton icon="savings" label="Agregar Ingreso" href="/tabs/nuevo/ingreso" />
+          <ActionButton icon="account-balance" label="Agregar Presupuesto" href="/tabs/nuevo/presupuesto" />
         </View>
       </View>
       <Toast />
@@ -137,7 +109,7 @@ const styles = StyleSheet.create({
   recentTransactions: {
     flex: 1,
     padding: 20,
-    zIndex:-1
+    zIndex: -1,
   },
   list: {
     flex: 1,
@@ -162,12 +134,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "500",
     color: "#333",
-    marginLeft: 5
+    marginLeft: 5,
   },
   itemAmount: {
     fontSize: 14,
     color: "#666",
-    marginLeft: 5
+    marginLeft: 5,
   },
   actionsContainer: {
     padding: 20,
@@ -175,5 +147,4 @@ const styles = StyleSheet.create({
   actionButtonsColumn: {
     alignItems: "stretch",
   },
- 
 });
