@@ -339,8 +339,7 @@ button: {
   justifyContent: 'center',
   alignItems: 'center',
   marginTop: 20,
-  width: '75%',
-  minWidth: 200,
+
 },
 
   linkText: {
@@ -358,8 +357,7 @@ button: {
   },
   secondaryButtonText: {
     color: '#004993',
-     width: '75%',
-  minWidth: 200,
+     
   },
   modalContainer: {
     flex: 1,
