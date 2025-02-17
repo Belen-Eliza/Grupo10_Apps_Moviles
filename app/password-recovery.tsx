@@ -123,39 +123,45 @@ const PasswordRecovery = () => {
     }
   };
 
-  const handleChangePassword = async () => {
-    if (newPassword.length < 8) {
-      Alert.alert('Error', 'Password must be at least 8 characters long.');
-      return;
+const handleChangePassword = async () => {
+  if (newPassword.length < 8) {
+    Alert.alert('Error', 'Password must be at least 8 characters long.');
+    return;
+  }
+
+  const specialCharacterRegex = /[!@#$%^&*(),.?":{}|<>]/;
+  if (!specialCharacterRegex.test(newPassword)) {
+    Alert.alert('Error', 'Password must include at least one special character.');
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    Alert.alert('Error', 'Passwords do not match.');
+    return;
+  }
+
+  try {
+    const response = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/password/reset-password`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, newPassword, token }),
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      Alert.alert('Success!', 'Your password has been updated.', [
+        { text: 'OK', onPress: () => setModalPasswordVisible(false) },
+      ]);
+    } else {
+      Alert.alert('Error', data.message || 'Failed to change password.');
     }
+  } catch (error) {
+    console.error('Error changing password:', error);
+    Alert.alert('Error', 'Unable to connect to the server.');
+  }
+};
 
-    if (newPassword !== confirmPassword) {
-      Alert.alert('Error', 'Passwords do not match.');
-      return;
-    }
-
-    try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/password/reset-password`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, newPassword, token }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Alert.alert('Success!', 'Your password has been updated.', [
-          { text: 'OK', onPress: () => setModalPasswordVisible(false) },
-        ]);
-        
-      } else {
-        Alert.alert('Error', data.message || 'Failed to change password.');
-      }
-    } catch (error) {
-      console.error('Error changing password:', error);
-      Alert.alert('Error', 'Unable to connect to the server.');
-    }
-  };
 
   const renderButton = (title: string, onPress: () => void, isSecondary = false) => (
     <TouchableOpacity
