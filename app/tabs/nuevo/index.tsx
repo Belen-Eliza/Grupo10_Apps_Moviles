@@ -1,14 +1,13 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, FlatList, SafeAreaView } from "react-native";
-import { useFocusEffect } from "expo-router";
+import {  View,  Text,  StyleSheet,  FlatList,  Pressable,  SafeAreaView,} from "react-native";
+import { Link, useFocusEffect } from "expo-router";
 import { FontAwesome6, MaterialIcons } from "@expo/vector-icons";
 import { useUserContext } from "@/context/UserContext";
 import { error_alert } from "@/components/my_alert";
 import Toast from "react-native-toast-message";
 import { estilos } from "@/components/global_styles";
-import { ActionButton } from "@/components/tipos";
-import { today } from "@/components/dias";
-
+import { ActionButton,ActionButtonProps } from "@/components/tipos";import { today } from "@/components/dias";
+import Presupuesto from "./presupuesto";
 interface Presupuesto {
   id: number;
   descripcion: string;
@@ -34,7 +33,8 @@ export default function Dashboard() {
           );
 
           if (rspPresupuestos.ok) {
-            const presupuestosData: Presupuesto[] = await rspPresupuestos.json();
+            const presupuestosData: Presupuesto[] =
+              await rspPresupuestos.json();            
             setDatosPresupuestos(presupuestosData.reverse());
           }
         } catch (e) {
@@ -44,6 +44,7 @@ export default function Dashboard() {
       };
 
       fetchData();
+      return () => {};
     }, [context.id])
   );
 
@@ -52,17 +53,16 @@ export default function Dashboard() {
     const completado = total_acumulado >= montoTotal;
     const vencido = f < today() && !completado;
     return (
-      <View style={[styles.item, { justifyContent: "space-between" }]}>
-        <View style={[{ flexDirection: "row" }, estilos.centrado]}>
-          <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
-          <View>
-            <Text style={styles.itemType}>{descripcion}</Text>
-            <Text style={styles.itemAmount}>
-              {completado ? "Completado ✅" : vencido ? "No completado ❌" : `%${((total_acumulado / montoTotal) * 100).toFixed(2)}`}
-            </Text>
-          </View>
-        </View>
+      <View style={[styles.item,{justifyContent:"space-between"}]} >
+      <View style={[{flexDirection:"row"},estilos.centrado]}>
+      <MaterialIcons name="account-balance" size={24} color="#4CAF50" />
+      <View>
+        <Text style={styles.itemType}>{descripcion}</Text>
+        <Text style={styles.itemAmount}>
+          %{((total_acumulado / montoTotal) * 100).toFixed(2)}
+        </Text>
       </View>
+    </View>
     );
   };
 
