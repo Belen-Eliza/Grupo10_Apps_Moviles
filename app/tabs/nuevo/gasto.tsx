@@ -55,58 +55,24 @@ export default function Gasto() {
   };
 
 const confirmar = async () => {
-  gasto.category_id = cat;
-  gasto.user_id = context.id;
-
-  if (!es_valido(gasto)) {
-    error_alert("Complete los campos obligatorios para continuar");
-    return;
-  }
-
-  try {
-    // Obtener el presupuesto asociado a la categoría
-    const response = await fetch(
-      `${process.env.EXPO_PUBLIC_DATABASE_URL}/presupuestos/${cat}`
-    );
-    const presupuesto = await response.json();
-
-    if (presupuesto) {
-      const { montoTotal, total_acumulado } = presupuesto;
-      const monto_faltante = montoTotal - total_acumulado;
-
-      if (monto_faltante <= 0) {
-        error_alert("El objetivo ya ha sido alcanzado.");
-        return;
-      }
-
-      if (gasto.monto > monto_faltante) {
-        gasto.monto = monto_faltante; // Ajustar el gasto a lo que falta
-        Toast.show({
-          type: "info",
-          text1: "Monto ajustado",
-          text2: `El gasto se ajustó a ${monto_faltante} para no superar el objetivo.`,
-        });
-      }
-    }
-
-    // Enviar el gasto ajustado al backend
-    const res = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(gasto),
-    });
-
-    if (res.ok) {
-      context.actualizar_info(context.id);
-      router.back();
-      setTimeout(() => success_alert("Gasto creado correctamente"), 200);
-    } else {
-      error_alert("Error al registrar el gasto");
-    }
-  } catch (e) {
-    error_alert(String(e));
-    console.log(e);
-  }
+    gasto.category_id = cat;
+    gasto.user_id = context.id;
+    if (!es_valido(gasto))
+      error_alert("Complete los campos obligatorios para continuar");
+    else {
+      fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(gasto),
+      })
+        .then((v) => {
+          context.actualizar_info(context.id);
+          router.back();
+          setTimeout(() => success_alert("Gasto creado correctamente"), 200);
+        })
+        .catch((e) => {
+          error_alert(String(e));
+          console.log(e);
 };
 
 
