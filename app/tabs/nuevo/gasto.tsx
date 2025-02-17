@@ -96,9 +96,8 @@ export default function Gasto() {
   const confirmar = async () => {
     gasto.category_id = cat;
     gasto.user_id = context.id;
-
     if (!es_valido(gasto))
-      error_alert("Complete todos los campos para continuar");
+      error_alert("Complete los campos obligatorios para continuar");
     else {
       fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/gastos/`, {
         method: "POST",
@@ -106,17 +105,13 @@ export default function Gasto() {
         body: JSON.stringify(gasto),
       })
         .then((v) => {
-          setFetching(false);
           context.actualizar_info(context.id);
           router.back();
           setTimeout(() => success_alert("Gasto creado correctamente"), 200);
         })
         .catch((e) => {
-          setFetching(false);
           error_alert(String(e));
           console.log(e);
-        });
-    }
   };
 
   const scale = useSharedValue(1);
