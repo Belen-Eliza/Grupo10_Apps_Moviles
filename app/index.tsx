@@ -7,48 +7,25 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-} from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import { Link, router } from 'expo-router';
-import { useUserContext } from '@/context/UserContext';
-import { Ionicons } from '@expo/vector-icons';
+} from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Link, router } from "expo-router";
+import { useUserContext } from "@/context/UserContext";
+import { Ionicons } from "@expo/vector-icons";
 import { estilos, colores } from "@/components/global_styles";
 import { useEffect, useState } from "react";
 import { User } from "@/components/tipos";
-import { validateEmail,validatePassword } from "@/components/validations";
-import{error_alert} from '@/components/my_alert';
-import Toast from 'react-native-toast-message';
+import { validateEmail, validatePassword } from "@/components/validations";
+import { error_alert } from "@/components/my_alert";
+import Toast from "react-native-toast-message";
 
 export default function Login() {
-  const [mail, setMail] = useState('');
-  const [password, setPassword] = useState('');
-  const [errorEmail, setErrorEmail] = useState('');
-  const [errorPassword, setErrorPassword] = useState('');
+  const [mail, setMail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorEmail, setErrorEmail] = useState("");
+  const [errorPassword, setErrorPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { login_app } = useUserContext();
-
-  useEffect( () => {
-    (async ()=>  {
-      const value = await AsyncStorage.getItem("token");
-      if (value !== null) { 
-        try {
-          const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/${value}`, {
-            method: "GET",
-            headers: { "Content-Type": "application/json" },
-          });
-          if (!rsp.ok) {
-            throw new Error();
-          }
-          const user = await rsp.json();
-          login_app(user);
-          router.replace("/tabs/home");
-        } catch (error) {
-          console.log(error," al regresar a la sesión");
-        }
-        
-      }
-    } )()
-  }, [])
 
   const handleEmailChange = (text: string) => {
     setMail(text);
@@ -71,40 +48,67 @@ export default function Login() {
 
     if (isEmailValid && isPasswordValid) {
       try {
-        const rsp = await fetch(`${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(user),
-        });
+        const rsp = await fetch(
+          `${process.env.EXPO_PUBLIC_DATABASE_URL}/users/login`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(user),
+          }
+        );
 
         if (!rsp.ok) {
-            if (rsp.status == 400) throw new Error("Usuario o contraseña incorrectos");
-            throw new Error();
+          if (rsp.status == 400)
+            throw new Error("Usuario o contraseña incorrectos");
+          throw new Error();
         } else {
-            const datos_usuario: User = await rsp.json();
-            login_app(datos_usuario);
-            router.replace("/tabs/home");
+          const datos_usuario: User = await rsp.json();
+          await AsyncStorage.setItem("userData", JSON.stringify(datos_usuario));
+          login_app(datos_usuario);
+          router.replace("/tabs/home");
         }
       } catch (error) {
-          error_alert(String(error));
+        error_alert(String(error));
       }
-    } 
+    } else {
+      error_alert("Por favor corrija los errores en el formulario");
+    }
   }
 
-  return (
+  useEffect(() => {
+    const checkExistingSession = async () => {
+      try {
+        const userData = await AsyncStorage.getItem("userData");
+        if (userData) {
+          const parsedUser = JSON.parse(userData);
+          login_app(parsedUser);
+          router.replace("/tabs/home");
+        }
+      } catch (error) {
+        console.error("Error checking session:", error);
+      }
+    };
 
-    
+    checkExistingSession();
+  }, []);
+
+  return (
     <View style={[estilos.background2, colores.fondo_azul]}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
         style={estilos.flex1}
       >
-        <ScrollView contentContainerStyle={estilos.scrollViewContent}>
+        <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
             <Text style={styles.title}>Iniciar Sesión</Text>
 
             <View style={styles.inputContainer}>
-              <Ionicons name="mail-outline" size={24} color="#666" style={styles.inputIcon} />
+              <Ionicons
+                name="mail-outline"
+                size={24}
+                color="#666"
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 textContentType="emailAddress"
@@ -115,10 +119,17 @@ export default function Login() {
                 placeholderTextColor="#999"
               />
             </View>
-            {errorEmail ? <Text style={estilos.errorText}>{errorEmail}</Text> : null}
+            {errorEmail ? (
+              <Text style={estilos.errorText}>{errorEmail}</Text>
+            ) : null}
 
             <View style={styles.inputContainer}>
-              <Ionicons name="lock-closed-outline" size={24} color="#666" style={styles.inputIcon} />
+              <Ionicons
+                name="lock-closed-outline"
+                size={24}
+                color="#666"
+                style={styles.inputIcon}
+              />
               <TextInput
                 style={styles.input}
                 secureTextEntry={!showPassword}
@@ -128,7 +139,10 @@ export default function Login() {
                 placeholder="Contraseña"
                 placeholderTextColor="#999"
               />
-              <Pressable onPress={()=> setShowPassword(!showPassword)} >
+              <Pressable
+                onPress={togglePasswordVisibility}
+                style={styles.eyeIcon}
+              >
                 <Ionicons
                   name={showPassword ? "eye-outline" : "eye-off-outline"}
                   size={24}
@@ -136,7 +150,9 @@ export default function Login() {
                 />
               </Pressable>
             </View>
-            {errorPassword ? <Text style={estilos.errorText}>{errorPassword}</Text> : null}
+            {errorPassword ? (
+              <Text style={estilos.errorText}>{errorPassword}</Text>
+            ) : null}
 
             <Pressable onPress={login} style={styles.loginButton}>
               <Text style={styles.loginButtonText}>Ingresar</Text>
@@ -148,31 +164,35 @@ export default function Login() {
                 <Text style={estilos.linkText}>Regístrate aquí</Text>
               </Link>
             </View>
-            {/* <View style={styles.signupContainer}>
+            <View style={styles.signupContainer}>
               <Link href="/password-recovery" style={styles.signupLink}>
                 <Text style={estilos.linkText}>¿Olvidaste tu contraseña?</Text>
               </Link>
-            </View> */}
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-      <Toast/>
-      </View>
-      
+      <Toast />
+    </View>
   );
 }
 
-
 const styles = StyleSheet.create({
-
+  eyeIcon: {
+    //se borro o algo?
+  },
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+  },
   formContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    backgroundColor: "rgba(255, 255, 255, 0.9)",
     borderRadius: 20,
     padding: 20,
-    width: '90%',
+    width: "90%",
     maxWidth: 400,
-    alignSelf: 'center',
-    shadowColor: '#000',
+    alignSelf: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -183,16 +203,16 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginBottom: 20,
-    textAlign: 'center',
+    textAlign: "center",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    borderBottomColor: "#ddd",
     marginBottom: 15,
   },
   inputIcon: {
@@ -202,34 +222,32 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 50,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
- 
+
   loginButton: {
-    backgroundColor: '#007AFF',
+    backgroundColor: "#007AFF",
     borderRadius: 10,
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     marginTop: 20,
   },
   loginButtonText: {
-    color: '#fff',
+    color: "#fff",
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   signupContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 20,
   },
   signupText: {
-    color: '#666',
+    color: "#666",
     fontSize: 14,
   },
   signupLink: {
     marginLeft: 5,
   },
-
 });
-
