@@ -332,14 +332,17 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
   },
-  button: {
-    backgroundColor: '#007AFF',
-    borderRadius: 10,
-    height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
-  },
+button: {
+  backgroundColor: '#007AFF',
+  borderRadius: 10,
+  height: 50,
+  justifyContent: 'center',
+  alignItems: 'center',
+  marginTop: 20,
+  width: '75%',
+  minWidth: 200,
+},
+
   linkText: {
     color: '#007AFF',
     fontSize: 14,
@@ -355,6 +358,8 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: '#004993',
+     width: '75%',
+  minWidth: 200,
   },
   modalContainer: {
     flex: 1,
