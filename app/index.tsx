@@ -84,6 +84,7 @@ export default function Login() {
             const datos_usuario: User = await rsp.json();
             login_app(datos_usuario);
             router.replace("/tabs/home");
+            
         }
       } catch (error) {
           error_alert(String(error));
