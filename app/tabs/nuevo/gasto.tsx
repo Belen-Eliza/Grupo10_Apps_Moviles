@@ -73,7 +73,8 @@ const confirmar = async () => {
         .catch((e) => {
           error_alert(String(e));
           console.log(e);
-};
+        });
+}}
 
 
   const scale = useSharedValue(1);
